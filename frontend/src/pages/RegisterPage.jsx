@@ -53,8 +53,14 @@ export default function RegisterPage() {
       else if (result.role === 'buyer') navigate('/buyer/dashboard');
       else navigate('/');
     } else {
-      setError(typeof result.error === 'string' ? result.error : 'Registration failed');
+      const msg = typeof result.error === 'string' ? result.error : 'Registration failed';
+      setError(
+        msg.includes('page could not be found')
+          ? 'Unable to connect to server. Please check your network or try logging in.'
+          : msg
+      );
     }
+
     setLoading(false);
   };
 

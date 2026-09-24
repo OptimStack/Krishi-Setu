@@ -26,8 +26,14 @@ export default function LoginPage() {
       else if (result.role === 'admin') navigate('/admin/auctions');
       else navigate('/');
     } else {
-      setError(typeof result.error === 'string' ? result.error : 'Invalid credentials');
+      const msg = typeof result.error === 'string' ? result.error : 'Invalid credentials';
+      setError(
+        msg.includes('page could not be found')
+          ? 'Unable to connect. You can use demo credentials: 9876543210 / demo123'
+          : msg
+      );
     }
+
     setLoading(false);
   };
 
