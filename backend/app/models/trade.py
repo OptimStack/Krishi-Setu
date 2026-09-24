@@ -1,6 +1,7 @@
 from bson import ObjectId
 from datetime import datetime, timezone
 from app import extensions
+from app.utils.logger import log_state_transition
 
 
 class Trade:
@@ -40,6 +41,12 @@ class Trade:
         }
         result = extensions.db.trades.insert_one(doc)
         doc['_id'] = result.inserted_id
+        log_state_transition('trade', doc['_id'], None, doc['status'], {
+            'crop': doc['crop'],
+            'quantity_kg': doc['quantity_kg'],
+            'total_amount': doc['total_amount'],
+            'farmer_count': len(shares)
+        })
         return doc
 
     @staticmethod
@@ -81,11 +88,14 @@ class Trade:
     @staticmethod
     def update(trade_id, update_fields):
         try:
-            return extensions.db.trades.find_one_and_update(
+            res = extensions.db.trades.find_one_and_update(
                 {'_id': ObjectId(trade_id)},
                 {'$set': update_fields},
                 return_document=True
             )
+            if res and 'status' in update_fields:
+                log_state_transition('trade', trade_id, None, update_fields['status'])
+            return res
         except Exception:
             return None
 

@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 from bson import ObjectId
 from app import extensions
+from app.utils.logger import log_state_transition
 
 
 class Payment:
@@ -27,6 +28,11 @@ class Payment:
         }
         result = extensions.db.payments.insert_one(doc)
         doc['_id'] = result.inserted_id
+        log_state_transition('payment', doc['_id'], None, doc['status'], {
+            'trade_id': str(doc['trade_id']),
+            'amount': doc['amount'],
+            'order_id': doc['razorpay_order_id']
+        })
         return doc
 
     @staticmethod
@@ -51,11 +57,14 @@ class Payment:
     def update(payment_id, update_fields):
         update_fields['updated_at'] = datetime.now(timezone.utc).isoformat()
         try:
-            return extensions.db.payments.find_one_and_update(
+            res = extensions.db.payments.find_one_and_update(
                 {'_id': ObjectId(str(payment_id))},
                 {'$set': update_fields},
                 return_document=True
             )
+            if res and 'status' in update_fields:
+                log_state_transition('payment', payment_id, None, update_fields['status'])
+            return res
         except Exception:
             return None
 

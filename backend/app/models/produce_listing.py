@@ -1,6 +1,7 @@
 from app import extensions
 from bson import ObjectId
 from datetime import datetime, timezone
+from app.utils.logger import log_state_transition
 
 
 class ProduceListing:
@@ -29,6 +30,11 @@ class ProduceListing:
         }
         result = extensions.db.produce_listings.insert_one(doc)
         doc['_id'] = result.inserted_id
+        log_state_transition('produce_listing', doc['_id'], None, 'open', {
+            'crop': doc['crop'],
+            'quantity_kg': doc['quantity_kg'],
+            'ask_price': doc['ask_price_per_kg']
+        })
         return doc
 
     @staticmethod
@@ -62,14 +68,20 @@ class ProduceListing:
 
     @staticmethod
     def update_status(listing_id, new_status):
-        return ProduceListing.update(listing_id, {'status': new_status})
+        updated = ProduceListing.update(listing_id, {'status': new_status})
+        if updated:
+            log_state_transition('produce_listing', listing_id, None, new_status)
+        return updated
 
     @staticmethod
     def assign_to_pool(listing_id, batch_id):
-        return ProduceListing.update(listing_id, {
+        updated = ProduceListing.update(listing_id, {
             'status': 'pooled',
             'pooled_batch_id': ObjectId(batch_id),
         })
+        if updated:
+            log_state_transition('produce_listing', listing_id, 'open', 'pooled', {'pooled_batch_id': str(batch_id)})
+        return updated
 
     @staticmethod
     def delete(listing_id):

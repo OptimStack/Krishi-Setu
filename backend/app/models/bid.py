@@ -1,6 +1,7 @@
 from app import extensions
 from bson import ObjectId
 from datetime import datetime, timezone
+from app.utils.logger import log_state_transition
 
 
 class Bid:
@@ -26,6 +27,11 @@ class Bid:
             doc['batch_id'] = str(data['batch_id'])
         result = extensions.db.bids.insert_one(doc)
         doc['_id'] = result.inserted_id
+        log_state_transition('bid', doc['_id'], None, 'open', {
+            'crop': doc['crop'],
+            'quantity_needed_kg': doc['quantity_needed_kg'],
+            'max_price': doc['max_price_per_kg']
+        })
         return doc
 
     @staticmethod
@@ -66,7 +72,10 @@ class Bid:
 
     @staticmethod
     def update_status(bid_id, new_status):
-        return Bid.update(bid_id, {'status': new_status})
+        updated = Bid.update(bid_id, {'status': new_status})
+        if updated:
+            log_state_transition('bid', bid_id, None, new_status)
+        return updated
 
     @staticmethod
     def delete(bid_id):
