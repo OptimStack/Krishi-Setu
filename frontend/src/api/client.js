@@ -52,20 +52,29 @@ client.interceptors.response.use(
     const responseData = error.response?.data;
     const url = error.config?.url || '';
 
-    // Check if error is due to missing backend API endpoint (e.g. Vercel frontend-only deployment)
+    // Check if error is due to missing backend API endpoint or server crash (e.g. Vercel deployment without live MongoDB)
     const isMissingBackend =
+      !status ||
       status === 404 ||
+      status === 500 ||
       status === 502 ||
       status === 503 ||
+      status === 504 ||
+      (status >= 500 && status <= 599) ||
       error.code === 'ERR_NETWORK' ||
+      error.code === 'ECONNABORTED' ||
       error.message?.includes('Network Error') ||
+      error.message?.includes('500') ||
+      error.message?.includes('status code 500') ||
       (typeof responseData === 'string' &&
         (responseData.includes('The page could not be found') ||
-          responseData.includes('<!DOCTYPE html')));
+          responseData.includes('<!DOCTYPE html') ||
+          responseData.includes('FUNCTION_INVOCATION_FAILED') ||
+          responseData.includes('Internal Server Error')));
 
     if (isMissingBackend && error.config) {
       console.warn(
-        `[KrishiSetu API] Live backend unavailable for ${url} (status: ${status || 'NETWORK'}). Falling back to mock demo service.`
+        `[KrishiSetu API] Live backend unavailable or returned error ${status || 'NETWORK'} for ${url}. Falling back to demo mock service.`
       );
       try {
         let requestData = error.config.data;

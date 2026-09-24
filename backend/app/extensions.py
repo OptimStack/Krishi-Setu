@@ -1,3 +1,4 @@
+import os
 import sys
 import logging
 from pymongo import MongoClient
@@ -24,17 +25,18 @@ def init_extensions(app):
     db_name = app.config.get('MONGODB_DB_NAME', 'krishisetu')
 
     if not mongo_uri:
-        if app.config.get('TESTING'):
-            try:
-                import mongomock
-                mongo_client = mongomock.MongoClient()
-                db = mongo_client[db_name]
-                logger.info('TESTING mode: using mongomock client fallback (no MONGODB_URI)')
-                return
-            except ImportError:
-                pass
-        logger.critical('MONGODB_URI is not set. Cannot start.')
-        sys.exit(1)
+        try:
+            import mongomock
+            mongo_client = mongomock.MongoClient()
+            db = mongo_client[db_name]
+            logger.info('Using mongomock client fallback (no MONGODB_URI)')
+            return
+        except ImportError:
+            pass
+        if not app.config.get('TESTING') and not os.environ.get('VERCEL'):
+            logger.critical('MONGODB_URI is not set. Cannot start.')
+            sys.exit(1)
+        return
 
     try:
         mongo_client = MongoClient(
@@ -47,17 +49,18 @@ def init_extensions(app):
         db = mongo_client[db_name]
         logger.info('MongoDB connected: %s / %s', mongo_uri.split('@')[-1] if '@' in mongo_uri else 'localhost', db_name)
     except Exception as exc:
-        logger.critical('MongoDB connection failed: %s', exc)
-        if app.config.get('TESTING'):
-            try:
-                import mongomock
-                logger.info('TESTING mode: using mongomock client fallback')
-                mongo_client = mongomock.MongoClient()
-                db = mongo_client[db_name]
-                return
-            except ImportError:
-                pass
-        sys.exit(1)
+        logger.warning('MongoDB connection failed: %s', exc)
+        try:
+            import mongomock
+            logger.info('Using mongomock client fallback')
+            mongo_client = mongomock.MongoClient()
+            db = mongo_client[db_name]
+            return
+        except ImportError:
+            pass
+        if not app.config.get('TESTING') and not os.environ.get('VERCEL'):
+            logger.critical('MongoDB connection failed: %s', exc)
+            sys.exit(1)
 
     # --- Razorpay (optional — test mode keys may be absent early) ---
     key_id = app.config.get('RAZORPAY_KEY_ID')
@@ -69,7 +72,7 @@ def init_extensions(app):
         logger.warning('Razorpay keys not set — payment endpoints will fail')
 
     # --- APScheduler ---
-    if not app.config.get('TESTING'):
+    if not app.config.get('TESTING') and not os.environ.get('VERCEL'):
         try:
             from app.auction_engine.batch_scheduler import schedule_jobs
             schedule_jobs(scheduler, app)
