@@ -14,9 +14,10 @@ import GradingReviewQueuePage from './pages/admin/GradingReviewQueuePage';
 
 function App() {
   return (
-    <div className="min-h-screen bg-stone-50 flex flex-col font-sans text-stone-800">
+    <div className="min-h-screen bg-gradient-to-br from-[#2A5124] to-[#D3D67A] dark:from-[#0c160e] dark:via-[#132216] dark:to-[#1b2311] flex flex-col font-sans text-stone-900 dark:text-stone-100 transition-colors duration-500">
       <Navbar />
       <main className="flex-grow container mx-auto px-4 py-8">
+
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/login" element={<LoginPage />} />

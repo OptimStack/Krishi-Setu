@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
@@ -6,9 +6,12 @@ import StatusBadge from '../../components/ui/StatusBadge';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import PriceForecastWidget from '../../components/widgets/PriceForecastWidget';
 import WarehouseFinderWidget from '../../components/widgets/WarehouseFinderWidget';
+import BuyerRequirementsWidget from '../../components/widgets/BuyerRequirementsWidget';
 import { getListings, cancelListing } from '../../api/listings';
 import { formatCurrency, formatQuantity, formatDate } from '../../utils/format';
 import { useAuth } from '../../context/AuthContext';
+import { staggerIn, fadeIn } from '../../utils/animations';
+
 
 export default function FarmerDashboard() {
   const { user } = useAuth();
@@ -71,33 +74,42 @@ export default function FarmerDashboard() {
     ? listings
     : listings.filter((l) => (l.status || '').toLowerCase() === filterStatus.toLowerCase());
 
+  const statsRef = useRef(null);
+
+  useEffect(() => {
+    if (statsRef.current) {
+      const cards = statsRef.current.querySelectorAll('.kpi-card');
+      staggerIn(cards, { stagger: 0.08, y: 15 });
+    }
+  }, []);
+
   return (
     <div className="space-y-6">
       {/* Top Welcome & Actions */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-gradient-to-r from-emerald-800 to-green-900 text-white p-6 rounded-2xl shadow-md">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-gradient-to-r from-[#2A5124] to-[#1c3917] dark:from-[#111f13] dark:to-[#172819] text-white p-6 rounded-2xl shadow-xl border border-[#D3D67A]/30">
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold tracking-tight">
               Welcome, {user?.name || 'Farmer'}! 🌾
             </h1>
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-700/80 text-emerald-100 border border-emerald-500/50">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#D3D67A]/20 text-[#D3D67A] border border-[#D3D67A]/40">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#D3D67A] animate-pulse"></span>
               Live Sync
             </span>
           </div>
-          <p className="text-emerald-200 text-sm mt-1">
-            Krishi-Setu double-auction market linkage dashboard
+          <p className="text-stone-200 dark:text-stone-300 text-sm mt-1">
+            Krishi-Setu double-auction market linkage & direct Mandi procurement
           </p>
         </div>
         <div className="flex gap-2">
           <Link to="/farmer/submit-ask">
-            <button className="bg-amber-500 hover:bg-amber-600 text-stone-900 font-semibold px-4 py-2.5 rounded-lg shadow transition flex items-center gap-2 text-sm">
+            <button className="bg-[#D3D67A] hover:bg-[#c2c56a] text-[#2A5124] font-bold px-4 py-2.5 rounded-lg shadow-md transition flex items-center gap-2 text-sm">
               <span>➕</span> List New Produce
             </button>
           </Link>
           <button
             onClick={fetchListings}
-            className="bg-green-700/60 hover:bg-green-700 text-white px-3 py-2.5 rounded-lg text-sm transition"
+            className="bg-black/30 hover:bg-black/50 text-white px-3 py-2.5 rounded-lg text-sm transition border border-white/20"
             title="Refresh listings"
           >
             ↻
@@ -109,8 +121,8 @@ export default function FarmerDashboard() {
         <div
           className={`p-3 rounded-lg text-sm font-medium ${
             feedback.type === 'error'
-              ? 'bg-red-50 text-red-700 border border-red-200'
-              : 'bg-green-50 text-green-800 border border-green-200'
+              ? 'bg-red-50 dark:bg-red-950/60 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800'
+              : 'bg-green-50 dark:bg-green-950/60 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-800'
           }`}
         >
           {feedback.text}
@@ -118,43 +130,43 @@ export default function FarmerDashboard() {
       )}
 
       {/* Summary KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-xl border border-stone-200 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wider text-stone-500">Total Listings</p>
-          <p className="text-2xl font-bold text-stone-800 mt-1">{totalListings}</p>
-          <p className="text-xs text-stone-400 mt-1">{openListings.length} currently open</p>
+      <div ref={statsRef} className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="kpi-card bg-white/95 dark:bg-[#162518]/95 backdrop-blur-sm p-4 rounded-xl border border-stone-200 dark:border-emerald-800/40 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-wider text-stone-500 dark:text-stone-400">Total Listings</p>
+          <p className="text-2xl font-bold text-stone-800 dark:text-stone-100 mt-1">{totalListings}</p>
+          <p className="text-xs text-stone-400 dark:text-stone-400 mt-1">{openListings.length} currently open</p>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-stone-200 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wider text-stone-500">Open Volume</p>
-          <p className="text-2xl font-bold text-emerald-700 mt-1">
-            {(totalOpenVolumeKg / 100).toFixed(1)} <span className="text-sm font-normal text-stone-600">Qtl</span>
+        <div className="kpi-card bg-white/95 dark:bg-[#162518]/95 backdrop-blur-sm p-4 rounded-xl border border-stone-200 dark:border-emerald-800/40 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-wider text-stone-500 dark:text-stone-400">Open Volume</p>
+          <p className="text-2xl font-bold text-emerald-700 dark:text-[#D3D67A] mt-1">
+            {(totalOpenVolumeKg / 100).toFixed(1)} <span className="text-sm font-normal text-stone-600 dark:text-stone-300">Qtl</span>
           </p>
-          <p className="text-xs text-stone-400 mt-1">{totalOpenVolumeKg.toLocaleString('en-IN')} kg</p>
+          <p className="text-xs text-stone-400 dark:text-stone-400 mt-1">{formatQuantity(totalOpenVolumeKg)}</p>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-stone-200 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wider text-stone-500">Pooled in Batches</p>
-          <p className="text-2xl font-bold text-amber-700 mt-1">
-            {(totalPooledVolumeKg / 100).toFixed(1)} <span className="text-sm font-normal text-stone-600">Qtl</span>
+        <div className="kpi-card bg-white/95 dark:bg-[#162518]/95 backdrop-blur-sm p-4 rounded-xl border border-stone-200 dark:border-emerald-800/40 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-wider text-stone-500 dark:text-stone-400">Pooled In Batches</p>
+          <p className="text-2xl font-bold text-blue-600 dark:text-blue-400 mt-1">
+            {(totalPooledVolumeKg / 100).toFixed(1)} <span className="text-sm font-normal text-stone-600 dark:text-stone-300">Qtl</span>
           </p>
-          <p className="text-xs text-stone-400 mt-1">{pooledListings.length} lot(s) in auction queue</p>
+          <p className="text-xs text-stone-400 dark:text-stone-400 mt-1">{pooledListings.length} lots active in pools</p>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-stone-200 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wider text-stone-500">Matched / Sold</p>
-          <p className="text-2xl font-bold text-blue-700 mt-1">
-            {(totalSoldVolumeKg / 100).toFixed(1)} <span className="text-sm font-normal text-stone-600">Qtl</span>
+        <div className="kpi-card bg-white/95 dark:bg-[#162518]/95 backdrop-blur-sm p-4 rounded-xl border border-stone-200 dark:border-emerald-800/40 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-wider text-stone-500 dark:text-stone-400">Sold & Cleared</p>
+          <p className="text-2xl font-bold text-amber-600 dark:text-amber-400 mt-1">
+            {(totalSoldVolumeKg / 100).toFixed(1)} <span className="text-sm font-normal text-stone-600 dark:text-stone-300">Qtl</span>
           </p>
-          <p className="text-xs text-stone-400 mt-1">
-            <Link to="/farmer/payouts" className="text-green-700 hover:underline">
-              View payouts →
-            </Link>
-          </p>
+          <p className="text-xs text-stone-400 dark:text-stone-400 mt-1">{matchedOrSettled.length} trades settled</p>
         </div>
       </div>
 
+      {/* Buyer Direct Requirements Widget (Guaranteed Mandi Price) */}
+      <BuyerRequirementsWidget />
+
       {/* Main Grid: Listings (Left) + Widgets (Right) */}
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Listings Section (2 Cols) */}
         <div className="lg:col-span-2 space-y-4">

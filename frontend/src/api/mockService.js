@@ -301,6 +301,73 @@ const getInitialState = () => ({
       rate_per_quintal_month: 30.0,
       source: 'WDRA Certified'
     }
+  ],
+  buyer_requirements: [
+    {
+      _id: 'req_101',
+      buyer_id: 'usr_buyer_1',
+      buyer_name: 'FreshFarm Retail Pvt Ltd',
+      buyer_phone: '9876543220',
+      crop: 'onion',
+      variety: 'Nashik Red',
+      target_mandi: 'Lasalgaon APMC (Nashik)',
+      mandi_modal_price_per_kg: 24.50,
+      total_quantity_needed_kg: 5000.0,
+      fulfilled_quantity_kg: 1600.0,
+      min_supply_per_farmer_kg: 100.0,
+      district: 'Nashik',
+      state: 'Maharashtra',
+      delivery_deadline: '2026-10-05',
+      status: 'open',
+      fulfillments: [
+        {
+          farmer_id: 'usr_farmer_2',
+          farmer_name: 'Suresh Deshmukh',
+          farmer_phone: '9876543211',
+          quantity_kg: 1600.0,
+          mandi_price: 24.50,
+          total_payout: 39200.0,
+          fulfilled_at: new Date(Date.now() - 7200000).toISOString(),
+          village: 'Lasalgaon, Nashik'
+        }
+      ]
+    },
+    {
+      _id: 'req_102',
+      buyer_id: 'usr_buyer_2',
+      buyer_name: 'MahaAgri Commodity Traders',
+      buyer_phone: '9876543221',
+      crop: 'tomato',
+      variety: 'Hybrid Vaishali',
+      target_mandi: 'Pune APMC',
+      mandi_modal_price_per_kg: 28.50,
+      total_quantity_needed_kg: 3000.0,
+      fulfilled_quantity_kg: 800.0,
+      min_supply_per_farmer_kg: 150.0,
+      district: 'Pune',
+      state: 'Maharashtra',
+      delivery_deadline: '2026-10-02',
+      status: 'open',
+      fulfillments: []
+    },
+    {
+      _id: 'req_103',
+      buyer_id: 'usr_buyer_1',
+      buyer_name: 'FreshFarm Retail Pvt Ltd',
+      buyer_phone: '9876543220',
+      crop: 'soybean',
+      variety: 'JS-335',
+      target_mandi: 'Solapur APMC',
+      mandi_modal_price_per_kg: 43.50,
+      total_quantity_needed_kg: 8000.0,
+      fulfilled_quantity_kg: 3200.0,
+      min_supply_per_farmer_kg: 200.0,
+      district: 'Solapur',
+      state: 'Maharashtra',
+      delivery_deadline: '2026-10-10',
+      status: 'open',
+      fulfillments: []
+    }
   ]
 });
 
@@ -632,9 +699,125 @@ export async function executeMockRequest(method, url, data, params) {
     };
   }
 
+  // 17. Buyer Requirements & Farmer Mandi-Priced Direct Supply
+  if (lowerUrl.includes('/requirements')) {
+    // 17.1 Farmer fulfills requirement at guaranteed Mandi price
+    if (lowerUrl.includes('/fulfill')) {
+      const parts = url.split('/');
+      const reqId = parts[parts.indexOf('requirements') + 1];
+      const reqIndex = (state.buyer_requirements || []).findIndex(
+        (r) => r._id === reqId || r.id === reqId
+      );
+
+      if (reqIndex !== -1) {
+        const qty = parseFloat(data?.quantity_kg || 100);
+        const req = state.buyer_requirements[reqIndex];
+        const price = req.mandi_modal_price_per_kg;
+        const totalPayout = qty * price;
+
+        const newFulfillment = {
+          farmer_id: authUser?.id || data?.farmer_id || 'usr_farmer_1',
+          farmer_name: authUser?.name || data?.farmer_name || 'Ramesh Patil',
+          farmer_phone: authUser?.phone || data?.farmer_phone || '9876543210',
+          village: data?.village || authUser?.location?.address || 'Niphad, Nashik',
+          quantity_kg: qty,
+          mandi_price: price,
+          total_payout: totalPayout,
+          fulfilled_at: new Date().toISOString(),
+        };
+
+        req.fulfillments = req.fulfillments || [];
+        req.fulfillments.unshift(newFulfillment);
+        req.fulfilled_quantity_kg = (req.fulfilled_quantity_kg || 0) + qty;
+
+        if (req.fulfilled_quantity_kg >= req.total_quantity_needed_kg) {
+          req.status = 'fulfilled';
+        } else {
+          req.status = 'partially_fulfilled';
+        }
+
+        // Add payout record to farmer's payouts
+        state.payouts = state.payouts || [];
+        state.payouts.unshift({
+          _id: `pay_req_${Date.now()}`,
+          trade_id: `req_${req._id}`,
+          farmer_id: newFulfillment.farmer_id,
+          farmer_name: newFulfillment.farmer_name,
+          crop: req.crop,
+          quantity_kg: qty,
+          gross_amount: totalPayout,
+          platform_fee: 0.0, // 0% commission on direct mandi procurement
+          net_payout: totalPayout,
+          status: 'credited',
+          utr_ref: `MANDI-PAY-${Date.now().toString().slice(-6)}`,
+          created_at: new Date().toISOString(),
+          note: `Direct Mandi Supply to ${req.buyer_name}`,
+        });
+
+        saveState(state);
+        return { data: req, error: null };
+      }
+    }
+
+    // 17.2 Buyer creates new procurement requirement
+    if (method.toLowerCase() === 'post') {
+      const basePrices = {
+        onion: 24.5,
+        tomato: 28.5,
+        soybean: 43.5,
+        wheat: 23.0,
+        cotton: 72.0,
+        chana: 58.0,
+      };
+      const selectedCrop = (data?.crop || 'onion').toLowerCase();
+      const modalPrice = parseFloat(
+        data?.mandi_modal_price_per_kg || basePrices[selectedCrop] || 25.0
+      );
+
+      const newReq = {
+        _id: `req_${Date.now()}`,
+        buyer_id: authUser?.id || 'usr_buyer_1',
+        buyer_name: authUser?.name || 'FreshFarm Retail Pvt Ltd',
+        buyer_phone: authUser?.phone || '9876543220',
+        crop: selectedCrop,
+        variety: data?.variety || 'Standard Quality',
+        target_mandi: data?.target_mandi || 'Lasalgaon APMC',
+        mandi_modal_price_per_kg: modalPrice,
+        total_quantity_needed_kg: parseFloat(data?.total_quantity_needed_kg || 5000),
+        fulfilled_quantity_kg: 0.0,
+        min_supply_per_farmer_kg: parseFloat(data?.min_supply_per_farmer_kg || 100),
+        district: data?.district || 'Nashik',
+        state: 'Maharashtra',
+        delivery_deadline: data?.delivery_deadline || '2026-10-15',
+        status: 'open',
+        fulfillments: [],
+      };
+
+      state.buyer_requirements = state.buyer_requirements || [];
+      state.buyer_requirements.unshift(newReq);
+      saveState(state);
+      return { data: newReq, error: null };
+    }
+
+    // 17.3 GET all requirements (with optional filtering)
+    let requirements = state.buyer_requirements || [];
+    if (params?.district) {
+      requirements = requirements.filter(
+        (r) => r.district.toLowerCase() === params.district.toLowerCase()
+      );
+    }
+    if (params?.crop) {
+      requirements = requirements.filter(
+        (r) => r.crop.toLowerCase() === params.crop.toLowerCase()
+      );
+    }
+    return { data: requirements, error: null };
+  }
+
   // Default fallback
   return {
     data: { message: 'Mock operation acknowledged', success: true },
     error: null,
   };
 }
+

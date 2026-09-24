@@ -6,6 +6,7 @@ import StatusBadge from '../../components/ui/StatusBadge';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { getBids, cancelBid } from '../../api/bids';
 import { getBuyerTrades, createPaymentOrder, verifyPayment } from '../../api/payments';
+import { getRequirements, createRequirement } from '../../api/requirements';
 import { formatCurrency, formatQuantity, formatDate } from '../../utils/format';
 import { useAuth } from '../../context/AuthContext';
 
@@ -13,19 +14,37 @@ export default function BuyerDashboard() {
   const { user } = useAuth();
   const [bids, setBids] = useState([]);
   const [trades, setTrades] = useState([]);
+  const [requirements, setRequirements] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState('all');
-  const [activeTab, setActiveTab] = useState('bids'); // 'bids' | 'trades'
+  const [activeTab, setActiveTab] = useState('bids'); // 'bids' | 'trades' | 'requirements'
   const [actionLoading, setActionLoading] = useState(null);
   const [paymentModal, setPaymentModal] = useState(null); // { trade, orderData }
   const [payingLoading, setPayingLoading] = useState(false);
   const [feedback, setFeedback] = useState({ text: '', type: '' });
 
+  // Requirements modal & form state
+  const [showReqModal, setShowReqModal] = useState(false);
+  const [creatingReq, setCreatingReq] = useState(false);
+  const [expandedReqId, setExpandedReqId] = useState(null);
+  const [newReq, setNewReq] = useState({
+    crop: 'onion',
+    variety: 'Nashik Red',
+    target_mandi: 'Lasalgaon APMC (Nashik)',
+    mandi_modal_price_per_kg: 24.50,
+    total_quantity_needed_kg: 5000,
+    min_supply_per_farmer_kg: 100,
+    district: 'Nashik',
+    state: 'Maharashtra',
+    delivery_deadline: '2026-10-15',
+  });
+
   const fetchData = useCallback(async () => {
     try {
-      const [bidsRes, tradesRes] = await Promise.allSettled([
+      const [bidsRes, tradesRes, reqsRes] = await Promise.allSettled([
         getBids(),
         getBuyerTrades(),
+        getRequirements(),
       ]);
 
       if (bidsRes.status === 'fulfilled' && bidsRes.value?.data) {
@@ -33,6 +52,9 @@ export default function BuyerDashboard() {
       }
       if (tradesRes.status === 'fulfilled' && tradesRes.value?.data) {
         setTrades(tradesRes.value.data);
+      }
+      if (reqsRes.status === 'fulfilled' && reqsRes.value?.data) {
+        setRequirements(reqsRes.value.data);
       }
     } catch (err) {
       console.error('Failed to load buyer data:', err);
@@ -118,6 +140,31 @@ export default function BuyerDashboard() {
       setFeedback({ text: err?.error?.message || 'Payment processing error', type: 'error' });
     } finally {
       setPayingLoading(false);
+    }
+  };
+
+  const handleCreateRequirement = async (e) => {
+    e.preventDefault();
+    setCreatingReq(true);
+    setFeedback({ text: '', type: '' });
+    try {
+      const res = await createRequirement({
+        ...newReq,
+        mandi_modal_price_per_kg: parseFloat(newReq.mandi_modal_price_per_kg),
+        total_quantity_needed_kg: parseFloat(newReq.total_quantity_needed_kg),
+        min_supply_per_farmer_kg: parseFloat(newReq.min_supply_per_farmer_kg),
+      });
+      if (res.error) {
+        setFeedback({ text: res.error.message || 'Failed to post demand', type: 'error' });
+      } else {
+        setFeedback({ text: 'Direct procurement demand posted! Local farmers can now supply at Mandi rate.', type: 'success' });
+        setShowReqModal(false);
+        fetchData();
+      }
+    } catch (err) {
+      setFeedback({ text: 'Error posting procurement demand', type: 'error' });
+    } finally {
+      setCreatingReq(false);
     }
   };
 
@@ -231,28 +278,28 @@ export default function BuyerDashboard() {
         </Card>
       </div>
 
-      {/* Primary View Switcher: Bids vs Trades */}
-      <div className="flex border-b border-stone-200 gap-4">
+      {/* Primary View Switcher: Bids vs Trades vs Requirements */}
+      <div className="flex border-b border-stone-200 dark:border-stone-800 gap-4 overflow-x-auto">
         <button
           onClick={() => setActiveTab('bids')}
-          className={`pb-3 text-sm font-bold border-b-2 transition flex items-center gap-2 ${
+          className={`pb-3 text-sm font-bold border-b-2 transition flex items-center gap-2 whitespace-nowrap ${
             activeTab === 'bids'
-              ? 'border-green-700 text-green-900'
-              : 'border-transparent text-stone-400 hover:text-stone-700'
+              ? 'border-emerald-600 text-emerald-800 dark:text-emerald-400 font-bold'
+              : 'border-transparent text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-200'
           }`}
         >
           <span>Procurement Bids</span>
-          <span className="text-xs bg-stone-100 text-stone-600 px-2 py-0.5 rounded-full">
+          <span className="text-xs bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 px-2 py-0.5 rounded-full">
             {bids.length}
           </span>
         </button>
 
         <button
           onClick={() => setActiveTab('trades')}
-          className={`pb-3 text-sm font-bold border-b-2 transition flex items-center gap-2 ${
+          className={`pb-3 text-sm font-bold border-b-2 transition flex items-center gap-2 whitespace-nowrap ${
             activeTab === 'trades'
-              ? 'border-green-700 text-green-900'
-              : 'border-transparent text-stone-400 hover:text-stone-700'
+              ? 'border-emerald-600 text-emerald-800 dark:text-emerald-400 font-bold'
+              : 'border-transparent text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-200'
           }`}
         >
           <span>Auction Trades & Settlements</span>
@@ -261,6 +308,20 @@ export default function BuyerDashboard() {
               {pendingTrades.length} Due
             </span>
           )}
+        </button>
+
+        <button
+          onClick={() => setActiveTab('requirements')}
+          className={`pb-3 text-sm font-bold border-b-2 transition flex items-center gap-2 whitespace-nowrap ${
+            activeTab === 'requirements'
+              ? 'border-emerald-600 text-emerald-800 dark:text-emerald-400 font-bold'
+              : 'border-transparent text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-200'
+          }`}
+        >
+          <span>Direct Mandi Demands 🏛️</span>
+          <span className="text-xs bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-semibold px-2 py-0.5 rounded-full">
+            {requirements.length} Active
+          </span>
         </button>
       </div>
 
@@ -459,6 +520,179 @@ export default function BuyerDashboard() {
         </Card>
       )}
 
+      {/* TAB 3: DIRECT MANDI PROCUREMENT DEMANDS */}
+      {activeTab === 'requirements' && (
+        <div className="space-y-4">
+          {/* Action Banner */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-white dark:bg-stone-900/90 p-5 rounded-xl border border-stone-200 dark:border-stone-800 shadow-sm">
+            <div>
+              <h2 className="text-lg font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
+                <span>🏛️</span> Direct Mandi Procurement Requirements
+              </h2>
+              <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">
+                Post exact crop quantities required at the official Mandi modal rate. Participating farmers in your district supply produce directly, automatically updating this dashboard.
+              </p>
+            </div>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => setShowReqModal(true)}
+              className="font-bold flex items-center gap-1.5 shadow-sm whitespace-nowrap"
+            >
+              <span>➕</span> Post New Mandi Demand
+            </Button>
+          </div>
+
+          {requirements.length === 0 ? (
+            <Card className="py-16 text-center text-stone-500 dark:text-stone-400 space-y-3">
+              <span className="text-4xl block">📦</span>
+              <p className="text-base font-semibold text-stone-800 dark:text-stone-200">No active procurement requirements</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400 max-w-md mx-auto">
+                Post a requirement at the official Mandi price to allow local farmers to supply crops directly to your warehouse.
+              </p>
+              <div className="pt-2">
+                <Button size="sm" onClick={() => setShowReqModal(true)}>Post Requirement</Button>
+              </div>
+            </Card>
+          ) : (
+            <div className="space-y-4">
+              {requirements.map((req) => {
+                const reqId = req._id || req.id;
+                const totalKg = req.total_quantity_needed_kg || 1;
+                const fulfilledKg = req.fulfilled_quantity_kg || 0;
+                const progressPct = Math.min(100, Math.round((fulfilledKg / totalKg) * 100));
+                const remainingKg = Math.max(0, totalKg - fulfilledKg);
+                const fulfillments = req.fulfillments || [];
+                const isExpanded = expandedReqId === reqId;
+
+                return (
+                  <Card key={reqId} className="p-5 border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900/90 shadow-sm hover:shadow-md transition">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-stone-100 dark:border-stone-800 pb-4">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-2xl">
+                            {req.crop?.toLowerCase().includes('onion') ? '🧅' : req.crop?.toLowerCase().includes('wheat') ? '🌾' : req.crop?.toLowerCase().includes('tomato') ? '🍅' : req.crop?.toLowerCase().includes('potato') ? '🥔' : '🌱'}
+                          </span>
+                          <div>
+                            <h3 className="text-base font-bold text-stone-900 dark:text-stone-100 capitalize">
+                              {req.crop} {req.variety ? `(${req.variety})` : ''}
+                            </h3>
+                            <p className="text-xs text-stone-500 dark:text-stone-400">
+                              📍 {req.district}, {req.state} • Benchmark Mandi: <strong className="text-stone-700 dark:text-stone-300">{req.target_mandi}</strong>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <div className="text-right">
+                          <div className="text-xs text-stone-400 uppercase font-bold">Guaranteed Mandi Rate</div>
+                          <div className="text-lg font-black text-emerald-700 dark:text-[#D3D67A]">
+                            ₹{req.mandi_modal_price_per_kg?.toFixed(2)}/kg
+                          </div>
+                        </div>
+                        <StatusBadge status={req.status || 'open'} />
+                      </div>
+                    </div>
+
+                    {/* Progress Bar & Quantity Breakdown */}
+                    <div className="mt-4 space-y-2">
+                      <div className="flex justify-between text-xs font-semibold text-stone-700 dark:text-stone-300">
+                        <span>Fulfillment: {fulfilledKg.toLocaleString()} / {totalKg.toLocaleString()} kg ({progressPct}%)</span>
+                        <span className={remainingKg === 0 ? 'text-emerald-600 font-bold' : 'text-amber-600 font-bold'}>
+                          {remainingKg === 0 ? 'Fully Fulfilled ✓' : `${remainingKg.toLocaleString()} kg remaining`}
+                        </span>
+                      </div>
+                      <div className="w-full h-3 bg-stone-100 dark:bg-stone-800 rounded-full overflow-hidden border border-stone-200 dark:border-stone-700">
+                        <div
+                          className="h-full bg-gradient-to-r from-emerald-600 to-[#2A5124] transition-all duration-700 rounded-full"
+                          style={{ width: `${progressPct}%` }}
+                        />
+                      </div>
+                      <div className="flex justify-between text-[11px] text-stone-500 dark:text-stone-400 pt-1">
+                        <span>Min supply lot: {req.min_supply_per_farmer_kg || 100} kg/farmer</span>
+                        <span>Delivery deadline: {req.delivery_deadline || 'Open'}</span>
+                      </div>
+                    </div>
+
+                    {/* Contributing Farmers Accordion */}
+                    <div className="mt-4 pt-3 border-t border-stone-100 dark:border-stone-800 flex items-center justify-between">
+                      <button
+                        onClick={() => setExpandedReqId(isExpanded ? null : reqId)}
+                        className="text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:underline flex items-center gap-1.5"
+                      >
+                        <span>{isExpanded ? '▲ Hide' : '▼ View'} Contributing Farmers</span>
+                        <span className="bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 px-2 py-0.2 rounded-full font-mono text-[10px]">
+                          {fulfillments.length}
+                        </span>
+                      </button>
+
+                      <span className="text-xs text-stone-400 font-medium">
+                        Total Payout: ₹{(fulfilledKg * (req.mandi_modal_price_per_kg || 0)).toLocaleString('en-IN', { maximumFractionDigits: 2 })}
+                      </span>
+                    </div>
+
+                    {/* Contributing Farmers Table Dropdown */}
+                    {isExpanded && (
+                      <div className="mt-3 bg-stone-50 dark:bg-stone-800/60 rounded-xl p-3 border border-stone-200 dark:border-stone-700 animate-fadeIn">
+                        {fulfillments.length === 0 ? (
+                          <div className="text-center py-4 text-xs text-stone-500 dark:text-stone-400">
+                            No farmer contributions recorded yet for this requirement.
+                          </div>
+                        ) : (
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-left text-xs">
+                              <thead>
+                                <tr className="border-b border-stone-200 dark:border-stone-700 text-stone-500 dark:text-stone-400 uppercase font-semibold">
+                                  <th className="py-2 px-3">Farmer Name</th>
+                                  <th className="py-2 px-3">Contact</th>
+                                  <th className="py-2 px-3">Village / Taluk</th>
+                                  <th className="py-2 px-3">Quantity Supplied</th>
+                                  <th className="py-2 px-3">Mandi Rate</th>
+                                  <th className="py-2 px-3">Total Payout</th>
+                                  <th className="py-2 px-3">Date</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-stone-200 dark:divide-stone-700">
+                                {fulfillments.map((f, idx) => (
+                                  <tr key={idx} className="hover:bg-white dark:hover:bg-stone-700/50 transition">
+                                    <td className="py-2.5 px-3 font-semibold text-stone-900 dark:text-stone-100">
+                                      {f.farmer_name}
+                                    </td>
+                                    <td className="py-2.5 px-3 font-mono text-stone-600 dark:text-stone-300">
+                                      {f.farmer_phone}
+                                    </td>
+                                    <td className="py-2.5 px-3 text-stone-600 dark:text-stone-300">
+                                      {f.village}
+                                    </td>
+                                    <td className="py-2.5 px-3 font-bold text-stone-800 dark:text-stone-100">
+                                      {f.quantity_kg} kg
+                                    </td>
+                                    <td className="py-2.5 px-3 text-emerald-700 dark:text-[#D3D67A] font-semibold">
+                                      ₹{f.mandi_price?.toFixed(2)}/kg
+                                    </td>
+                                    <td className="py-2.5 px-3 font-bold text-stone-900 dark:text-stone-100">
+                                      ₹{Number(f.total_payout).toLocaleString('en-IN', { maximumFractionDigits: 2 })}
+                                    </td>
+                                    <td className="py-2.5 px-3 text-stone-400 text-[11px]">
+                                      {f.fulfilled_at ? new Date(f.fulfilled_at).toLocaleDateString() : 'Recent'}
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* RAZORPAY TEST-MODE CHECKOUT MODAL */}
       {paymentModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50">
@@ -510,6 +744,181 @@ export default function BuyerDashboard() {
                 {payingLoading ? 'Processing...' : 'Confirm Payment ₹'}
               </Button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* POST NEW PROCUREMENT REQUIREMENT MODAL */}
+      {showReqModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
+          <div className="bg-white dark:bg-stone-900 rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-stone-200 dark:border-stone-800 space-y-4">
+            <div className="flex items-center justify-between border-b border-stone-100 dark:border-stone-800 pb-3">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">🏛️</span>
+                <h3 className="font-bold text-stone-900 dark:text-stone-100 text-lg">
+                  Post Direct Mandi Demand
+                </h3>
+              </div>
+              <button
+                onClick={() => setShowReqModal(false)}
+                className="text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 text-lg font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateRequirement} className="space-y-4 text-xs">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                    Commodity / Crop *
+                  </label>
+                  <select
+                    value={newReq.crop}
+                    onChange={(e) => setNewReq({ ...newReq, crop: e.target.value })}
+                    className="w-full p-2.5 rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 font-medium"
+                    required
+                  >
+                    <option value="onion">Onion (कांदा)</option>
+                    <option value="wheat">Wheat (गहू)</option>
+                    <option value="tomato">Tomato (टोमॅटो)</option>
+                    <option value="potato">Potato (बटाटा)</option>
+                    <option value="soybean">Soybean (सोयाबीन)</option>
+                    <option value="maize">Maize (मका)</option>
+                    <option value="cotton">Cotton (कापूस)</option>
+                    <option value="mustard">Mustard (मोहरी)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                    Variety (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    value={newReq.variety}
+                    onChange={(e) => setNewReq({ ...newReq, variety: e.target.value })}
+                    placeholder="e.g. Nashik Red / Sharbati"
+                    className="w-full p-2 rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                    Target Mandi Benchmark *
+                  </label>
+                  <input
+                    type="text"
+                    value={newReq.target_mandi}
+                    onChange={(e) => setNewReq({ ...newReq, target_mandi: e.target.value })}
+                    placeholder="e.g. Lasalgaon APMC"
+                    className="w-full p-2 rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                    Mandi Modal Price (₹/kg) *
+                  </label>
+                  <input
+                    type="number"
+                    step="0.10"
+                    min="1"
+                    value={newReq.mandi_modal_price_per_kg}
+                    onChange={(e) => setNewReq({ ...newReq, mandi_modal_price_per_kg: e.target.value })}
+                    className="w-full p-2 rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 font-bold text-emerald-700 dark:text-[#D3D67A]"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                    Total Quantity Needed (kg) *
+                  </label>
+                  <input
+                    type="number"
+                    min="100"
+                    step="50"
+                    value={newReq.total_quantity_needed_kg}
+                    onChange={(e) => setNewReq({ ...newReq, total_quantity_needed_kg: e.target.value })}
+                    className="w-full p-2 rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 font-semibold"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                    Min Supply per Farmer (kg)
+                  </label>
+                  <input
+                    type="number"
+                    min="10"
+                    step="10"
+                    value={newReq.min_supply_per_farmer_kg}
+                    onChange={(e) => setNewReq({ ...newReq, min_supply_per_farmer_kg: e.target.value })}
+                    className="w-full p-2 rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                    District *
+                  </label>
+                  <input
+                    type="text"
+                    value={newReq.district}
+                    onChange={(e) => setNewReq({ ...newReq, district: e.target.value })}
+                    placeholder="e.g. Nashik"
+                    className="w-full p-2 rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                    Delivery Deadline *
+                  </label>
+                  <input
+                    type="date"
+                    value={newReq.delivery_deadline}
+                    onChange={(e) => setNewReq({ ...newReq, delivery_deadline: e.target.value })}
+                    className="w-full p-2 rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="p-3 bg-emerald-50 dark:bg-emerald-950/60 rounded-lg text-emerald-800 dark:text-emerald-300 text-[11px] leading-relaxed border border-emerald-200 dark:border-emerald-800">
+                💡 <strong>Fair Mandi Settlement:</strong> By posting at the benchmark Mandi price, local farmers receive 100% of the modal value without middleman cuts, ensuring high fulfillment speed and premium quality.
+              </div>
+
+              <div className="flex gap-2 pt-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => setShowReqModal(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  variant="primary"
+                  className="flex-1 font-bold shadow-md"
+                  disabled={creatingReq}
+                >
+                  {creatingReq ? 'Posting...' : 'Post Procurement Demand'}
+                </Button>
+              </div>
+            </form>
           </div>
         </div>
       )}
