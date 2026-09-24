@@ -1,10 +1,86 @@
 import axios from 'axios';
 import { executeMockRequest } from './mockService';
 
+// Detect if running in pure static/serverless deployment without an external backend API
+const isPureStaticDeployment =
+  typeof window !== 'undefined' &&
+  (window.location.hostname.includes('vercel.app') ||
+    window.location.hostname.includes('netlify.app') ||
+    window.location.hostname.includes('github.io')) &&
+  !import.meta.env.VITE_API_BASE_URL;
+
+let liveBackendConfirmedUnavailable = isPureStaticDeployment;
+
+// Create standard Axios client with hybrid mock/live adapter
 const client = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
   headers: {
     'Content-Type': 'application/json',
+  },
+  adapter: async (config) => {
+    // 1. If static hosting detected without external backend, serve directly from mockService without network failure
+    if (liveBackendConfirmedUnavailable) {
+      let payload = config.data;
+      if (typeof payload === 'string') {
+        try {
+          payload = JSON.parse(payload);
+        } catch {}
+      }
+      const mockResult = await executeMockRequest(
+        config.method || 'get',
+        config.url || '',
+        payload,
+        config.params
+      );
+      return {
+        data: mockResult,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config,
+        request: {},
+      };
+    }
+
+    // 2. Otherwise, attempt live backend request
+    try {
+      const defaultAdapter = axios.getAdapter(axios.defaults.adapter);
+      return await defaultAdapter(config);
+    } catch (err) {
+      const status = err.response?.status;
+      const isMissingBackend =
+        !status ||
+        status === 404 ||
+        status === 405 || // Static hosts (Vercel/Netlify) return 405 when POST/PUT/DELETE is rewritten to static index.html
+        (status >= 500 && status <= 599) ||
+        err.code === 'ERR_NETWORK' ||
+        err.code === 'ECONNABORTED';
+
+      if (isMissingBackend) {
+        liveBackendConfirmedUnavailable = true; // Latch for subsequent requests to avoid repeated 405s
+        let payload = config.data;
+        if (typeof payload === 'string') {
+          try {
+            payload = JSON.parse(payload);
+          } catch {}
+        }
+        const mockResult = await executeMockRequest(
+          config.method || 'get',
+          config.url || '',
+          payload,
+          config.params
+        );
+        return {
+          data: mockResult,
+          status: 200,
+          statusText: 'OK',
+          headers: {},
+          config,
+          request: {},
+        };
+      }
+      throw err;
+    }
   },
 });
 
@@ -44,7 +120,7 @@ client.interceptors.response.use(
       );
     }
 
-    // Flask API already returns { data, error } — pass through directly
+    // Flask API / Mock API already returns { data, error } — pass through directly
     return response.data;
   },
   async (error) => {
@@ -52,10 +128,11 @@ client.interceptors.response.use(
     const responseData = error.response?.data;
     const url = error.config?.url || '';
 
-    // Check if error is due to missing backend API endpoint or server crash (e.g. Vercel deployment without live MongoDB)
+    // Check if error is due to missing backend API endpoint, 405 Method Not Allowed, or server crash
     const isMissingBackend =
       !status ||
       status === 404 ||
+      status === 405 ||
       status === 500 ||
       status === 502 ||
       status === 503 ||
@@ -64,15 +141,17 @@ client.interceptors.response.use(
       error.code === 'ERR_NETWORK' ||
       error.code === 'ECONNABORTED' ||
       error.message?.includes('Network Error') ||
+      error.message?.includes('405') ||
       error.message?.includes('500') ||
-      error.message?.includes('status code 500') ||
       (typeof responseData === 'string' &&
         (responseData.includes('The page could not be found') ||
           responseData.includes('<!DOCTYPE html') ||
           responseData.includes('FUNCTION_INVOCATION_FAILED') ||
+          responseData.includes('Method Not Allowed') ||
           responseData.includes('Internal Server Error')));
 
     if (isMissingBackend && error.config) {
+      liveBackendConfirmedUnavailable = true;
       console.warn(
         `[KrishiSetu API] Live backend unavailable or returned error ${status || 'NETWORK'} for ${url}. Falling back to demo mock service.`
       );
@@ -137,6 +216,8 @@ client.interceptors.response.use(
       friendlyMessage = apiError.message;
     } else if (status === 404) {
       friendlyMessage = 'Endpoint not found. Please try again or check connection.';
+    } else if (status === 405) {
+      friendlyMessage = 'Method not allowed by host.';
     } else if (error.message) {
       friendlyMessage = error.message;
     }
