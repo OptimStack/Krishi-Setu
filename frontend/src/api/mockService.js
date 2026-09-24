@@ -12,7 +12,7 @@
  * - Pooling, double auction, and settlement simulation
  */
 
-const STORAGE_KEY = 'krishisetu_mock_state_v1';
+const STORAGE_KEY = 'krishisetu_mock_state_v3';
 
 // Seed state matching backend/demo_fixtures.json
 const getInitialState = () => ({
@@ -165,7 +165,7 @@ const getInitialState = () => ({
       quality_grade: 'A',
       confidence_score: 0.95,
       needs_human_review: false,
-      status: 'pooled',
+      status: 'open',
       location: { address: 'Niphad, Nashik', geo: [73.9898, 20.0875] },
       created_at: new Date(Date.now() - 180 * 60000).toISOString(),
     },
@@ -212,7 +212,7 @@ const getInitialState = () => ({
       min_clearing_price_per_kg: 22.58,
       region: 'Nashik District Cluster',
       status: 'open',
-      listing_ids: ['lst_101', 'lst_102', 'lst_103'],
+      listing_ids: ['lst_batch_onion_1'],
       farmer_count: 3,
       created_at: new Date(Date.now() - 900000).toISOString(),
     }
@@ -408,6 +408,10 @@ const getInitialState = () => ({
 // Load state from localStorage or initialize with seed
 const loadState = () => {
   try {
+    // Clear old legacy keys so users start with fresh, uncorrupted state
+    localStorage.removeItem('krishisetu_mock_state_v1');
+    localStorage.removeItem('krishisetu_mock_state_v2');
+
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) return JSON.parse(raw);
   } catch (e) {
@@ -626,8 +630,12 @@ export async function executeMockRequest(method, url, data, params) {
       return { data: newListing, error: null };
     }
 
-    // GET listings
-    return { data: state.listings, error: null };
+    // GET listings: Filter for the logged-in farmer so they only see their own harvest produce
+    const currentFarmerId = authUser?.id || 'usr_farmer_1';
+    const farmerListings = (state.listings || []).filter(
+      (l) => !l.farmer_id || l.farmer_id === currentFarmerId
+    );
+    return { data: farmerListings, error: null };
   }
 
   // 4.05 Buyer available produce listings
@@ -646,36 +654,47 @@ export async function executeMockRequest(method, url, data, params) {
   if (lowerUrl.includes('/farmer/accept-bid')) {
     const { bid_id, listing_id } = data || {};
     const bid = (state.bids || []).find((b) => b._id === bid_id || b.id === bid_id);
-    const listing = (state.listings || []).find((l) => l._id === listing_id || l.id === listing_id) || state.listings[0];
+    let listing = null;
+    if (listing_id) {
+      listing = (state.listings || []).find((l) => l._id === listing_id || l.id === listing_id);
+    }
+    if (!listing && bid) {
+      listing = (state.listings || []).find(
+        (l) => (!l.farmer_id || l.farmer_id === (authUser?.id || 'usr_farmer_1')) &&
+               (l.crop || '').toLowerCase() === (bid.crop || '').toLowerCase() &&
+               l.status === 'open'
+      );
+    }
 
-    if (bid) {
-      const matchedQty = parseFloat(listing?.quantity_remaining_kg || listing?.quantity_kg || bid.quantity_needed_kg || 500);
+    if (bid && listing) {
+      const matchedQty = parseFloat(listing.quantity_remaining_kg || listing.quantity_kg || bid.quantity_needed_kg || 500);
       const price = parseFloat(bid.max_price_per_kg || 25);
       const totalAmount = matchedQty * price;
 
       bid.status = 'matched';
-      if (listing) listing.status = 'matched';
+      listing.status = 'settled';
+      listing.quantity_remaining_kg = 0;
 
       const tradeId = `trd_${Date.now()}`;
       const trade = {
         _id: tradeId,
         id: tradeId,
-        crop: bid.crop || listing?.crop || 'produce',
-        quality_grade: bid.min_quality_grade || listing?.quality_grade || 'A',
+        crop: bid.crop || listing.crop || 'produce',
+        quality_grade: bid.min_quality_grade || listing.quality_grade || 'A',
         quantity_kg: matchedQty,
         clearing_price_per_kg: price,
         total_amount: totalAmount,
         buyer_id: bid.buyer_id,
         buyer_name: bid.buyer_name,
-        farmer_id: listing?.farmer_id || authUser?.id || 'usr_farmer_1',
-        farmer_name: listing?.farmer_name || authUser?.name || 'Ramesh Patil',
+        farmer_id: listing.farmer_id || authUser?.id || 'usr_farmer_1',
+        farmer_name: listing.farmer_name || authUser?.name || 'Ramesh Patil',
         status: 'settled',
         settled_at: new Date().toISOString(),
         created_at: new Date().toISOString(),
         farmer_shares: [
           {
-            farmer_id: listing?.farmer_id || authUser?.id || 'usr_farmer_1',
-            farmer_name: listing?.farmer_name || authUser?.name || 'Ramesh Patil',
+            farmer_id: listing.farmer_id || authUser?.id || 'usr_farmer_1',
+            farmer_name: listing.farmer_name || authUser?.name || 'Ramesh Patil',
             quantity_kg: matchedQty,
             payout_amount: totalAmount,
             status: 'settled',
@@ -691,8 +710,8 @@ export async function executeMockRequest(method, url, data, params) {
         id: payoutId,
         _id: `pay_${Date.now()}`,
         trade_id: tradeId,
-        farmer_id: listing?.farmer_id || authUser?.id || 'usr_farmer_1',
-        farmer_name: listing?.farmer_name || authUser?.name || 'Ramesh Patil',
+        farmer_id: listing.farmer_id || authUser?.id || 'usr_farmer_1',
+        farmer_name: listing.farmer_name || authUser?.name || 'Ramesh Patil',
         crop: trade.crop,
         quantity_kg: matchedQty,
         clearing_price_per_kg: price,
@@ -715,12 +734,16 @@ export async function executeMockRequest(method, url, data, params) {
       }
       return { data: { success: true, trade, payout: newPayout }, error: null };
     }
-    return { data: null, error: { message: 'Bid not found' } };
+    return { data: null, error: { message: 'Matching bid or listing not found' } };
   }
 
   // 5. Farmer Payouts
   if (lowerUrl.includes('/farmer/payouts')) {
-    const formattedPayouts = (state.payouts || []).map((p) => {
+    const currentFarmerId = authUser?.id || 'usr_farmer_1';
+    const farmerPayouts = (state.payouts || []).filter(
+      (p) => !p.farmer_id || p.farmer_id === currentFarmerId
+    );
+    const formattedPayouts = farmerPayouts.map((p) => {
       const qty = parseFloat(p.quantity_kg || 100);
       const amt = parseFloat(p.amount || p.net_payout || p.gross_amount || 0);
       const price = parseFloat(p.clearing_price_per_kg || (qty > 0 ? amt / qty : 25));
@@ -751,7 +774,10 @@ export async function executeMockRequest(method, url, data, params) {
     if (batch || listing) {
       const item = batch || listing;
       if (batch) batch.status = 'settled';
-      if (listing) listing.status = 'settled';
+      if (listing) {
+        listing.status = 'settled';
+        listing.quantity_remaining_kg = 0;
+      }
 
       const qty = parseFloat(item.total_quantity_kg || item.quantity_remaining_kg || item.quantity_kg || item.quantity || 500);
       const price = parseFloat(item.weighted_ask_price_per_kg || item.ask_price_per_kg || 25);
@@ -774,26 +800,24 @@ export async function executeMockRequest(method, url, data, params) {
       };
       state.trades.unshift(trade);
 
-      // Settle matching listings
+      // ONLY settle the EXACT listing or listings explicitly associated with this batch/item
       (state.listings || []).forEach((l) => {
-        if (
-          l._id === batchId ||
-          l.id === batchId ||
-          (batch?.listing_ids || []).includes(l._id) ||
-          (listing && (l._id === listing._id || l.id === listing.id))
-        ) {
+        const isTargetListing = listing && (l._id === listing._id || l.id === listing.id);
+        const isInBatch = batch && Array.isArray(batch.listing_ids) && (batch.listing_ids.includes(l._id) || batch.listing_ids.includes(l.id));
+        if (isTargetListing || isInBatch) {
           l.status = 'settled';
+          l.quantity_remaining_kg = 0;
         }
       });
 
-      // IMMEDIATELY CREATE PAYOUT
+      // IMMEDIATELY CREATE PAYOUT ONLY FOR THE PRODUCER OF THAT ITEM
       const payoutId = `PAY-${Date.now().toString().slice(-6)}`;
       state.payouts = state.payouts || [];
       const newPayout = {
         id: payoutId,
         _id: `pay_${Date.now()}`,
         trade_id: tradeId,
-        farmer_id: listing?.farmer_id || 'usr_farmer_1',
+        farmer_id: listing?.farmer_id || batch?.farmer_id || 'usr_farmer_1',
         farmer_name: listing?.farmer_name || batch?.farmer_name || 'Ramesh Patil',
         crop: item.crop,
         quantity_kg: qty,
@@ -807,7 +831,7 @@ export async function executeMockRequest(method, url, data, params) {
         date: new Date().toISOString(),
         settled_at: new Date().toISOString(),
         created_at: new Date().toISOString(),
-        note: `Instant purchase by ${trade.buyer_name}`,
+        note: `Direct purchase by ${trade.buyer_name}`,
       };
       state.payouts.unshift(newPayout);
 

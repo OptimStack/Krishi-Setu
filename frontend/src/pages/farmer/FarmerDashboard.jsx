@@ -66,7 +66,17 @@ export default function FarmerDashboard() {
 
   const handleAcceptBid = async (bid, matchingListing) => {
     const bidId = bid._id || bid.id;
-    const listingId = matchingListing?._id || matchingListing?.id || (listings[0]?._id || listings[0]?.id);
+    const targetListing = matchingListing || listings.find(
+      (l) => (l.crop || '').toLowerCase() === (bid.crop || '').toLowerCase() && l.status === 'open'
+    );
+    if (!targetListing) {
+      setFeedback({
+        text: `You do not have an open listing for ${bid.crop} to accept this offer. Please submit a listing for this crop first.`,
+        type: 'error',
+      });
+      return;
+    }
+    const listingId = targetListing._id || targetListing.id;
     setAcceptingBidId(bidId);
     setFeedback({ text: '', type: '' });
     try {
@@ -74,11 +84,11 @@ export default function FarmerDashboard() {
       if (res.error) {
         setFeedback({ text: res.error.message || 'Failed to accept offer', type: 'error' });
       } else {
-        const qty = parseFloat(bid.quantity_needed_kg || matchingListing?.quantity_kg || 100);
+        const qty = parseFloat(bid.quantity_needed_kg || targetListing.quantity_kg || 100);
         const price = parseFloat(bid.max_price_per_kg || 25);
         const gross = qty * price;
         setFeedback({
-          text: `🎉 Buyer offer accepted! Settlement of ₹${gross.toLocaleString('en-IN')} confirmed. Payout has been credited immediately to your bank account!`,
+          text: `Offer accepted! ₹${gross.toLocaleString('en-IN')} has been added to your payouts.`,
           type: 'success',
         });
         fetchData();
@@ -216,82 +226,87 @@ export default function FarmerDashboard() {
         {/* Listings Section (2 Cols) */}
         <div className="lg:col-span-2 space-y-6">
           {/* Active Buyer Offers Section */}
-          <div className="bg-gradient-to-r from-amber-500/10 via-emerald-500/10 to-transparent dark:from-amber-950/30 dark:via-emerald-950/20 p-5 rounded-2xl border border-amber-300/80 dark:border-amber-600/40 shadow-lg relative overflow-hidden">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
-              <div className="flex items-center gap-2.5">
-                <span className="text-2xl animate-bounce">⚡</span>
+          <div className="bg-white/95 dark:bg-[#132215]/95 p-5 md:p-6 rounded-2xl border border-stone-200/90 dark:border-emerald-800/40 shadow-lg border-t-2 border-t-amber-500 transition-all">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl p-2 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 rounded-xl border border-amber-200/70 dark:border-amber-800/40">
+                  🤝
+                </span>
                 <div>
-                  <h2 className="text-base font-black text-stone-900 dark:text-stone-100 flex items-center gap-2">
-                    <span>Active Buyer Offers on Your Produce</span>
-                    <span className="text-xs font-semibold text-amber-700 dark:text-amber-400">खरेदीदारांच्या थेट ऑफर्स</span>
+                  <h2 className="text-base font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
+                    <span>Direct Buyer Offers</span>
+                    <span className="text-xs font-medium text-stone-500 dark:text-stone-400">खरेदीदारांच्या थेट ऑफर्स</span>
                   </h2>
-                  <p className="text-xs text-stone-600 dark:text-stone-300">
-                    Buyers ready to purchase directly. Accept to settle deal and receive instant bank payout.
+                  <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+                    Verified buyers offering to buy your produce directly.
                   </p>
                 </div>
               </div>
-              <span className="text-xs font-bold text-amber-800 dark:text-amber-300 bg-amber-100 dark:bg-amber-950/80 px-2.5 py-1 rounded-full border border-amber-300 dark:border-amber-700 shrink-0 flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
+              <span className="text-xs font-semibold text-stone-700 dark:text-stone-300 bg-stone-100 dark:bg-stone-800/80 px-3 py-1 rounded-full border border-stone-200 dark:border-stone-700 shrink-0">
                 {buyerBids.length} Active Offer{buyerBids.length === 1 ? '' : 's'}
               </span>
             </div>
 
             {buyerBids.length === 0 ? (
-              <div className="p-4 bg-white/70 dark:bg-[#121f14]/70 rounded-xl border border-dashed border-amber-200 dark:border-amber-900/50 text-center">
+              <div className="p-5 bg-stone-50 dark:bg-[#101b12] rounded-xl border border-dashed border-stone-200 dark:border-stone-700/60 text-center">
                 <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">
-                  📡 Live market listening active. When buyers place procurement bids matching your listed crops, they will appear here with instant settlement options.
+                  No buyer offers at the moment. When buyers submit purchase offers matching your crops, they will appear here.
                 </p>
               </div>
             ) : (
-              <div className="space-y-3 mt-3">
+              <div className="space-y-3">
                 {buyerBids.map((bid) => {
                   const bId = bid._id || bid.id;
                   const qty = parseFloat(bid.quantity_needed_kg || bid.quantity || 100);
                   const price = parseFloat(bid.max_price_per_kg || bid.price || 25);
                   const grossAmount = qty * price;
-                  const matchingListing = listings.find((l) => (l.crop || '').toLowerCase() === (bid.crop || '').toLowerCase() && l.status === 'open') || listings[0];
+                  const matchingListing = listings.find(
+                    (l) => (l.crop || '').toLowerCase() === (bid.crop || '').toLowerCase() && l.status === 'open'
+                  );
 
                   return (
                     <div
                       key={bId}
-                      className="p-4 bg-white/95 dark:bg-[#132416] rounded-xl border border-amber-300/80 dark:border-amber-700/50 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-amber-400 transition"
+                      className="p-4 bg-stone-50/70 dark:bg-[#162719] rounded-xl border border-stone-200/90 dark:border-emerald-900/50 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-stone-300 dark:hover:border-emerald-700/60 transition"
                     >
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <span className="font-black text-stone-900 dark:text-stone-100 text-sm capitalize">
-                            {bid.buyer_name || 'Verified Agribusiness Buyer'}
+                          <span className="font-bold text-stone-900 dark:text-stone-100 text-sm capitalize">
+                            {bid.buyer_name || 'Agribusiness Buyer'}
                           </span>
-                          <span className="text-[11px] px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
-                            Verified Buyer ✓
+                          <span className="text-[11px] px-2 py-0.5 rounded-md font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                            Verified Buyer
                           </span>
                         </div>
                         <div className="text-xs text-stone-600 dark:text-stone-300 flex flex-wrap items-center gap-3">
-                          <span className="font-semibold text-stone-900 dark:text-stone-100 capitalize">
+                          <span className="font-medium text-stone-900 dark:text-stone-100 capitalize">
                             🌾 {bid.crop} ({bid.min_quality_grade || 'Grade A'})
                           </span>
                           <span>•</span>
-                          <span>Demanding: <strong>{formatQuantity(qty)}</strong> ({(qty / 100).toFixed(1)} Qtl)</span>
+                          <span>Quantity: <strong>{formatQuantity(qty)}</strong> ({(qty / 100).toFixed(1)} Qtl)</span>
                           <span>•</span>
-                          <span>Offered Rate: <strong className="text-emerald-700 dark:text-[#D3D67A] text-sm">{formatCurrency(price)}/kg</strong></span>
+                          <span>Offered Rate: <strong className="text-emerald-700 dark:text-[#D3D67A]">{formatCurrency(price)}/kg</strong></span>
                         </div>
                         <div className="text-xs text-stone-500 dark:text-stone-400">
-                          Total Payout: <strong className="text-stone-900 dark:text-stone-100">{formatCurrency(grossAmount)}</strong> • Settlement: Instant Bank Credit
+                          Total Value: <strong className="text-stone-900 dark:text-stone-100">{formatCurrency(grossAmount)}</strong>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-2 shrink-0">
-                        <button
-                          type="button"
-                          disabled={acceptingBidId === bId}
-                          onClick={() => handleAcceptBid(bid, matchingListing)}
-                          className="bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl shadow-md transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
-                        >
-                          {acceptingBidId === bId ? (
-                            <><span>⏳</span> Processing Settlement...</>
-                          ) : (
-                            <><span>✓</span> Accept Offer & Settle Payout</>
-                          )}
-                        </button>
+                        {matchingListing ? (
+                          <button
+                            type="button"
+                            disabled={acceptingBidId === bId}
+                            onClick={() => handleAcceptBid(bid, matchingListing)}
+                            className="bg-[#2A5124] hover:bg-[#1c3917] dark:bg-[#D3D67A] dark:hover:bg-[#c2c56a] text-white dark:text-[#1c3618] font-bold text-xs px-4 py-2.5 rounded-xl shadow transition active:scale-95 cursor-pointer disabled:opacity-50"
+                          >
+                            {acceptingBidId === bId ? 'Accepting...' : `Accept Offer (${formatCurrency(grossAmount)})`}
+                          </button>
+                        ) : (
+                          <span className="text-xs text-stone-500 dark:text-stone-400 italic">
+                            Requires open {bid.crop} listing
+                          </span>
+                        )}
                       </div>
                     </div>
                   );
@@ -409,8 +424,8 @@ export default function FarmerDashboard() {
                           </td>
                           <td className="py-3.5 whitespace-nowrap">
                             {matchingBids.length > 0 ? (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300 border border-amber-300 dark:border-amber-700 animate-pulse">
-                                🔥 {matchingBids.length} Offer{matchingBids.length > 1 ? 's' : ''}
+                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                                {matchingBids.length} Offer{matchingBids.length > 1 ? 's' : ''}
                               </span>
                             ) : (
                               <span className="text-xs text-stone-400">—</span>
@@ -434,9 +449,9 @@ export default function FarmerDashboard() {
                             ) : listing.status === 'settled' ? (
                               <Link
                                 to="/farmer/payouts"
-                                className="text-xs text-emerald-700 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/60 px-2 py-1 rounded border border-emerald-200 dark:border-emerald-800 hover:underline"
+                                className="text-xs text-emerald-700 dark:text-[#D3D67A] font-bold bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 rounded-md border border-emerald-200 dark:border-emerald-800 hover:underline inline-flex items-center gap-1"
                               >
-                                Paid ✓
+                                View Payout →
                               </Link>
                             ) : (
                               <span className="text-xs text-stone-400">—</span>
