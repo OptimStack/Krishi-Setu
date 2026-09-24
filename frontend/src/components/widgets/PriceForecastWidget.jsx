@@ -82,29 +82,37 @@ export default function PriceForecastWidget({
   }, [selectedCrop, mandiName]);
 
   return (
-    <Card className="bg-gradient-to-br from-green-50/80 to-emerald-50/60 border-green-200 shadow-sm">
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-1.5">
-          <span className="text-lg">📈</span>
-          <h3 className="text-base font-bold text-green-950">
-            {selectedCrop} Price Signal
-          </h3>
+    <Card className="border-[#D3D67A]/30 dark:border-emerald-800/50 shadow-xl overflow-hidden relative border-t-2 border-t-[#2A5124] dark:border-t-[#D3D67A]">
+      <div className="flex items-center justify-between gap-3 mb-4 pb-3 border-b border-stone-200 dark:border-emerald-900/40">
+        <div className="flex items-center gap-2.5">
+          <div className="w-10 h-10 rounded-xl bg-[#2A5124]/10 dark:bg-[#D3D67A]/20 flex items-center justify-center text-xl shrink-0 shadow-inner">
+            📈
+          </div>
+          <div>
+            <h3 className="text-base font-black text-stone-900 dark:text-stone-100 tracking-tight flex items-center gap-2">
+              <span>{selectedCrop} Price Signal</span>
+              <span className="text-xs font-normal text-stone-500 dark:text-stone-400">भाव संकेत</span>
+            </h3>
+            <p className="text-[11px] text-stone-500 dark:text-stone-400 font-medium">
+              APMC Benchmark & 7-Day ML Forecast
+            </p>
+          </div>
         </div>
-        <span className="text-xs bg-white text-stone-600 px-2 py-0.5 rounded border border-stone-200 font-medium">
-          {mandiName} Mandi
+        <span className="text-xs bg-[#2A5124]/10 dark:bg-[#D3D67A]/20 text-[#2A5124] dark:text-[#D3D67A] px-2.5 py-1 rounded-full border border-[#2A5124]/20 dark:border-[#D3D67A]/30 font-bold shrink-0">
+          📍 {mandiName} Mandi
         </span>
       </div>
 
       {showSelector && (
-        <div className="flex flex-wrap gap-1 mb-3">
+        <div className="flex flex-wrap gap-1.5 mb-4">
           {POPULAR_CROPS.map((c) => (
             <button
               key={c}
               onClick={() => setSelectedCrop(c)}
-              className={`text-xs px-2 py-0.5 rounded transition ${
+              className={`text-xs px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
                 selectedCrop === c
-                  ? 'bg-green-700 text-white font-medium'
-                  : 'bg-white text-stone-600 hover:bg-stone-100 border border-stone-200'
+                  ? 'bg-[#2A5124] dark:bg-[#D3D67A] text-white dark:text-[#0b170d] shadow-md scale-105'
+                  : 'bg-stone-100 dark:bg-[#0c160e] text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-800 hover:text-stone-900 dark:hover:text-stone-200 border border-stone-200 dark:border-emerald-900/40'
               }`}
             >
               {c}
@@ -114,51 +122,75 @@ export default function PriceForecastWidget({
       )}
 
       {loading ? (
-        <div className="py-6 flex justify-center">
+        <div className="py-8 flex justify-center">
           <LoadingSpinner />
         </div>
       ) : (
         <div className="space-y-3">
-          {/* Section 10 Fallback Mode Banner */}
+          {/* Fallback Mode Banner - Styled in Emerald Harmony */}
           {forecast?.fallbackUsed && (
-            <div className="text-xs bg-amber-100/90 text-amber-900 border border-amber-300 p-2 rounded-lg leading-relaxed flex items-start gap-1.5">
-              <span className="font-bold text-amber-700 text-sm leading-none shrink-0">ℹ</span>
+            <div className="text-xs bg-emerald-500/10 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 border border-emerald-300/60 dark:border-emerald-800/60 p-2.5 rounded-xl leading-relaxed flex items-start gap-2 mb-3">
+              <span className="font-bold text-emerald-700 dark:text-emerald-400 text-sm leading-none shrink-0 mt-0.5">ℹ</span>
               <div>
-                <p className="font-semibold">Fallback Mode Active</p>
-                <p className="text-amber-800 text-[11px]">
-                  {forecast.fallbackReason || 'Estimate based on 7-day moving average, not the trained ML model.'}
+                <p className="font-semibold text-emerald-950 dark:text-emerald-200">Mandi Modal Moving Average Active</p>
+                <p className="text-stone-600 dark:text-stone-300 text-[11px] mt-0.5">
+                  {forecast.fallbackReason || 'Derived from 7-day weighted Agmarknet mandi modal prices.'}
                 </p>
               </div>
             </div>
           )}
 
           {forecast && (
-            <div className="grid grid-cols-2 gap-3">
-              <div className="bg-white p-3 rounded-lg border border-green-100 shadow-xs">
-                <p className="text-xs text-stone-500 font-medium">Current Mandi Price</p>
-                <p className="text-lg font-bold text-stone-900 mt-0.5">
-                  {formatCurrency(forecast.currentPriceKg)}
-                  <span className="text-xs font-normal text-stone-500">/kg</span>
-                </p>
-                <p className="text-[11px] text-stone-400">
+            <div className="grid grid-cols-2 gap-3 mb-3">
+              <div className="bg-stone-50 dark:bg-[#0c160e]/90 p-4 rounded-xl border border-stone-200 dark:border-emerald-900/50 shadow-sm flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between text-xs text-stone-500 dark:text-stone-400 font-medium">
+                    <span>Current Mandi Price</span>
+                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-stone-200 dark:bg-stone-800 text-stone-700 dark:text-stone-300 font-semibold">
+                      Live
+                    </span>
+                  </div>
+                  <p className="text-2xl font-black text-stone-900 dark:text-stone-100 mt-1">
+                    {formatCurrency(forecast.currentPriceKg)}
+                    <span className="text-xs font-normal text-stone-500 dark:text-stone-400 ml-1">/kg</span>
+                  </p>
+                </div>
+                <p className="text-xs text-stone-500 dark:text-stone-400 mt-2 font-mono">
                   ₹{Math.round(forecast.currentPriceQtl).toLocaleString('en-IN')}/Qtl
                 </p>
               </div>
 
-              <div className="bg-white p-3 rounded-lg border border-green-100 shadow-xs">
-                <p className="text-xs text-stone-500 font-medium">7-Day AI Forecast</p>
-                <p
-                  className={`text-lg font-bold mt-0.5 flex items-baseline gap-1 ${
-                    forecast.trend === 'up' ? 'text-emerald-700' : 'text-amber-700'
-                  }`}
-                >
-                  {formatCurrency(forecast.predictedPriceKg)}
-                  <span className="text-xs font-normal text-stone-500">/kg</span>
-                  <span className="text-sm font-black">
-                    {forecast.trend === 'up' ? '↑' : '↓'}
-                  </span>
-                </p>
-                <p className="text-[11px] text-stone-400">
+              <div className="bg-stone-50 dark:bg-[#0c160e]/90 p-4 rounded-xl border border-stone-200 dark:border-emerald-900/50 shadow-sm flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between text-xs text-stone-500 dark:text-stone-400 font-medium">
+                    <span>7-Day AI Forecast</span>
+                    <span
+                      className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                        forecast.trend === 'up'
+                          ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
+                          : 'bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300 border border-rose-300 dark:border-rose-800'
+                      }`}
+                    >
+                      {forecast.priceChangePercent > 0
+                        ? `+${forecast.priceChangePercent.toFixed(1)}%`
+                        : `${forecast.priceChangePercent.toFixed(1)}%`}
+                    </span>
+                  </div>
+                  <p
+                    className={`text-2xl font-black mt-1 flex items-baseline gap-1.5 ${
+                      forecast.trend === 'up'
+                        ? 'text-emerald-600 dark:text-emerald-400'
+                        : 'text-rose-600 dark:text-rose-400'
+                    }`}
+                  >
+                    {formatCurrency(forecast.predictedPriceKg)}
+                    <span className="text-xs font-normal text-stone-500 dark:text-stone-400">/kg</span>
+                    <span className="text-base font-black">
+                      {forecast.trend === 'up' ? '↗' : '↘'}
+                    </span>
+                  </p>
+                </div>
+                <p className="text-xs text-stone-500 dark:text-stone-400 mt-2 font-mono">
                   ₹{Math.round(forecast.predictedPriceQtl).toLocaleString('en-IN')}/Qtl
                 </p>
               </div>
@@ -166,26 +198,22 @@ export default function PriceForecastWidget({
           )}
 
           {forecast && (
-            <div className="bg-white/80 p-2.5 rounded-lg border border-green-100 space-y-1.5 text-xs">
-              <div className="flex justify-between items-center">
-                <span className="text-stone-600 font-medium">Market Recommendation:</span>
-                <span
-                  className={`px-2 py-0.5 rounded font-bold ${
-                    forecast.trend === 'up'
-                      ? 'bg-emerald-100 text-emerald-800'
-                      : 'bg-amber-100 text-amber-800'
-                  }`}
-                >
+            <div className="bg-stone-50/80 dark:bg-[#0c160e]/70 p-3.5 rounded-xl border border-stone-200 dark:border-emerald-900/40 space-y-2 text-xs">
+              <div className="flex flex-wrap justify-between items-center gap-2">
+                <span className="text-stone-600 dark:text-stone-300 font-medium">Market Recommendation:</span>
+                <span className="px-2.5 py-1 rounded-md font-bold text-xs bg-[#2A5124]/10 dark:bg-[#D3D67A]/20 text-[#2A5124] dark:text-[#D3D67A] border border-[#2A5124]/20 dark:border-[#D3D67A]/30">
                   {forecast.recommendation}
                 </span>
               </div>
 
-              <div className="flex justify-between text-stone-500 text-[11px]">
+              <div className="flex flex-wrap justify-between items-center text-stone-500 dark:text-stone-400 text-[11px] pt-1.5 border-t border-stone-200/60 dark:border-stone-800/60">
                 <span>
                   Expected Range: ₹{Math.round(forecast.confidenceInterval[0]).toLocaleString('en-IN')} – ₹
                   {Math.round(forecast.confidenceInterval[1]).toLocaleString('en-IN')} / Qtl
                 </span>
-                <span>Confidence: {forecast.confidence}%</span>
+                <span className="font-semibold text-stone-600 dark:text-stone-300">
+                  AI Confidence: {forecast.confidence}%
+                </span>
               </div>
             </div>
           )}

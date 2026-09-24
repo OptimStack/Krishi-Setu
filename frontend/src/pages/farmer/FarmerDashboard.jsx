@@ -84,32 +84,32 @@ export default function FarmerDashboard() {
   }, []);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 md:space-y-10">
       {/* Top Welcome & Actions */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-gradient-to-r from-[#2A5124] to-[#1c3917] dark:from-[#111f13] dark:to-[#172819] text-white p-6 rounded-2xl shadow-xl border border-[#D3D67A]/30">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-gradient-to-r from-[#2A5124] to-[#1c3917] dark:from-[#0d1d11] dark:to-[#172b1a] text-white p-6 md:p-8 rounded-2xl shadow-2xl border border-[#D3D67A]/30">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight">
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-2xl md:text-3xl font-black tracking-tight">
               Welcome, {user?.name || 'Farmer'}! 🌾
             </h1>
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#D3D67A]/20 text-[#D3D67A] border border-[#D3D67A]/40">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#D3D67A] animate-pulse"></span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#D3D67A]/20 text-[#D3D67A] border border-[#D3D67A]/40 shadow-xs">
+              <span className="w-2 h-2 rounded-full bg-[#D3D67A] animate-pulse"></span>
               Live Sync
             </span>
           </div>
-          <p className="text-stone-200 dark:text-stone-300 text-sm mt-1">
+          <p className="text-stone-200 dark:text-stone-300 text-sm md:text-base mt-1.5 font-medium">
             Krishi-Setu double-auction market linkage & direct Mandi procurement
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2.5">
           <Link to="/farmer/submit-ask">
-            <button className="bg-[#D3D67A] hover:bg-[#c2c56a] text-[#2A5124] font-bold px-4 py-2.5 rounded-lg shadow-md transition flex items-center gap-2 text-sm">
+            <button className="bg-[#D3D67A] hover:bg-[#c2c56a] text-[#2A5124] font-extrabold px-5 py-3 rounded-xl shadow-lg transition-transform active:scale-95 flex items-center gap-2 text-sm cursor-pointer">
               <span>➕</span> List New Produce
             </button>
           </Link>
           <button
             onClick={fetchListings}
-            className="bg-black/30 hover:bg-black/50 text-white px-3 py-2.5 rounded-lg text-sm transition border border-white/20"
+            className="bg-black/30 hover:bg-black/50 text-white px-3.5 py-3 rounded-xl text-sm transition border border-white/20 cursor-pointer shadow-md"
             title="Refresh listings"
           >
             ↻
@@ -119,7 +119,7 @@ export default function FarmerDashboard() {
 
       {feedback.text && (
         <div
-          className={`p-3 rounded-lg text-sm font-medium ${
+          className={`p-4 rounded-xl text-sm font-semibold shadow-md ${
             feedback.type === 'error'
               ? 'bg-red-50 dark:bg-red-950/60 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800'
               : 'bg-green-50 dark:bg-green-950/60 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-800'
@@ -130,43 +130,43 @@ export default function FarmerDashboard() {
       )}
 
       {/* Summary KPI Cards */}
-      <div ref={statsRef} className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="kpi-card bg-white/95 dark:bg-[#162518]/95 backdrop-blur-sm p-4 rounded-xl border border-stone-200 dark:border-emerald-800/40 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wider text-stone-500 dark:text-stone-400">Total Listings</p>
-          <p className="text-2xl font-bold text-stone-800 dark:text-stone-100 mt-1">{totalListings}</p>
-          <p className="text-xs text-stone-400 dark:text-stone-400 mt-1">{openListings.length} currently open</p>
+      <div ref={statsRef} className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="kpi-card bg-white/95 dark:bg-[#132215]/95 backdrop-blur-sm p-5 rounded-2xl border border-stone-200/90 dark:border-emerald-800/40 border-t-2 border-t-[#2A5124] dark:border-t-[#D3D67A] shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all">
+          <p className="text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">Total Listings</p>
+          <p className="text-3xl font-black text-stone-900 dark:text-stone-100 mt-1">{totalListings}</p>
+          <p className="text-xs text-stone-500 dark:text-stone-400 mt-1 font-medium">{openListings.length} currently open</p>
         </div>
 
-        <div className="kpi-card bg-white/95 dark:bg-[#162518]/95 backdrop-blur-sm p-4 rounded-xl border border-stone-200 dark:border-emerald-800/40 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wider text-stone-500 dark:text-stone-400">Open Volume</p>
-          <p className="text-2xl font-bold text-emerald-700 dark:text-[#D3D67A] mt-1">
+        <div className="kpi-card bg-white/95 dark:bg-[#132215]/95 backdrop-blur-sm p-5 rounded-2xl border border-stone-200/90 dark:border-emerald-800/40 border-t-2 border-t-[#2A5124] dark:border-t-[#D3D67A] shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all">
+          <p className="text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">Open Volume</p>
+          <p className="text-3xl font-black text-emerald-700 dark:text-[#D3D67A] mt-1">
             {(totalOpenVolumeKg / 100).toFixed(1)} <span className="text-sm font-normal text-stone-600 dark:text-stone-300">Qtl</span>
           </p>
-          <p className="text-xs text-stone-400 dark:text-stone-400 mt-1">{formatQuantity(totalOpenVolumeKg)}</p>
+          <p className="text-xs text-stone-500 dark:text-stone-400 mt-1 font-medium">{formatQuantity(totalOpenVolumeKg)}</p>
         </div>
 
-        <div className="kpi-card bg-white/95 dark:bg-[#162518]/95 backdrop-blur-sm p-4 rounded-xl border border-stone-200 dark:border-emerald-800/40 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wider text-stone-500 dark:text-stone-400">Pooled In Batches</p>
-          <p className="text-2xl font-bold text-blue-600 dark:text-blue-400 mt-1">
+        <div className="kpi-card bg-white/95 dark:bg-[#132215]/95 backdrop-blur-sm p-5 rounded-2xl border border-stone-200/90 dark:border-emerald-800/40 border-t-2 border-t-[#2A5124] dark:border-t-[#D3D67A] shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all">
+          <p className="text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">Pooled In Batches</p>
+          <p className="text-3xl font-black text-blue-600 dark:text-blue-400 mt-1">
             {(totalPooledVolumeKg / 100).toFixed(1)} <span className="text-sm font-normal text-stone-600 dark:text-stone-300">Qtl</span>
           </p>
-          <p className="text-xs text-stone-400 dark:text-stone-400 mt-1">{pooledListings.length} lots active in pools</p>
+          <p className="text-xs text-stone-500 dark:text-stone-400 mt-1 font-medium">{pooledListings.length} lots active in pools</p>
         </div>
 
-        <div className="kpi-card bg-white/95 dark:bg-[#162518]/95 backdrop-blur-sm p-4 rounded-xl border border-stone-200 dark:border-emerald-800/40 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wider text-stone-500 dark:text-stone-400">Sold & Cleared</p>
-          <p className="text-2xl font-bold text-amber-600 dark:text-amber-400 mt-1">
+        <div className="kpi-card bg-white/95 dark:bg-[#132215]/95 backdrop-blur-sm p-5 rounded-2xl border border-stone-200/90 dark:border-emerald-800/40 border-t-2 border-t-[#2A5124] dark:border-t-[#D3D67A] shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all">
+          <p className="text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">Sold & Cleared</p>
+          <p className="text-3xl font-black text-amber-600 dark:text-amber-400 mt-1">
             {(totalSoldVolumeKg / 100).toFixed(1)} <span className="text-sm font-normal text-stone-600 dark:text-stone-300">Qtl</span>
           </p>
-          <p className="text-xs text-stone-400 dark:text-stone-400 mt-1">{matchedOrSettled.length} trades settled</p>
+          <p className="text-xs text-stone-500 dark:text-stone-400 mt-1 font-medium">{matchedOrSettled.length} trades settled</p>
         </div>
       </div>
 
       {/* Main Grid: Listings (Left) + Widgets (Right) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Listings Section (2 Cols) */}
         <div className="lg:col-span-2 space-y-4">
-          <Card>
+          <Card highlight={true} className="border-[#D3D67A]/30 dark:border-emerald-800/50 shadow-xl border-t-2 border-t-[#2A5124] dark:border-t-[#D3D67A]">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
               <h2 className="text-lg font-bold text-stone-900 dark:text-stone-100">Your Harvest Listings / पिकांची यादी</h2>
               
@@ -303,16 +303,16 @@ export default function FarmerDashboard() {
         </div>
 
         {/* Right Column: Widgets */}
-        <div className="space-y-6">
+        <div className="space-y-8">
           <PriceForecastWidget crop="Onion" mandiName="Nashik" showSelector={true} />
           <WarehouseFinderWidget initialCrop="Onion" />
 
           {/* Educational / Guidance Card */}
-          <div className="bg-stone-50 dark:bg-[#162518]/90 p-4 rounded-xl border border-stone-200 dark:border-emerald-800/40 shadow-xs">
-            <h3 className="font-semibold text-stone-800 dark:text-stone-100 text-sm flex items-center gap-2">
-              <span>💡</span> Smart Selling Advice
+          <div className="bg-white/95 dark:bg-[#132215]/95 p-6 rounded-2xl border border-stone-200/90 dark:border-emerald-800/40 shadow-xl border-t-2 border-t-[#2A5124] dark:border-t-[#D3D67A]">
+            <h3 className="font-extrabold text-stone-900 dark:text-stone-100 text-sm flex items-center gap-2">
+              <span className="text-base">💡</span> Smart Selling Advice
             </h3>
-            <p className="text-xs text-stone-600 dark:text-stone-300 mt-2 leading-relaxed">
+            <p className="text-xs text-stone-600 dark:text-stone-300 mt-2.5 leading-relaxed font-medium">
               When market prices are trending downward, the auction engine prioritizes lots with competitive minimum prices.
               If the forecast suggests rising prices next week, consider holding in nearby certified warehouses!
             </p>

@@ -192,37 +192,37 @@ export default function BuyerDashboard() {
     : bids.filter((b) => (b.status || '').toLowerCase() === filterStatus.toLowerCase());
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto">
+    <div className="space-y-8 md:space-y-10 max-w-6xl mx-auto">
       {/* Welcome Banner */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-gradient-to-r from-[#2A5124] to-[#1c3917] dark:from-[#111f13] dark:to-[#172819] text-white p-6 rounded-2xl shadow-xl border border-[#D3D67A]/30">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-gradient-to-r from-[#2A5124] to-[#1c3917] dark:from-[#0d1d11] dark:to-[#172b1a] text-white p-6 md:p-8 rounded-2xl shadow-2xl border border-[#D3D67A]/30">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight">
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-2xl md:text-3xl font-black tracking-tight">
               Welcome, {user?.name || 'Buyer'}! 🏢
             </h1>
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#D3D67A]/20 text-[#D3D67A] border border-[#D3D67A]/40">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#D3D67A] animate-pulse"></span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#D3D67A]/20 text-[#D3D67A] border border-[#D3D67A]/40 shadow-xs">
+              <span className="w-2 h-2 rounded-full bg-[#D3D67A] animate-pulse"></span>
               Live Sync
             </span>
           </div>
-          <p className="text-stone-200 dark:text-stone-300 text-sm mt-1">
+          <p className="text-stone-200 dark:text-stone-300 text-sm md:text-base mt-1.5 font-medium">
             Wholesale procurement & double-auction bidding dashboard
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2.5">
           <Link to="/buyer/browse">
-            <button className="bg-[#D3D67A] hover:bg-[#c2c56a] text-[#2A5124] font-bold px-4 py-2.5 rounded-lg shadow-md transition flex items-center gap-2 text-sm">
+            <button className="bg-[#D3D67A] hover:bg-[#c2c56a] text-[#2A5124] font-extrabold px-5 py-3 rounded-xl shadow-lg transition-transform active:scale-95 flex items-center gap-2 text-sm cursor-pointer">
               <span>🔍</span> Browse Batches
             </button>
           </Link>
           <Link to="/buyer/submit-bid">
-            <button className="bg-white/20 hover:bg-white/30 text-white font-semibold px-4 py-2.5 rounded-lg shadow transition text-sm flex items-center gap-2 border border-white/30">
+            <button className="bg-white/20 hover:bg-white/30 text-white font-bold px-5 py-3 rounded-xl shadow transition text-sm flex items-center gap-2 border border-white/30 cursor-pointer">
               <span>➕</span> Place New Bid
             </button>
           </Link>
           <button
             onClick={fetchData}
-            className="bg-black/30 hover:bg-black/50 text-white px-3 py-2.5 rounded-lg text-sm transition border border-white/20"
+            className="bg-black/30 hover:bg-black/50 text-white px-3.5 py-3 rounded-xl text-sm transition border border-white/20 cursor-pointer shadow-md"
             title="Refresh Data"
           >
             ↻
@@ -233,7 +233,7 @@ export default function BuyerDashboard() {
       {/* Action Feedback */}
       {feedback.text && (
         <div
-          className={`p-4 rounded-xl text-sm font-medium flex items-center justify-between shadow-sm ${
+          className={`p-4 rounded-xl text-sm font-semibold flex items-center justify-between shadow-md ${
             feedback.type === 'error'
               ? 'bg-red-50 dark:bg-red-950/60 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800'
               : 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
@@ -242,7 +242,7 @@ export default function BuyerDashboard() {
           <span>{feedback.text}</span>
           <button
             onClick={() => setFeedback({ text: '', type: '' })}
-            className="text-xs font-bold px-2 py-0.5 rounded hover:bg-black/5"
+            className="text-xs font-bold px-2 py-0.5 rounded hover:bg-black/5 cursor-pointer"
           >
             ✕
           </button>
@@ -250,31 +250,31 @@ export default function BuyerDashboard() {
       )}
 
       {/* KPI Metrics Summary */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="p-4 bg-white/95 dark:bg-[#162518]/95 backdrop-blur-sm rounded-xl border border-stone-200 dark:border-emerald-800/40 shadow-xs">
-          <div className="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider">Total Bids</div>
-          <div className="text-3xl font-extrabold text-stone-900 dark:text-stone-100 mt-1">{totalBids}</div>
-          <div className="text-xs text-stone-400 dark:text-stone-400 mt-1">Orders submitted</div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="p-5 bg-white/95 dark:bg-[#132215]/95 backdrop-blur-sm rounded-2xl border border-stone-200/90 dark:border-emerald-800/40 border-t-2 border-t-[#2A5124] dark:border-t-[#D3D67A] shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all">
+          <div className="text-xs font-bold text-stone-500 dark:text-stone-400 uppercase tracking-wider">Total Bids</div>
+          <div className="text-3xl font-black text-stone-900 dark:text-stone-100 mt-1">{totalBids}</div>
+          <div className="text-xs text-stone-500 dark:text-stone-400 mt-1 font-medium">Orders submitted</div>
         </div>
 
-        <div className="p-4 bg-white/95 dark:bg-[#162518]/95 backdrop-blur-sm rounded-xl border border-stone-200 dark:border-emerald-800/40 shadow-xs">
-          <div className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Active Bids</div>
-          <div className="text-3xl font-extrabold text-emerald-700 dark:text-[#D3D67A] mt-1">{openBids.length}</div>
-          <div className="text-xs text-stone-400 dark:text-stone-400 mt-1">Awaiting auction clearing</div>
+        <div className="p-5 bg-white/95 dark:bg-[#132215]/95 backdrop-blur-sm rounded-2xl border border-stone-200/90 dark:border-emerald-800/40 border-t-2 border-t-[#2A5124] dark:border-t-[#D3D67A] shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all">
+          <div className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Active Bids</div>
+          <div className="text-3xl font-black text-emerald-700 dark:text-[#D3D67A] mt-1">{openBids.length}</div>
+          <div className="text-xs text-stone-500 dark:text-stone-400 mt-1 font-medium">Awaiting auction clearing</div>
         </div>
 
-        <div className="p-4 bg-white/95 dark:bg-[#162518]/95 backdrop-blur-sm rounded-xl border border-stone-200 dark:border-emerald-800/40 shadow-xs">
-          <div className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Won Trades</div>
-          <div className="text-3xl font-extrabold text-blue-700 dark:text-blue-400 mt-1">
+        <div className="p-5 bg-white/95 dark:bg-[#132215]/95 backdrop-blur-sm rounded-2xl border border-stone-200/90 dark:border-emerald-800/40 border-t-2 border-t-[#2A5124] dark:border-t-[#D3D67A] shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all">
+          <div className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Won Trades</div>
+          <div className="text-3xl font-black text-blue-700 dark:text-blue-400 mt-1">
             {trades.length}
           </div>
-          <div className="text-xs text-stone-400 dark:text-stone-400 mt-1">{pendingTrades.length} pending checkout</div>
+          <div className="text-xs text-stone-500 dark:text-stone-400 mt-1 font-medium">{pendingTrades.length} pending checkout</div>
         </div>
 
-        <div className="p-4 bg-white/95 dark:bg-[#162518]/95 backdrop-blur-sm rounded-xl border border-stone-200 dark:border-emerald-800/40 shadow-xs">
-          <div className="text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider">Total Volume</div>
-          <div className="text-3xl font-extrabold text-stone-900 dark:text-stone-100 mt-1">{totalProcurementQuintals} <span className="text-sm font-semibold text-stone-500 dark:text-stone-400">Qtl</span></div>
-          <div className="text-xs text-stone-400 dark:text-stone-400 mt-1">{formatQuantity(totalProcurementKg)}</div>
+        <div className="p-5 bg-white/95 dark:bg-[#132215]/95 backdrop-blur-sm rounded-2xl border border-stone-200/90 dark:border-emerald-800/40 border-t-2 border-t-[#2A5124] dark:border-t-[#D3D67A] shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all">
+          <div className="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">Total Volume</div>
+          <div className="text-3xl font-black text-stone-900 dark:text-stone-100 mt-1">{totalProcurementQuintals} <span className="text-sm font-semibold text-stone-500 dark:text-stone-400">Qtl</span></div>
+          <div className="text-xs text-stone-500 dark:text-stone-400 mt-1 font-medium">{formatQuantity(totalProcurementKg)}</div>
         </div>
       </div>
 
@@ -327,7 +327,7 @@ export default function BuyerDashboard() {
 
       {/* TAB 1: BIDS TABLE */}
       {activeTab === 'bids' && (
-        <Card className="p-0 overflow-hidden border border-stone-200 dark:border-emerald-800/40 shadow-xs">
+        <Card highlight={true} className="p-0 overflow-hidden border-[#D3D67A]/30 dark:border-emerald-800/50 shadow-xl border-t-2 border-t-[#2A5124] dark:border-t-[#D3D67A]">
           {/* Filter Navigation Tabs */}
           <div className="flex border-b border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-[#111c12] px-4 pt-3 gap-2 overflow-x-auto">
             {[
@@ -442,7 +442,7 @@ export default function BuyerDashboard() {
 
       {/* TAB 2: EXECUTED TRADES & PAYMENTS */}
       {activeTab === 'trades' && (
-        <Card className="p-0 overflow-hidden border border-stone-200 dark:border-emerald-800/40 shadow-xs">
+        <Card highlight={true} className="p-0 overflow-hidden border-[#D3D67A]/30 dark:border-emerald-800/50 shadow-xl border-t-2 border-t-[#2A5124] dark:border-t-[#D3D67A]">
           {trades.length === 0 ? (
             <div className="py-16 text-center text-stone-500 dark:text-stone-400 space-y-3">
               <span className="text-4xl block">🤝</span>
@@ -524,12 +524,12 @@ export default function BuyerDashboard() {
       {activeTab === 'requirements' && (
         <div className="space-y-4">
           {/* Action Banner */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-white dark:bg-stone-900/90 p-5 rounded-xl border border-stone-200 dark:border-stone-800 shadow-sm">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-white/95 dark:bg-[#132215]/95 p-6 rounded-2xl border border-stone-200/90 dark:border-emerald-800/40 shadow-xl border-t-2 border-t-[#2A5124] dark:border-t-[#D3D67A]">
             <div>
-              <h2 className="text-lg font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
+              <h2 className="text-xl font-black text-stone-900 dark:text-stone-100 flex items-center gap-2">
                 <span>🏛️</span> Direct Mandi Procurement Requirements
               </h2>
-              <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">
+              <p className="text-xs text-stone-600 dark:text-stone-300 mt-1 font-medium">
                 Post exact crop quantities required at the official Mandi modal rate. Participating farmers in your district supply produce directly, automatically updating this dashboard.
               </p>
             </div>
@@ -537,7 +537,7 @@ export default function BuyerDashboard() {
               variant="primary"
               size="sm"
               onClick={() => setShowReqModal(true)}
-              className="font-bold flex items-center gap-1.5 shadow-sm whitespace-nowrap"
+              className="font-bold flex items-center gap-1.5 shadow-md whitespace-nowrap"
             >
               <span>➕</span> Post New Mandi Demand
             </Button>
@@ -555,7 +555,7 @@ export default function BuyerDashboard() {
               </div>
             </Card>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-6">
               {requirements.map((req) => {
                 const reqId = req._id || req.id;
                 const totalKg = req.total_quantity_needed_kg || 1;
@@ -566,7 +566,7 @@ export default function BuyerDashboard() {
                 const isExpanded = expandedReqId === reqId;
 
                 return (
-                  <Card key={reqId} className="p-5 border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900/90 shadow-sm hover:shadow-md transition">
+                  <Card key={reqId} highlight={true} className="p-6 border-[#D3D67A]/30 dark:border-emerald-800/50 shadow-xl border-t-2 border-t-[#2A5124] dark:border-t-[#D3D67A] transition">
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-stone-100 dark:border-stone-800 pb-4">
                       <div>
                         <div className="flex items-center gap-2">

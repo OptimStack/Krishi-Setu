@@ -6,7 +6,7 @@ import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import { slideUp } from '../utils/animations';
 
-export default function LoginPage() {
+export default function LoginPage({ onReplayIntro }) {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -53,12 +53,12 @@ export default function LoginPage() {
   return (
     <div className="flex justify-center items-center min-h-[80vh] px-4">
       <div ref={cardRef} className="w-full max-w-md">
-        <Card className="shadow-2xl border-white/20 dark:border-emerald-800/40">
+        <Card highlight={true} className="shadow-2xl border-[#D3D67A]/30 dark:border-emerald-700/50">
           <div className="text-center mb-6">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#2A5124]/10 dark:bg-[#D3D67A]/20 text-3xl mb-3">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#2A5124]/10 dark:bg-[#D3D67A]/20 text-3xl mb-3 shadow-inner">
               🌾
             </div>
-            <h2 className="text-2xl font-extrabold text-[#2A5124] dark:text-[#D3D67A]">
+            <h2 className="text-2xl font-black text-[#2A5124] dark:text-[#D3D67A] tracking-tight">
               Login to Krishi-Setu
             </h2>
             <p className="text-stone-600 dark:text-stone-300 text-sm mt-1">
@@ -91,7 +91,7 @@ export default function LoginPage() {
             />
             <Button
               type="submit"
-              className="w-full mt-4 bg-[#2A5124] hover:bg-[#1f3d1b] dark:bg-[#D3D67A] dark:hover:bg-[#c2c56a] dark:text-[#182d15] text-white font-bold py-2.5 rounded-lg shadow-md"
+              className="w-full mt-4 bg-[#2A5124] hover:bg-[#1f3d1b] dark:bg-[#D3D67A] dark:hover:bg-[#c2c56a] dark:text-[#182d15] text-white font-bold py-3 rounded-xl shadow-lg transition-transform active:scale-95"
               disabled={loading}
             >
               {loading ? 'Logging in...' : 'Sign In'}
@@ -115,21 +115,21 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => autofillDemo('9876543210', 'farmer')}
-                className="py-1 px-2 rounded bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 text-emerald-800 dark:text-emerald-300 font-medium"
+                className="py-1 px-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/80 text-emerald-800 dark:text-emerald-300 font-semibold cursor-pointer transition"
               >
                 Farmer
               </button>
               <button
                 type="button"
                 onClick={() => autofillDemo('9876543220', 'buyer')}
-                className="py-1 px-2 rounded bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 hover:bg-blue-100 text-blue-800 dark:text-blue-300 font-medium"
+                className="py-1 px-2 rounded-lg bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/80 text-blue-800 dark:text-blue-300 font-semibold cursor-pointer transition"
               >
                 Buyer
               </button>
               <button
                 type="button"
                 onClick={() => autofillDemo('9000000000', 'admin')}
-                className="py-1 px-2 rounded bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 hover:bg-amber-100 text-amber-800 dark:text-amber-300 font-medium"
+                className="py-1 px-2 rounded-lg bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 hover:bg-amber-100 dark:hover:bg-amber-900/80 text-amber-800 dark:text-amber-300 font-semibold cursor-pointer transition"
               >
                 Admin
               </button>
@@ -137,6 +137,19 @@ export default function LoginPage() {
             <p className="text-[11px] text-stone-400 dark:text-stone-500 text-center mt-2">
               Password for all demo accounts: <code className="text-[#2A5124] dark:text-[#D3D67A] font-mono">demo123</code>
             </p>
+
+            {onReplayIntro && (
+              <div className="mt-4 pt-3 border-t border-dashed border-stone-200 dark:border-emerald-900/30 text-center">
+                <button
+                  type="button"
+                  onClick={onReplayIntro}
+                  className="inline-flex items-center gap-1.5 text-xs text-[#2A5124] dark:text-[#D3D67A] hover:underline font-semibold cursor-pointer py-1 px-2.5 rounded-full hover:bg-emerald-50 dark:hover:bg-emerald-950/50 transition"
+                >
+                  <span>🎬</span>
+                  <span>Replay Intro Animation</span>
+                </button>
+              </div>
+            )}
           </div>
         </Card>
       </div>

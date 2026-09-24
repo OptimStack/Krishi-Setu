@@ -107,32 +107,32 @@ export default function BuyerRequirementsWidget() {
   };
 
   return (
-    <Card className="border-[#D3D67A]/40 dark:border-emerald-800/40">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4 pb-3 border-b border-stone-200 dark:border-emerald-900/40">
+    <Card highlight={true} className="border-[#D3D67A]/40 dark:border-emerald-800/40 shadow-xl border-t-2 border-t-[#2A5124] dark:border-t-[#D3D67A]">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-6 pb-4 border-b border-stone-200 dark:border-emerald-900/40">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="text-xl">🤝</span>
-            <h2 className="text-lg font-bold text-[#2A5124] dark:text-[#D3D67A]">
+          <div className="flex items-center gap-2.5">
+            <span className="text-2xl">🤝</span>
+            <h2 className="text-xl font-black text-[#2A5124] dark:text-[#D3D67A] tracking-tight">
               Buyer Procurement Demands (Mandi Price Guaranteed)
             </h2>
           </div>
-          <p className="text-xs text-stone-600 dark:text-stone-300 mt-0.5">
+          <p className="text-xs text-stone-600 dark:text-stone-300 mt-1 font-medium">
             Verified corporate buyers procuring directly from nearby farmers at the official Mandi modal rate. Zero commission fees.
           </p>
         </div>
-        <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+        <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 shadow-xs">
           Live Procurement Orders: {requirements.length}
         </span>
       </div>
 
       {loading ? (
-        <div className="py-8 text-center text-stone-500 text-sm">Loading nearby buyer demands...</div>
+        <div className="py-12 text-center text-stone-500 text-sm">Loading nearby buyer demands...</div>
       ) : requirements.length === 0 ? (
-        <div className="py-6 text-center text-stone-500 text-sm">
+        <div className="py-8 text-center text-stone-500 text-sm">
           No open buyer demands right now. Check back shortly!
         </div>
       ) : (
-        <div ref={cardsContainerRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div ref={cardsContainerRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {requirements.map((req) => {
             const fulfilled = req.fulfilled_quantity_kg || 0;
             const total = req.total_quantity_needed_kg;
@@ -143,7 +143,7 @@ export default function BuyerRequirementsWidget() {
             return (
               <div
                 key={req._id}
-                className="req-card rounded-xl p-4 bg-stone-50/80 dark:bg-[#111c12]/80 border border-stone-200 dark:border-emerald-900/50 flex flex-col justify-between hover:shadow-md transition-shadow"
+                className="req-card rounded-2xl p-5 bg-stone-50/90 dark:bg-[#0c160e]/90 border border-stone-200/90 dark:border-emerald-900/50 border-t-2 border-t-[#2A5124] dark:border-t-[#D3D67A] shadow-md flex flex-col justify-between hover:shadow-xl hover:scale-[1.01] transition-all"
               >
                 <div>
                   <div className="flex justify-between items-start mb-2">
