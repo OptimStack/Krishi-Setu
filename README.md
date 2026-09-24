@@ -236,16 +236,27 @@ For step-by-step production setup, refer to:
 
 ---
 
+## 🎤 Demo, Pitch & Evaluator Readiness
+
+For live judging, presentation walkthroughs, and technical defense:
+
+- ⏱️ **[5-Minute Live Demo & Pitch Script](file:///e:/KrishiSetu/docs/DEMO_PITCH_GUIDE.md)**: Timed persona-by-persona click paths (Farmer, Buyer, Admin) with demo credentials.
+- 🛡️ **[Evaluator Q&A Defense Guide](file:///e:/KrishiSetu/docs/EVALUATOR_QA_DEFENSE.md)**: Comprehensive answers for data provenance, ML vs. heuristics, graceful degradation, and production scalability.
+- ⚡ **[Offline & Disaster Recovery Plan](file:///e:/KrishiSetu/docs/OFFLINE_FALLBACK_PLAN.md)**: Zero-downtime offline fallback plan if venue Wi-Fi or cloud fails.
+- 📊 **[QA Pass & 21 Edge Cases Report](file:///e:/KrishiSetu/ml/evaluation/qa_edge_cases_report.md)**: Verification matrix of all 21 critical edge cases with 116 passing tests.
+- 🔬 **[ML Models Evaluation Report](file:///e:/KrishiSetu/ml/evaluation/test_report.md)**: Held-out validation splits, accuracy, F1-scores, and MAE benchmarks.
+
+---
+
 ## 🧪 Running Tests
 
 ```bash
-# Run backend test suite
-cd backend
-source venv/bin/activate
-pytest ../tests/backend -v
+# Run backend test suite (116 tests, 100% pass rate)
+pytest tests/backend -v
 ```
 
 ---
 
 ## 📄 License
 This project is developed for the Smart India Hackathon (SIH 2026). All rights reserved.
+
