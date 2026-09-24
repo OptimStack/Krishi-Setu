@@ -1,0 +1,8 @@
+{
+  "name": "krishi-setu-root",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build": "npm --prefix frontend run build && node -e \"const fs=require('fs'); try{fs.cpSync('frontend/dist', 'dist', {recursive: true});}catch(e){}\""
+  }
+}
