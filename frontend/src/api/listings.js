@@ -33,3 +33,9 @@ export const createListing = (data) => {
  * @param {string} id
  */
 export const cancelListing = (id) => client.post(`/farmer/listings/${id}/cancel`);
+ 
+/**
+ * Fetch all available open farmer produce listings for buyers.
+ * @param {Object} [params]
+ */
+export const getAvailableProduce = (params) => client.get('/buyer/available-produce', { params });

@@ -8,7 +8,9 @@ from app.utils.validators import validate_required_fields, validate_positive_num
 from app.utils.serializers import serialize_doc, serialize_docs
 from app.models.bid import Bid
 from app.models.pooled_batch import PooledBatch
+from app.models.produce_listing import ProduceListing
 from app.models.user import User
+from app.extensions import db
 
 buyer_bp = Blueprint('buyer', __name__)
 
@@ -221,4 +223,102 @@ def get_buyer_trades():
     buyer_id = get_jwt_identity()
     trades = Trade.find_by_buyer(buyer_id)
     return jsonify({"data": serialize_docs(trades), "error": None}), 200
+
+
+@buyer_bp.route('/available-produce', methods=['GET'])
+@jwt_required()
+@role_required('buyer')
+def get_available_produce():
+    """Retrieve all open farmer produce listings directly available for procurement."""
+    crop = request.args.get('crop')
+    grade = request.args.get('quality_grade')
+    listings = ProduceListing.find_open(crop=crop, quality_grade=grade)
+
+    enriched = []
+    for l in listings:
+        ld = dict(l)
+        farmer = User.find_by_id(ld.get('farmer_id')) if ld.get('farmer_id') else None
+        ld['farmer_name'] = farmer.get('name') if farmer else 'Farmer'
+        enriched.append(ld)
+
+    return jsonify({"data": serialize_docs(enriched), "error": None}), 200
+
+
+@buyer_bp.route('/batches/<batch_id>/buy-direct', methods=['POST'])
+@jwt_required()
+@role_required('buyer')
+def buy_batch_direct(batch_id):
+    """Direct instant purchase of a pooled batch or single farmer listing at ask price."""
+    buyer_id = get_jwt_identity()
+    now_iso = datetime.now(timezone.utc).isoformat()
+
+    # 1. Check if it is a pooled batch
+    batch = PooledBatch.find_by_id(batch_id)
+    if batch:
+        qty = float(batch.get('total_quantity_kg', 0))
+        price = float(batch.get('weighted_ask_price_per_kg') or batch.get('min_clearing_price_per_kg') or 25.0)
+        total_amount = qty * price
+
+        trade_doc = {
+            'crop': batch.get('crop'),
+            'quality_grade': batch.get('quality_grade', 'A'),
+            'quantity_kg': qty,
+            'clearing_price_per_kg': price,
+            'total_amount': total_amount,
+            'buyer_id': ObjectId(buyer_id) if ObjectId.is_valid(buyer_id) else buyer_id,
+            'status': 'settled',
+            'settled_at': now_iso,
+            'created_at': now_iso,
+            'farmer_shares': []
+        }
+
+        for lid in batch.get('listing_ids', []):
+            ProduceListing.update_status(lid, 'settled')
+            l_doc = ProduceListing.find_by_id(lid)
+            if l_doc:
+                l_qty = float(l_doc.get('quantity_kg', 0))
+                trade_doc['farmer_shares'].append({
+                    'farmer_id': l_doc.get('farmer_id'),
+                    'quantity_kg': l_qty,
+                    'payout_amount': l_qty * price,
+                    'status': 'settled'
+                })
+
+        PooledBatch.update_status(batch_id, 'settled')
+        t_res = db.trades.insert_one(trade_doc)
+        trade_doc['_id'] = t_res.inserted_id
+        return jsonify({"data": {"trade": serialize_doc(trade_doc), "message": "Batch purchased and settled!"}, "error": None}), 200
+
+    # 2. Check if it is a direct ProduceListing ID
+    listing = ProduceListing.find_by_id(batch_id)
+    if listing:
+        qty = float(listing.get('quantity_remaining_kg') or listing.get('quantity_kg', 0))
+        price = float(listing.get('ask_price_per_kg', 25.0))
+        total_amount = qty * price
+
+        trade_doc = {
+            'crop': listing.get('crop'),
+            'quality_grade': listing.get('quality_grade', 'A'),
+            'quantity_kg': qty,
+            'clearing_price_per_kg': price,
+            'total_amount': total_amount,
+            'buyer_id': ObjectId(buyer_id) if ObjectId.is_valid(buyer_id) else buyer_id,
+            'status': 'settled',
+            'settled_at': now_iso,
+            'created_at': now_iso,
+            'farmer_shares': [
+                {
+                    'farmer_id': listing.get('farmer_id'),
+                    'quantity_kg': qty,
+                    'payout_amount': total_amount,
+                    'status': 'settled'
+                }
+            ]
+        }
+        ProduceListing.update_status(batch_id, 'settled')
+        t_res = db.trades.insert_one(trade_doc)
+        trade_doc['_id'] = t_res.inserted_id
+        return jsonify({"data": {"trade": serialize_doc(trade_doc), "message": "Produce purchased and settled!"}, "error": None}), 200
+
+    return jsonify({"data": None, "error": {"code": "NOT_FOUND", "message": "Batch or Produce Lot not found"}}), 404
 

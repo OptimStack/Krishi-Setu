@@ -8,6 +8,7 @@ import PriceForecastWidget from '../../components/widgets/PriceForecastWidget';
 import WarehouseFinderWidget from '../../components/widgets/WarehouseFinderWidget';
 import BuyerRequirementsWidget from '../../components/widgets/BuyerRequirementsWidget';
 import { getListings, cancelListing } from '../../api/listings';
+import { getIncomingBuyerBids, acceptBuyerBid } from '../../api/bids';
 import { formatCurrency, formatQuantity, formatDate } from '../../utils/format';
 import { useAuth } from '../../context/AuthContext';
 import { staggerIn, fadeIn } from '../../utils/animations';
@@ -16,30 +17,78 @@ import { staggerIn, fadeIn } from '../../utils/animations';
 export default function FarmerDashboard() {
   const { user } = useAuth();
   const [listings, setListings] = useState([]);
+  const [buyerBids, setBuyerBids] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState('all');
   const [actionLoading, setActionLoading] = useState(null);
+  const [acceptingBidId, setAcceptingBidId] = useState(null);
   const [feedback, setFeedback] = useState({ text: '', type: '' });
 
-  const fetchListings = useCallback(async () => {
+  const fetchData = useCallback(async () => {
     try {
-      const res = await getListings();
-      if (res && res.data) {
-        setListings(res.data);
+      const [listRes, bidsRes] = await Promise.allSettled([
+        getListings(),
+        getIncomingBuyerBids(),
+      ]);
+      if (listRes.status === 'fulfilled' && listRes.value?.data) {
+        setListings(listRes.value.data);
+      }
+      if (bidsRes.status === 'fulfilled' && bidsRes.value?.data) {
+        setBuyerBids(bidsRes.value.data);
       }
     } catch (err) {
-      console.error('Failed to load listings:', err);
+      console.error('Failed to load listings or buyer bids:', err);
     } finally {
       setLoading(false);
     }
   }, []);
 
+  const fetchListings = fetchData;
+
   useEffect(() => {
-    fetchListings();
-    // Poll for updates every 15 seconds so auction progress updates live
-    const interval = setInterval(fetchListings, 15000);
-    return () => clearInterval(interval);
-  }, [fetchListings]);
+    fetchData();
+    // Poll for updates every 8 seconds so bids, auctions, and settlements update live
+    const interval = setInterval(fetchData, 8000);
+
+    const handleSync = (e) => {
+      fetchData();
+    };
+
+    window.addEventListener('krishisetu_sync', handleSync);
+    window.addEventListener('storage', handleSync);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('krishisetu_sync', handleSync);
+      window.removeEventListener('storage', handleSync);
+    };
+  }, [fetchData]);
+
+  const handleAcceptBid = async (bid, matchingListing) => {
+    const bidId = bid._id || bid.id;
+    const listingId = matchingListing?._id || matchingListing?.id || (listings[0]?._id || listings[0]?.id);
+    setAcceptingBidId(bidId);
+    setFeedback({ text: '', type: '' });
+    try {
+      const res = await acceptBuyerBid({ bid_id: bidId, listing_id: listingId });
+      if (res.error) {
+        setFeedback({ text: res.error.message || 'Failed to accept offer', type: 'error' });
+      } else {
+        const qty = parseFloat(bid.quantity_needed_kg || matchingListing?.quantity_kg || 100);
+        const price = parseFloat(bid.max_price_per_kg || 25);
+        const gross = qty * price;
+        setFeedback({
+          text: `🎉 Buyer offer accepted! Settlement of ₹${gross.toLocaleString('en-IN')} confirmed. Payout has been credited immediately to your bank account!`,
+          type: 'success',
+        });
+        fetchData();
+      }
+    } catch (err) {
+      setFeedback({ text: 'Error accepting buyer offer.', type: 'error' });
+    } finally {
+      setAcceptingBidId(null);
+    }
+  };
 
   const handleCancel = async (listingId) => {
     if (!window.confirm('Are you sure you want to cancel this listing?')) return;
@@ -165,7 +214,92 @@ export default function FarmerDashboard() {
       {/* Main Grid: Listings (Left) + Widgets (Right) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Listings Section (2 Cols) */}
-        <div className="lg:col-span-2 space-y-4">
+        <div className="lg:col-span-2 space-y-6">
+          {/* Active Buyer Offers Section */}
+          <div className="bg-gradient-to-r from-amber-500/10 via-emerald-500/10 to-transparent dark:from-amber-950/30 dark:via-emerald-950/20 p-5 rounded-2xl border border-amber-300/80 dark:border-amber-600/40 shadow-lg relative overflow-hidden">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+              <div className="flex items-center gap-2.5">
+                <span className="text-2xl animate-bounce">⚡</span>
+                <div>
+                  <h2 className="text-base font-black text-stone-900 dark:text-stone-100 flex items-center gap-2">
+                    <span>Active Buyer Offers on Your Produce</span>
+                    <span className="text-xs font-semibold text-amber-700 dark:text-amber-400">खरेदीदारांच्या थेट ऑफर्स</span>
+                  </h2>
+                  <p className="text-xs text-stone-600 dark:text-stone-300">
+                    Buyers ready to purchase directly. Accept to settle deal and receive instant bank payout.
+                  </p>
+                </div>
+              </div>
+              <span className="text-xs font-bold text-amber-800 dark:text-amber-300 bg-amber-100 dark:bg-amber-950/80 px-2.5 py-1 rounded-full border border-amber-300 dark:border-amber-700 shrink-0 flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
+                {buyerBids.length} Active Offer{buyerBids.length === 1 ? '' : 's'}
+              </span>
+            </div>
+
+            {buyerBids.length === 0 ? (
+              <div className="p-4 bg-white/70 dark:bg-[#121f14]/70 rounded-xl border border-dashed border-amber-200 dark:border-amber-900/50 text-center">
+                <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">
+                  📡 Live market listening active. When buyers place procurement bids matching your listed crops, they will appear here with instant settlement options.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3 mt-3">
+                {buyerBids.map((bid) => {
+                  const bId = bid._id || bid.id;
+                  const qty = parseFloat(bid.quantity_needed_kg || bid.quantity || 100);
+                  const price = parseFloat(bid.max_price_per_kg || bid.price || 25);
+                  const grossAmount = qty * price;
+                  const matchingListing = listings.find((l) => (l.crop || '').toLowerCase() === (bid.crop || '').toLowerCase() && l.status === 'open') || listings[0];
+
+                  return (
+                    <div
+                      key={bId}
+                      className="p-4 bg-white/95 dark:bg-[#132416] rounded-xl border border-amber-300/80 dark:border-amber-700/50 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-amber-400 transition"
+                    >
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-black text-stone-900 dark:text-stone-100 text-sm capitalize">
+                            {bid.buyer_name || 'Verified Agribusiness Buyer'}
+                          </span>
+                          <span className="text-[11px] px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+                            Verified Buyer ✓
+                          </span>
+                        </div>
+                        <div className="text-xs text-stone-600 dark:text-stone-300 flex flex-wrap items-center gap-3">
+                          <span className="font-semibold text-stone-900 dark:text-stone-100 capitalize">
+                            🌾 {bid.crop} ({bid.min_quality_grade || 'Grade A'})
+                          </span>
+                          <span>•</span>
+                          <span>Demanding: <strong>{formatQuantity(qty)}</strong> ({(qty / 100).toFixed(1)} Qtl)</span>
+                          <span>•</span>
+                          <span>Offered Rate: <strong className="text-emerald-700 dark:text-[#D3D67A] text-sm">{formatCurrency(price)}/kg</strong></span>
+                        </div>
+                        <div className="text-xs text-stone-500 dark:text-stone-400">
+                          Total Payout: <strong className="text-stone-900 dark:text-stone-100">{formatCurrency(grossAmount)}</strong> • Settlement: Instant Bank Credit
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          disabled={acceptingBidId === bId}
+                          onClick={() => handleAcceptBid(bid, matchingListing)}
+                          className="bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl shadow-md transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                        >
+                          {acceptingBidId === bId ? (
+                            <><span>⏳</span> Processing Settlement...</>
+                          ) : (
+                            <><span>✓</span> Accept Offer & Settle Payout</>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
           <Card highlight={true} className="border-[#D3D67A]/30 dark:border-emerald-800/50 shadow-xl border-t-2 border-t-[#2A5124] dark:border-t-[#D3D67A]">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
               <h2 className="text-lg font-bold text-stone-900 dark:text-stone-100">Your Harvest Listings / पिकांची यादी</h2>
@@ -216,6 +350,7 @@ export default function FarmerDashboard() {
                       <th className="pb-3 font-semibold">Quantity</th>
                       <th className="pb-3 font-semibold">Ask / Min</th>
                       <th className="pb-3 font-semibold">Grade</th>
+                      <th className="pb-3 font-semibold">Offers</th>
                       <th className="pb-3 font-semibold">Status</th>
                       <th className="pb-3 font-semibold">Listed On</th>
                       <th className="pb-3 font-semibold text-right">Action</th>
@@ -227,6 +362,7 @@ export default function FarmerDashboard() {
                       const qty = parseFloat(listing.quantity_kg) || 0;
                       const askPrice = parseFloat(listing.ask_price_per_kg) || 0;
                       const minPrice = parseFloat(listing.min_acceptable_price_per_kg) || askPrice;
+                      const matchingBids = buyerBids.filter((b) => (b.crop || '').toLowerCase() === (listing.crop || '').toLowerCase());
 
                       return (
                         <tr key={id} className="hover:bg-stone-50/70 dark:hover:bg-emerald-950/20 transition">
@@ -272,6 +408,15 @@ export default function FarmerDashboard() {
                             <StatusBadge status={listing.quality_grade || 'ungraded'} />
                           </td>
                           <td className="py-3.5 whitespace-nowrap">
+                            {matchingBids.length > 0 ? (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300 border border-amber-300 dark:border-amber-700 animate-pulse">
+                                🔥 {matchingBids.length} Offer{matchingBids.length > 1 ? 's' : ''}
+                              </span>
+                            ) : (
+                              <span className="text-xs text-stone-400">—</span>
+                            )}
+                          </td>
+                          <td className="py-3.5 whitespace-nowrap">
                             <StatusBadge status={listing.status} />
                           </td>
                           <td className="py-3.5 whitespace-nowrap text-xs text-stone-500 dark:text-stone-400">
@@ -282,12 +427,17 @@ export default function FarmerDashboard() {
                               <button
                                 onClick={() => handleCancel(id)}
                                 disabled={actionLoading === id}
-                                className="text-xs border border-red-500/40 text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-500/10 px-2.5 py-1 rounded-md font-semibold transition"
+                                className="text-xs border border-red-500/40 text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-500/10 px-2.5 py-1 rounded-md font-semibold transition cursor-pointer"
                               >
                                 {actionLoading === id ? '...' : 'Cancel'}
                               </button>
                             ) : listing.status === 'settled' ? (
-                              <span className="text-xs text-emerald-700 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800">Paid ✓</span>
+                              <Link
+                                to="/farmer/payouts"
+                                className="text-xs text-emerald-700 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/60 px-2 py-1 rounded border border-emerald-200 dark:border-emerald-800 hover:underline"
+                              >
+                                Paid ✓
+                              </Link>
                             ) : (
                               <span className="text-xs text-stone-400">—</span>
                             )}

@@ -4,7 +4,7 @@ import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import StatusBadge from '../../components/ui/StatusBadge';
-import { getBatches } from '../../api/bids';
+import { getBatches, buyBatchDirect } from '../../api/bids';
 import { formatCurrency, formatQuantity, formatDate } from '../../utils/format';
 
 const CROP_ICONS = {
@@ -31,6 +31,8 @@ export default function BrowseBatchesPage() {
   const [loading, setLoading] = useState(true);
   const [selectedCrop, setSelectedCrop] = useState('all');
   const [selectedGrade, setSelectedGrade] = useState('all');
+  const [buyingBatchId, setBuyingBatchId] = useState(null);
+  const [feedback, setFeedback] = useState({ text: '', type: '' });
 
   const fetchBatches = useCallback(async (isPolling = false) => {
     if (!isPolling) setLoading(true);
@@ -50,9 +52,50 @@ export default function BrowseBatchesPage() {
 
   useEffect(() => {
     fetchBatches(false);
-    const interval = setInterval(() => fetchBatches(true), 15000);
-    return () => clearInterval(interval);
+    // Poll every 8 seconds for live updates
+    const interval = setInterval(() => fetchBatches(true), 8000);
+
+    const handleSync = () => {
+      fetchBatches(true);
+    };
+
+    window.addEventListener('krishisetu_sync', handleSync);
+    window.addEventListener('storage', handleSync);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('krishisetu_sync', handleSync);
+      window.removeEventListener('storage', handleSync);
+    };
   }, [fetchBatches]);
+
+  const handleInstantBuy = async (batch) => {
+    const bId = batch._id || batch.id;
+    const askPrice = parseFloat(batch.weighted_ask_price_per_kg || batch.ask_price_per_kg || 25);
+    const qty = parseFloat(batch.total_quantity_kg || batch.quantity || 100);
+    const total = qty * askPrice;
+
+    if (!window.confirm(`Confirm direct instant purchase of batch #${String(bId).slice(-6)} (${batch.crop}, ${qty} kg) at ₹${askPrice}/kg (Total: ₹${total.toLocaleString('en-IN')})?`)) return;
+
+    setBuyingBatchId(bId);
+    setFeedback({ text: '', type: '' });
+    try {
+      const res = await buyBatchDirect(bId);
+      if (res.error) {
+        setFeedback({ text: res.error.message || 'Failed to complete instant buy', type: 'error' });
+      } else {
+        setFeedback({
+          text: `🎉 Instant purchase completed! ₹${total.toLocaleString('en-IN')} trade settled and farmer payouts credited immediately.`,
+          type: 'success',
+        });
+        fetchBatches(false);
+      }
+    } catch (err) {
+      setFeedback({ text: 'Error completing purchase.', type: 'error' });
+    } finally {
+      setBuyingBatchId(null);
+    }
+  };
 
   const crops = ['all', 'Onion', 'Soybean', 'Wheat', 'Tomato', 'Cotton', 'Gram'];
   const grades = ['all', 'A', 'B', 'C'];
@@ -90,6 +133,18 @@ export default function BrowseBatchesPage() {
           </Link>
         </div>
       </div>
+
+      {feedback.text && (
+        <div
+          className={`p-4 rounded-xl text-sm font-semibold shadow-md ${
+            feedback.type === 'error'
+              ? 'bg-red-50 dark:bg-red-950/60 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800'
+              : 'bg-green-50 dark:bg-green-950/60 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-800'
+          }`}
+        >
+          {feedback.text}
+        </div>
+      )}
 
       {/* Filter Bar */}
       <div className="flex flex-wrap items-center justify-between gap-4 p-4 bg-white/95 dark:bg-[#162518]/95 rounded-xl border border-stone-200 dark:border-emerald-800/40 shadow-xs">
@@ -219,12 +274,26 @@ export default function BrowseBatchesPage() {
                   </div>
                 </div>
 
-                {/* Action Button */}
-                <Link to={`/buyer/bid/${batchId}`} className="mt-auto">
-                  <Button className="w-full font-bold">
-                    Place Bid on this Batch →
-                  </Button>
-                </Link>
+                {/* Action Buttons: Instant Buy + Bid */}
+                <div className="flex flex-col gap-2 mt-auto">
+                  <button
+                    type="button"
+                    onClick={() => handleInstantBuy(batch)}
+                    disabled={buyingBatchId === batchId}
+                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs py-2.5 px-3 rounded-xl shadow transition flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer disabled:opacity-50"
+                  >
+                    {buyingBatchId === batchId ? (
+                      '⏳ Processing Instant Buy...'
+                    ) : (
+                      `⚡ Instant Buy (${formatCurrency(parseFloat(batch.weighted_ask_price_per_kg || batch.ask_price_per_kg || 25))}/kg)`
+                    )}
+                  </button>
+                  <Link to={`/buyer/bid/${batchId}`} className="w-full">
+                    <Button variant="outline" className="w-full font-bold text-xs py-2">
+                      Place Custom Bid →
+                    </Button>
+                  </Link>
+                </div>
               </Card>
             );
           })}

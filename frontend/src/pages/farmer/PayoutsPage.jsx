@@ -26,14 +26,35 @@ export default function PayoutsPage() {
 
   useEffect(() => {
     fetchPayouts(false);
-    const interval = setInterval(() => fetchPayouts(true), 15000);
-    return () => clearInterval(interval);
+    // Poll every 6 seconds for live settlement updates
+    const interval = setInterval(() => fetchPayouts(true), 6000);
+
+    const handleSync = () => {
+      fetchPayouts(true);
+    };
+
+    window.addEventListener('krishisetu_sync', handleSync);
+    window.addEventListener('storage', handleSync);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('krishisetu_sync', handleSync);
+      window.removeEventListener('storage', handleSync);
+    };
   }, [fetchPayouts]);
 
-  const totalEarnings = payouts.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
+  const getPayoutAmount = (p) => parseFloat(p.amount ?? p.net_payout ?? p.gross_amount ?? 0);
+  const getPayoutPrice = (p) => {
+    if (p.clearing_price_per_kg) return parseFloat(p.clearing_price_per_kg);
+    const qty = parseFloat(p.quantity_kg || 0);
+    const amt = getPayoutAmount(p);
+    return qty > 0 ? amt / qty : 25;
+  };
+
+  const totalEarnings = payouts.reduce((sum, p) => sum + getPayoutAmount(p), 0);
   const settledEarnings = payouts
-    .filter((p) => p.status === 'settled')
-    .reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
+    .filter((p) => p.status === 'settled' || p.status === 'credited')
+    .reduce((sum, p) => sum + getPayoutAmount(p), 0);
   const totalVolumeKg = payouts.reduce((sum, p) => sum + (parseFloat(p.quantity_kg) || 0), 0);
 
   return (
@@ -51,12 +72,20 @@ export default function PayoutsPage() {
             Transparent per-farmer settlement breakdown for all completed double-auction trades.
           </p>
         </div>
-        <Link
-          to="/farmer/dashboard"
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800/80 text-stone-700 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-700 text-xs font-semibold shadow-xs transition"
-        >
-          ← Back to Dashboard
-        </Link>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => fetchPayouts(false)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800/80 text-stone-700 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-700 text-xs font-semibold shadow-xs transition cursor-pointer"
+          >
+            ↻ Refresh
+          </button>
+          <Link
+            to="/farmer/dashboard"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800/80 text-stone-700 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-700 text-xs font-semibold shadow-xs transition"
+          >
+            ← Back to Dashboard
+          </Link>
+        </div>
       </div>
 
       {/* Summary KPI Cards */}
@@ -126,10 +155,10 @@ export default function PayoutsPage() {
                       </span>
                     </td>
                     <td className="py-3.5 whitespace-nowrap text-stone-800 dark:text-stone-200 font-medium">
-                      {formatCurrency(payout.clearing_price_per_kg)}/kg
+                      {formatCurrency(getPayoutPrice(payout))}/kg
                     </td>
                     <td className="py-3.5 whitespace-nowrap font-extrabold text-green-700 dark:text-[#D3D67A] text-base">
-                      {formatCurrency(payout.amount)}
+                      {formatCurrency(getPayoutAmount(payout))}
                     </td>
                     <td className="py-3.5 whitespace-nowrap">
                       <StatusBadge status={payout.status} />

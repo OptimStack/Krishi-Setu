@@ -35,3 +35,23 @@ export const getBatches = (params) => client.get('/buyer/batches', { params });
  * @param {string} id
  */
 export const getBatch = (id) => client.get(`/buyer/batches/${id}`);
+
+/**
+ * Fetch incoming buyer bids for the farmer's crops.
+ * @param {Object} [params]
+ */
+export const getIncomingBuyerBids = (params) => client.get('/farmer/buyer-bids', { params });
+
+/**
+ * Farmer accepts a buyer's bid, immediately confirming trade and generating payout.
+ * @param {Object} data - { bid_id, listing_id }
+ */
+export const acceptBuyerBid = (data) => client.post('/farmer/accept-bid', data);
+
+/**
+ * Buyer confirms instant purchase of an entire farmer lot or pooled batch.
+ * @param {string} batchId
+ * @param {Object} [data]
+ */
+export const buyBatchDirect = (batchId, data = {}) => client.post(`/buyer/batches/${batchId}/buy-direct`, data);
+

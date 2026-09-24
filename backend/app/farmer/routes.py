@@ -270,3 +270,75 @@ def get_payouts():
                 })
 
     return jsonify({"data": payouts, "error": None}), 200
+
+
+@farmer_bp.route('/buyer-bids', methods=['GET'])
+@jwt_required()
+@role_required('farmer')
+def get_incoming_buyer_bids():
+    """Retrieve open buyer bids matching crops listed by this farmer."""
+    farmer_id = get_jwt_identity()
+    listings = ProduceListing.find_by_farmer(farmer_id, status='open')
+    crops = list({(l.get('crop') or '').lower() for l in listings})
+    from app.models.bid import Bid
+    all_bids = Bid.find_open()
+    matching_bids = [b for b in all_bids if not crops or (b.get('crop') or '').lower() in crops]
+    return jsonify({"data": serialize_docs(matching_bids), "error": None}), 200
+
+
+@farmer_bp.route('/accept-bid', methods=['POST'])
+@jwt_required()
+@role_required('farmer')
+def accept_buyer_bid():
+    """Farmer accepts an open buyer bid, immediately confirming trade and generating payout."""
+    farmer_id = get_jwt_identity()
+    raw_data = request.get_json(silent=True) or {}
+    bid_id = raw_data.get('bid_id')
+    listing_id = raw_data.get('listing_id')
+
+    if not bid_id or not listing_id:
+        return jsonify({"data": None, "error": {"code": "VALIDATION", "message": "bid_id and listing_id are required"}}), 400
+
+    from app.models.bid import Bid
+    bid = Bid.find_by_id(bid_id)
+    listing = ProduceListing.find_by_id(listing_id)
+
+    if not bid or not listing:
+        return jsonify({"data": None, "error": {"code": "NOT_FOUND", "message": "Bid or Listing not found"}}), 404
+
+    if str(listing.get('farmer_id')) != str(farmer_id):
+        return jsonify({"data": None, "error": {"code": "FORBIDDEN", "message": "Not your listing"}}), 403
+
+    matched_qty = min(float(listing.get('quantity_remaining_kg') or listing.get('quantity_kg', 0)), float(bid.get('quantity_needed_kg', 0)))
+    price = float(bid.get('max_price_per_kg', 0))
+    total_amount = matched_qty * price
+
+    now_iso = datetime.now(timezone.utc).isoformat()
+    trade_doc = {
+        'crop': listing.get('crop'),
+        'quality_grade': listing.get('quality_grade', 'A'),
+        'quantity_kg': matched_qty,
+        'clearing_price_per_kg': price,
+        'total_amount': total_amount,
+        'buyer_id': bid.get('buyer_id'),
+        'farmer_shares': [
+            {
+                'farmer_id': ObjectId(farmer_id) if ObjectId.is_valid(farmer_id) else farmer_id,
+                'quantity_kg': matched_qty,
+                'payout_amount': total_amount,
+                'status': 'settled'
+            }
+        ],
+        'status': 'settled',
+        'settled_at': now_iso,
+        'created_at': now_iso,
+    }
+    from app.extensions import db
+    t_res = db.trades.insert_one(trade_doc)
+    trade_doc['_id'] = t_res.inserted_id
+
+    ProduceListing.update_status(listing_id, 'settled')
+    Bid.update_status(bid_id, 'matched')
+
+    return jsonify({"data": {"trade": serialize_doc(trade_doc), "message": "Trade confirmed and payout credited!"}, "error": None}), 200
+

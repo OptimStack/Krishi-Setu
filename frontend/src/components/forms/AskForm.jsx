@@ -194,19 +194,6 @@ export default function AskForm({ onSubmit, loading }) {
     onSubmit(formData);
   };
 
-  const navSections = [
-    { id: 1, label: '1. Crop', icon: '🌾' },
-    { id: 2, label: '2. Quality & AI', icon: '🔬' },
-    { id: 3, label: '3. Quantity', icon: '⚖️' },
-    { id: 4, label: '4. FPO Pool', icon: '🤝' },
-    { id: 5, label: '5. Location', icon: '📍' },
-    { id: 6, label: '6. Storage', icon: '🏬' },
-    { id: 7, label: '7. Pricing', icon: '💰' },
-    { id: 8, label: '8. Dates', icon: '📅' },
-    { id: 9, label: '9. Logistics', icon: '🚚' },
-    { id: 10, label: '10. Payout', icon: '✅' },
-  ];
-
   return (
     <form ref={formRef} onSubmit={handleSubmit} className="space-y-6 text-stone-900 dark:text-stone-100">
       {validationError && (
@@ -214,40 +201,6 @@ export default function AskForm({ onSubmit, loading }) {
           ⚠️ {validationError}
         </div>
       )}
-
-      {/* Sticky Quick-Jump Down-Scroll Navigator */}
-      <div className="sticky top-16 z-30 bg-white/95 dark:bg-[#121c13]/95 backdrop-blur-md p-3 rounded-2xl border border-stone-200 dark:border-emerald-800/50 shadow-md">
-        <div className="flex items-center justify-between gap-2 mb-2 px-1">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-stone-500 dark:text-stone-400 uppercase tracking-wider">
-              Produce Registration Steps
-            </span>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-bold">
-              {completedCount}/10 Sections Ready
-            </span>
-          </div>
-          <span className="text-[11px] text-stone-400 dark:text-stone-400 hidden sm:inline">
-            Scroll down or click any step to jump
-          </span>
-        </div>
-
-        <div className="flex overflow-x-auto gap-1.5 pb-1 scrollbar-none">
-          {navSections.map((sec) => (
-            <button
-              key={sec.id}
-              type="button"
-              onClick={() => scrollToSection(sec.id)}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap bg-stone-100 dark:bg-stone-800/80 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 transition border border-transparent hover:border-emerald-500/30"
-            >
-              <span>{sec.icon}</span>
-              <span>{sec.label}</span>
-              {sectionStatus[sec.id] && (
-                <span className="text-emerald-600 dark:text-emerald-400 font-bold text-xs">✓</span>
-              )}
-            </button>
-          ))}
-        </div>
-      </div>
 
       {/* SECTION 1: CROP & FARMER DETAILS */}
       <div id="section-1" className="scroll-mt-36 p-5 rounded-2xl bg-white dark:bg-[#121c13] border border-stone-200 dark:border-emerald-800/40 shadow-xs space-y-4">

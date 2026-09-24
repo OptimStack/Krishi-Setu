@@ -4,9 +4,10 @@ import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import StatusBadge from '../../components/ui/StatusBadge';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
-import { getBids, cancelBid } from '../../api/bids';
+import { getBids, cancelBid, buyBatchDirect, createBid } from '../../api/bids';
 import { getBuyerTrades, createPaymentOrder, verifyPayment } from '../../api/payments';
 import { getRequirements, createRequirement } from '../../api/requirements';
+import { getAvailableProduce } from '../../api/listings';
 import { formatCurrency, formatQuantity, formatDate } from '../../utils/format';
 import { useAuth } from '../../context/AuthContext';
 
@@ -15,10 +16,14 @@ export default function BuyerDashboard() {
   const [bids, setBids] = useState([]);
   const [trades, setTrades] = useState([]);
   const [requirements, setRequirements] = useState([]);
+  const [availableProduce, setAvailableProduce] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState('all');
-  const [activeTab, setActiveTab] = useState('bids'); // 'bids' | 'trades' | 'requirements'
+  const [activeTab, setActiveTab] = useState('available_crops'); // 'available_crops' | 'bids' | 'trades' | 'requirements'
   const [actionLoading, setActionLoading] = useState(null);
+  const [buyingListingId, setBuyingListingId] = useState(null);
+  const [quickBidModal, setQuickBidModal] = useState(null);
+  const [quickBidForm, setQuickBidForm] = useState({ max_price_per_kg: '', quantity_needed_kg: '' });
   const [paymentModal, setPaymentModal] = useState(null); // { trade, orderData }
   const [payingLoading, setPayingLoading] = useState(false);
   const [feedback, setFeedback] = useState({ text: '', type: '' });
@@ -41,10 +46,11 @@ export default function BuyerDashboard() {
 
   const fetchData = useCallback(async () => {
     try {
-      const [bidsRes, tradesRes, reqsRes] = await Promise.allSettled([
+      const [bidsRes, tradesRes, reqsRes, produceRes] = await Promise.allSettled([
         getBids(),
         getBuyerTrades(),
         getRequirements(),
+        getAvailableProduce(),
       ]);
 
       if (bidsRes.status === 'fulfilled' && bidsRes.value?.data) {
@@ -56,6 +62,9 @@ export default function BuyerDashboard() {
       if (reqsRes.status === 'fulfilled' && reqsRes.value?.data) {
         setRequirements(reqsRes.value.data);
       }
+      if (produceRes.status === 'fulfilled' && produceRes.value?.data) {
+        setAvailableProduce(produceRes.value.data);
+      }
     } catch (err) {
       console.error('Failed to load buyer data:', err);
     } finally {
@@ -65,9 +74,21 @@ export default function BuyerDashboard() {
 
   useEffect(() => {
     fetchData();
-    // Poll every 15 seconds for live auction clearing
-    const interval = setInterval(fetchData, 15000);
-    return () => clearInterval(interval);
+    // Poll every 8 seconds for live auction clearing & sync
+    const interval = setInterval(fetchData, 8000);
+
+    const handleSync = (e) => {
+      fetchData();
+    };
+
+    window.addEventListener('krishisetu_sync', handleSync);
+    window.addEventListener('storage', handleSync);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('krishisetu_sync', handleSync);
+      window.removeEventListener('storage', handleSync);
+    };
   }, [fetchData]);
 
   const handleCancel = async (bidId) => {
@@ -84,6 +105,76 @@ export default function BuyerDashboard() {
       }
     } catch (err) {
       setFeedback({ text: 'Error cancelling bid.', type: 'error' });
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleInstantBuy = async (item) => {
+    const itemId = item._id || item.id;
+    const askPrice = parseFloat(item.ask_price_per_kg || item.weighted_ask_price_per_kg || 25);
+    const qty = parseFloat(item.quantity_remaining_kg || item.quantity_kg || item.quantity || 100);
+    const total = qty * askPrice;
+
+    if (!window.confirm(`Confirm instant purchase of ${item.crop} (${qty} kg) at ₹${askPrice}/kg (Total: ₹${total.toLocaleString('en-IN')})?`)) return;
+
+    setBuyingListingId(itemId);
+    setFeedback({ text: '', type: '' });
+    try {
+      const res = await buyBatchDirect(itemId);
+      if (res.error) {
+        setFeedback({ text: res.error.message || 'Failed to complete instant buy', type: 'error' });
+      } else {
+        setFeedback({
+          text: `🎉 Instant purchase confirmed! ₹${total.toLocaleString('en-IN')} trade settled. Farmer payout credited immediately.`,
+          type: 'success',
+        });
+        fetchData();
+        setActiveTab('trades');
+      }
+    } catch (err) {
+      setFeedback({ text: 'Error executing instant buy.', type: 'error' });
+    } finally {
+      setBuyingListingId(null);
+    }
+  };
+
+  const handleOpenQuickBid = (item) => {
+    const qty = parseFloat(item.quantity_remaining_kg || item.quantity_kg || item.quantity || 500);
+    const ask = parseFloat(item.ask_price_per_kg || item.weighted_ask_price_per_kg || 25);
+    setQuickBidModal(item);
+    setQuickBidForm({
+      quantity_needed_kg: qty,
+      max_price_per_kg: ask,
+    });
+  };
+
+  const handleQuickBidSubmit = async (e) => {
+    e.preventDefault();
+    if (!quickBidModal) return;
+    setActionLoading('quick_bid');
+    setFeedback({ text: '', type: '' });
+    try {
+      const res = await createBid({
+        crop: (quickBidModal.crop || 'onion').toLowerCase(),
+        quantity_needed_kg: parseFloat(quickBidForm.quantity_needed_kg),
+        max_price_per_kg: parseFloat(quickBidForm.max_price_per_kg),
+        min_quality_grade: quickBidModal.quality_grade || 'A',
+        batch_id: quickBidModal._id || quickBidModal.id,
+      });
+      if (res.error) {
+        setFeedback({ text: res.error.message || 'Failed to place bid', type: 'error' });
+      } else {
+        setFeedback({
+          text: `🎉 Bid of ₹${quickBidForm.max_price_per_kg}/kg for ${quickBidForm.quantity_needed_kg} kg placed successfully! Farmer will receive your offer live.`,
+          type: 'success',
+        });
+        setQuickBidModal(null);
+        fetchData();
+        setActiveTab('bids');
+      }
+    } catch (err) {
+      setFeedback({ text: 'Error placing bid', type: 'error' });
     } finally {
       setActionLoading(null);
     }
@@ -278,8 +369,22 @@ export default function BuyerDashboard() {
         </div>
       </div>
 
-      {/* Primary View Switcher: Bids vs Trades vs Requirements */}
+      {/* Primary View Switcher: Available Farmer Harvests vs Bids vs Trades vs Requirements */}
       <div className="flex border-b border-stone-200 dark:border-stone-800 gap-4 overflow-x-auto">
+        <button
+          onClick={() => setActiveTab('available_crops')}
+          className={`pb-3 text-sm font-bold border-b-2 transition flex items-center gap-2 whitespace-nowrap ${
+            activeTab === 'available_crops'
+              ? 'border-[#2A5124] dark:border-[#D3D67A] text-[#2A5124] dark:text-[#D3D67A] font-bold'
+              : 'border-transparent text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-200'
+          }`}
+        >
+          <span>Available Farmer Harvests 🌾</span>
+          <span className="text-xs bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-bold px-2 py-0.5 rounded-full">
+            {availableProduce.length} Lots
+          </span>
+        </button>
+
         <button
           onClick={() => setActiveTab('bids')}
           className={`pb-3 text-sm font-bold border-b-2 transition flex items-center gap-2 whitespace-nowrap ${
@@ -288,7 +393,7 @@ export default function BuyerDashboard() {
               : 'border-transparent text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-200'
           }`}
         >
-          <span>Procurement Bids</span>
+          <span>My Procurement Bids</span>
           <span className="text-xs bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 px-2 py-0.5 rounded-full font-semibold">
             {bids.length}
           </span>
@@ -324,6 +429,130 @@ export default function BuyerDashboard() {
           </span>
         </button>
       </div>
+
+      {/* TAB 0: AVAILABLE FARMER HARVESTS */}
+      {activeTab === 'available_crops' && (
+        <Card highlight={true} className="p-0 overflow-hidden border-[#D3D67A]/30 dark:border-emerald-800/50 shadow-xl border-t-2 border-t-[#2A5124] dark:border-t-[#D3D67A]">
+          <div className="p-4 bg-stone-50/80 dark:bg-[#111c12] border-b border-stone-200 dark:border-stone-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+            <div>
+              <h2 className="text-base font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
+                <span>🌾 Fresh Harvest Lots Listed by Farmers</span>
+                <span className="text-xs font-normal text-stone-500 dark:text-stone-400">शेतकऱ्यांचे उपलब्ध पिके</span>
+              </h2>
+              <p className="text-xs text-stone-500 dark:text-stone-400">
+                Direct farm produce available for immediate instant purchase at ask price or custom bidding.
+              </p>
+            </div>
+            <span className="text-xs font-bold text-[#2A5124] dark:text-[#D3D67A] bg-[#2A5124]/10 dark:bg-[#D3D67A]/20 px-3 py-1 rounded-full border border-[#2A5124]/20 dark:border-[#D3D67A]/30 shrink-0">
+              {availableProduce.length} Lots Available
+            </span>
+          </div>
+
+          {loading ? (
+            <div className="py-20 flex justify-center">
+              <LoadingSpinner />
+            </div>
+          ) : availableProduce.length === 0 ? (
+            <div className="text-center py-16 px-4">
+              <span className="text-4xl mb-3 block">🌾</span>
+              <h3 className="text-base font-semibold text-stone-800 dark:text-stone-200">No open farmer listings found</h3>
+              <p className="text-stone-500 dark:text-stone-400 text-sm mt-1 max-w-sm mx-auto">
+                Farmers will list produce here. When they submit a new crop listing, it syncs live across both dashboards!
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead>
+                  <tr className="border-b border-stone-200 dark:border-stone-800 text-stone-500 dark:text-stone-400 text-xs uppercase tracking-wider bg-stone-50/50 dark:bg-[#132215]/50">
+                    <th className="py-3 px-4 font-semibold">Crop & Variety</th>
+                    <th className="py-3 px-4 font-semibold">Farmer / Location</th>
+                    <th className="py-3 px-4 font-semibold">Available Qty</th>
+                    <th className="py-3 px-4 font-semibold">Ask Price</th>
+                    <th className="py-3 px-4 font-semibold">Grade</th>
+                    <th className="py-3 px-4 font-semibold text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-stone-100 dark:divide-stone-800/60">
+                  {availableProduce.map((lot) => {
+                    const lotId = lot._id || lot.id;
+                    const qty = parseFloat(lot.quantity_remaining_kg || lot.quantity_kg || 0);
+                    const askPrice = parseFloat(lot.ask_price_per_kg || 25);
+                    const isBuying = buyingListingId === lotId;
+
+                    return (
+                      <tr key={lotId} className="hover:bg-stone-50/70 dark:hover:bg-emerald-950/20 transition">
+                        <td className="py-4 px-4">
+                          <div className="flex items-center gap-3">
+                            <span className="text-2xl p-2 bg-stone-100 dark:bg-[#1a2d1d] rounded-xl border border-stone-200/60 dark:border-emerald-800/40 shrink-0">
+                              {lot.crop?.toLowerCase().includes('onion') ? '🧅' : lot.crop?.toLowerCase().includes('tomato') ? '🍅' : lot.crop?.toLowerCase().includes('wheat') ? '🌾' : lot.crop?.toLowerCase().includes('soy') ? '🌱' : '📦'}
+                            </span>
+                            <div>
+                              <span className="font-bold text-stone-900 dark:text-stone-100 block capitalize text-base">
+                                {lot.crop}
+                              </span>
+                              <span className="text-xs text-stone-500 dark:text-stone-400 font-medium">
+                                {lot.variety || 'Hybrid'}
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-4 px-4">
+                          <span className="font-semibold text-stone-900 dark:text-stone-100 block">
+                            {lot.farmer_name || 'Ramesh Patil'}
+                          </span>
+                          <span className="text-xs text-stone-500 dark:text-stone-400">
+                            {lot.location?.address || 'Niphad, Nashik'}
+                          </span>
+                        </td>
+                        <td className="py-4 px-4 whitespace-nowrap">
+                          <span className="font-bold text-stone-900 dark:text-stone-100 text-sm">
+                            {formatQuantity(qty)}
+                          </span>
+                          <span className="text-xs text-stone-400 block font-normal">
+                            {(qty / 100).toFixed(1)} Qtl
+                          </span>
+                        </td>
+                        <td className="py-4 px-4 whitespace-nowrap">
+                          <span className="font-extrabold text-green-700 dark:text-[#D3D67A] text-base">
+                            {formatCurrency(askPrice)}/kg
+                          </span>
+                          <span className="text-[11px] text-stone-400 block">
+                            Total: {formatCurrency(qty * askPrice)}
+                          </span>
+                        </td>
+                        <td className="py-4 px-4 whitespace-nowrap">
+                          <StatusBadge status={lot.quality_grade || 'A'} />
+                        </td>
+                        <td className="py-4 px-4 whitespace-nowrap text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              type="button"
+                              onClick={() => handleInstantBuy(lot)}
+                              disabled={isBuying}
+                              className="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs px-3.5 py-2 rounded-xl shadow transition flex items-center gap-1 active:scale-95 cursor-pointer disabled:opacity-50"
+                              title="Instantly purchase and settle lot at ask price"
+                            >
+                              {isBuying ? '⏳ Buying...' : `⚡ Buy at ₹${askPrice}/kg`}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleOpenQuickBid(lot)}
+                              className="bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 font-semibold text-xs px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-600 transition cursor-pointer"
+                            >
+                              Offer Bid
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </Card>
+      )}
 
       {/* TAB 1: BIDS TABLE */}
       {activeTab === 'bids' && (
@@ -916,6 +1145,81 @@ export default function BuyerDashboard() {
                   disabled={creatingReq}
                 >
                   {creatingReq ? 'Posting...' : 'Post Procurement Demand'}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* QUICK BID ON FARMER HARVEST MODAL */}
+      {quickBidModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-[#121f14] rounded-2xl border border-[#D3D67A]/40 shadow-2xl max-w-md w-full p-6 space-y-4">
+            <div className="flex justify-between items-center border-b border-stone-200 dark:border-emerald-900/40 pb-3">
+              <h3 className="font-black text-stone-900 dark:text-stone-100 text-base">
+                Place Offer on {quickBidModal.crop}
+              </h3>
+              <button
+                onClick={() => setQuickBidModal(null)}
+                className="text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 text-lg cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+            <p className="text-xs text-stone-600 dark:text-stone-300 font-medium">
+              Submit your direct offer to <strong>{quickBidModal.farmer_name || 'the farmer'}</strong>. The farmer will receive this offer live on their dashboard!
+            </p>
+            <form onSubmit={handleQuickBidSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1">
+                  Offered Price (₹ / kg)
+                </label>
+                <input
+                  type="number"
+                  step="0.1"
+                  required
+                  min="1"
+                  value={quickBidForm.max_price_per_kg}
+                  onChange={(e) => setQuickBidForm({ ...quickBidForm, max_price_per_kg: e.target.value })}
+                  className="w-full px-3.5 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100 font-bold"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-stone-700 dark:text-stone-300 mb-1">
+                  Quantity Needed (kg)
+                </label>
+                <input
+                  type="number"
+                  step="1"
+                  required
+                  min="1"
+                  value={quickBidForm.quantity_needed_kg}
+                  onChange={(e) => setQuickBidForm({ ...quickBidForm, quantity_needed_kg: e.target.value })}
+                  className="w-full px-3.5 py-2 rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100 font-bold"
+                />
+              </div>
+              <div className="p-3 bg-stone-50 dark:bg-emerald-950/40 rounded-xl text-xs flex justify-between font-semibold">
+                <span className="text-stone-500 dark:text-stone-400">Total Commitment:</span>
+                <span className="text-emerald-700 dark:text-[#D3D67A] font-extrabold text-sm">
+                  {formatCurrency((parseFloat(quickBidForm.max_price_per_kg) || 0) * (parseFloat(quickBidForm.quantity_needed_kg) || 0))}
+                </span>
+              </div>
+              <div className="flex gap-2 pt-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setQuickBidModal(null)}
+                  className="w-1/2"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={actionLoading === 'quick_bid'}
+                  className="w-1/2 font-bold"
+                >
+                  {actionLoading === 'quick_bid' ? 'Submitting...' : 'Submit Bid 🚀'}
                 </Button>
               </div>
             </form>

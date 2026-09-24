@@ -585,6 +585,8 @@ export async function executeMockRequest(method, url, data, params) {
       if (matchingBatch) {
         matchingBatch.total_quantity_kg = (matchingBatch.total_quantity_kg || 0) + qty;
         matchingBatch.available_quantity_kg = (matchingBatch.available_quantity_kg || 0) + qty;
+        matchingBatch.quantity = matchingBatch.total_quantity_kg;
+        matchingBatch.total_quantity_quintals = (matchingBatch.total_quantity_kg / 100).toFixed(1);
         matchingBatch.farmer_count = (matchingBatch.farmer_count || 1) + 1;
         matchingBatch.listing_ids = matchingBatch.listing_ids || [];
         if (!matchingBatch.listing_ids.includes(newListing._id)) {
@@ -593,11 +595,19 @@ export async function executeMockRequest(method, url, data, params) {
       } else {
         const newBatch = {
           _id: `batch_${Date.now()}`,
+          id: `batch_${Date.now()}`,
           crop: batchCrop,
+          commodity: batchCrop,
           quality_grade: batchGrade,
+          grade: batchGrade,
+          variety: newListing.variety || 'Hybrid',
+          farmer_name: newListing.farmer_name,
           total_quantity_kg: qty,
+          quantity: qty,
           available_quantity_kg: qty,
+          total_quantity_quintals: (qty / 100).toFixed(1),
           weighted_ask_price_per_kg: askPrice,
+          ask_price_per_kg: askPrice,
           min_clearing_price_per_kg: minPrice,
           region: newListing.location?.address || 'Nashik, Maharashtra',
           status: 'open',
@@ -610,6 +620,9 @@ export async function executeMockRequest(method, url, data, params) {
       }
 
       saveState(state);
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('krishisetu_sync', { detail: { type: 'listing_created', listing: newListing } }));
+      }
       return { data: newListing, error: null };
     }
 
@@ -617,12 +630,195 @@ export async function executeMockRequest(method, url, data, params) {
     return { data: state.listings, error: null };
   }
 
-  // 5. Farmer Payouts
-  if (lowerUrl.includes('/farmer/payouts')) {
-    return { data: state.payouts, error: null };
+  // 4.05 Buyer available produce listings
+  if (lowerUrl.includes('/buyer/available-produce')) {
+    const openListings = (state.listings || []).filter((l) => l.status === 'open');
+    return { data: openListings, error: null };
   }
 
-  // 6. Buyer Batches
+  // 4.1 Farmer incoming buyer bids
+  if (lowerUrl.includes('/farmer/buyer-bids')) {
+    const openBids = (state.bids || []).filter((b) => b.status === 'open');
+    return { data: openBids, error: null };
+  }
+
+  // 4.2 Farmer accepts buyer bid -> Instant Trade & Payout
+  if (lowerUrl.includes('/farmer/accept-bid')) {
+    const { bid_id, listing_id } = data || {};
+    const bid = (state.bids || []).find((b) => b._id === bid_id || b.id === bid_id);
+    const listing = (state.listings || []).find((l) => l._id === listing_id || l.id === listing_id) || state.listings[0];
+
+    if (bid) {
+      const matchedQty = parseFloat(listing?.quantity_remaining_kg || listing?.quantity_kg || bid.quantity_needed_kg || 500);
+      const price = parseFloat(bid.max_price_per_kg || 25);
+      const totalAmount = matchedQty * price;
+
+      bid.status = 'matched';
+      if (listing) listing.status = 'matched';
+
+      const tradeId = `trd_${Date.now()}`;
+      const trade = {
+        _id: tradeId,
+        id: tradeId,
+        crop: bid.crop || listing?.crop || 'produce',
+        quality_grade: bid.min_quality_grade || listing?.quality_grade || 'A',
+        quantity_kg: matchedQty,
+        clearing_price_per_kg: price,
+        total_amount: totalAmount,
+        buyer_id: bid.buyer_id,
+        buyer_name: bid.buyer_name,
+        farmer_id: listing?.farmer_id || authUser?.id || 'usr_farmer_1',
+        farmer_name: listing?.farmer_name || authUser?.name || 'Ramesh Patil',
+        status: 'settled',
+        settled_at: new Date().toISOString(),
+        created_at: new Date().toISOString(),
+        farmer_shares: [
+          {
+            farmer_id: listing?.farmer_id || authUser?.id || 'usr_farmer_1',
+            farmer_name: listing?.farmer_name || authUser?.name || 'Ramesh Patil',
+            quantity_kg: matchedQty,
+            payout_amount: totalAmount,
+            status: 'settled',
+          }
+        ]
+      };
+      state.trades.unshift(trade);
+
+      // IMMEDIATELY CREATE PAYOUT
+      const payoutId = `PAY-${Date.now().toString().slice(-6)}`;
+      state.payouts = state.payouts || [];
+      const newPayout = {
+        id: payoutId,
+        _id: `pay_${Date.now()}`,
+        trade_id: tradeId,
+        farmer_id: listing?.farmer_id || authUser?.id || 'usr_farmer_1',
+        farmer_name: listing?.farmer_name || authUser?.name || 'Ramesh Patil',
+        crop: trade.crop,
+        quantity_kg: matchedQty,
+        clearing_price_per_kg: price,
+        amount: totalAmount,
+        gross_amount: totalAmount,
+        platform_fee: 0,
+        net_payout: totalAmount,
+        status: 'settled',
+        utr_ref: `UTR-KS-${Date.now().toString().slice(-6)}`,
+        date: new Date().toISOString(),
+        settled_at: new Date().toISOString(),
+        created_at: new Date().toISOString(),
+        note: `Direct bid accepted from ${bid.buyer_name}`,
+      };
+      state.payouts.unshift(newPayout);
+
+      saveState(state);
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('krishisetu_sync', { detail: { type: 'bid_accepted', trade, payout: newPayout } }));
+      }
+      return { data: { success: true, trade, payout: newPayout }, error: null };
+    }
+    return { data: null, error: { message: 'Bid not found' } };
+  }
+
+  // 5. Farmer Payouts
+  if (lowerUrl.includes('/farmer/payouts')) {
+    const formattedPayouts = (state.payouts || []).map((p) => {
+      const qty = parseFloat(p.quantity_kg || 100);
+      const amt = parseFloat(p.amount || p.net_payout || p.gross_amount || 0);
+      const price = parseFloat(p.clearing_price_per_kg || (qty > 0 ? amt / qty : 25));
+      return {
+        ...p,
+        id: p.id || p._id || `PAY-${String(p._id || '').slice(-6).toUpperCase()}`,
+        crop: p.crop || 'Crop',
+        quantity_kg: qty,
+        clearing_price_per_kg: price,
+        amount: amt,
+        status: p.status === 'credited' ? 'settled' : (p.status || 'settled'),
+        date: p.date || p.settled_at || p.created_at || new Date().toISOString(),
+      };
+    });
+    return { data: formattedPayouts, error: null };
+  }
+
+  // 6. Buyer Batches & Buy Direct
+  if (lowerUrl.includes('/buy-direct')) {
+    const parts = url.split('/');
+    const batchId = parts[parts.indexOf('batches') + 1];
+    let batch = (state.batches || []).find((b) => b._id === batchId || b.id === batchId);
+    let listing = null;
+    if (!batch) {
+      listing = (state.listings || []).find((l) => l._id === batchId || l.id === batchId);
+    }
+
+    if (batch || listing) {
+      const item = batch || listing;
+      if (batch) batch.status = 'settled';
+      if (listing) listing.status = 'settled';
+
+      const qty = parseFloat(item.total_quantity_kg || item.quantity_remaining_kg || item.quantity_kg || item.quantity || 500);
+      const price = parseFloat(item.weighted_ask_price_per_kg || item.ask_price_per_kg || 25);
+      const totalAmount = qty * price;
+
+      const tradeId = `trd_${Date.now()}`;
+      const trade = {
+        _id: tradeId,
+        id: tradeId,
+        crop: item.crop,
+        quality_grade: item.quality_grade || 'A',
+        quantity_kg: qty,
+        clearing_price_per_kg: price,
+        total_amount: totalAmount,
+        buyer_id: authUser?.id || 'usr_buyer_1',
+        buyer_name: authUser?.name || 'FreshFarm Retail Pvt Ltd',
+        status: 'settled',
+        settled_at: new Date().toISOString(),
+        created_at: new Date().toISOString(),
+      };
+      state.trades.unshift(trade);
+
+      // Settle matching listings
+      (state.listings || []).forEach((l) => {
+        if (
+          l._id === batchId ||
+          l.id === batchId ||
+          (batch?.listing_ids || []).includes(l._id) ||
+          (listing && (l._id === listing._id || l.id === listing.id))
+        ) {
+          l.status = 'settled';
+        }
+      });
+
+      // IMMEDIATELY CREATE PAYOUT
+      const payoutId = `PAY-${Date.now().toString().slice(-6)}`;
+      state.payouts = state.payouts || [];
+      const newPayout = {
+        id: payoutId,
+        _id: `pay_${Date.now()}`,
+        trade_id: tradeId,
+        farmer_id: listing?.farmer_id || 'usr_farmer_1',
+        farmer_name: listing?.farmer_name || batch?.farmer_name || 'Ramesh Patil',
+        crop: item.crop,
+        quantity_kg: qty,
+        clearing_price_per_kg: price,
+        amount: totalAmount,
+        gross_amount: totalAmount,
+        platform_fee: 0,
+        net_payout: totalAmount,
+        status: 'settled',
+        utr_ref: `UTR-KS-${Date.now().toString().slice(-6)}`,
+        date: new Date().toISOString(),
+        settled_at: new Date().toISOString(),
+        created_at: new Date().toISOString(),
+        note: `Instant purchase by ${trade.buyer_name}`,
+      };
+      state.payouts.unshift(newPayout);
+
+      saveState(state);
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('krishisetu_sync', { detail: { type: 'batch_purchased', trade, payout: newPayout } }));
+      }
+      return { data: { success: true, trade, payout: newPayout }, error: null };
+    }
+  }
+
   if (lowerUrl.includes('/buyer/batches')) {
     return { data: state.batches, error: null };
   }
@@ -632,18 +828,31 @@ export async function executeMockRequest(method, url, data, params) {
     if (method.toLowerCase() === 'post') {
       const newBid = {
         _id: `bid_${Date.now()}`,
+        id: `bid_${Date.now()}`,
         buyer_id: authUser?.id || 'usr_buyer_1',
         buyer_name: authUser?.name || 'FreshFarm Retail Pvt Ltd',
-        crop: data?.crop || 'onion',
-        quantity_needed_kg: parseFloat(data?.quantity_needed_kg || 1000),
-        quantity_remaining_kg: parseFloat(data?.quantity_needed_kg || 1000),
-        max_price_per_kg: parseFloat(data?.max_price_per_kg || 25),
-        min_quality_grade: data?.min_quality_grade || 'A',
+        crop: (data?.crop || data?.commodity || 'onion').toLowerCase(),
+        quantity_needed_kg: parseFloat(data?.quantity_needed_kg || data?.quantity || 1000),
+        quantity_remaining_kg: parseFloat(data?.quantity_needed_kg || data?.quantity || 1000),
+        max_price_per_kg: parseFloat(data?.max_price_per_kg || data?.price || 25),
+        min_quality_grade: data?.min_quality_grade || data?.grade || 'A',
+        batch_id: data?.batch_id || data?.batchId,
         status: 'open',
         created_at: new Date().toISOString(),
       };
       state.bids.unshift(newBid);
+
+      // Update highest bid on matching batches
+      (state.batches || []).forEach((b) => {
+        if (b.crop?.toLowerCase() === newBid.crop.toLowerCase() || b._id === newBid.batch_id || b.id === newBid.batch_id) {
+          b.current_highest_bid = Math.max(b.current_highest_bid || 0, newBid.max_price_per_kg);
+        }
+      });
+
       saveState(state);
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('krishisetu_sync', { detail: { type: 'bid_created', bid: newBid } }));
+      }
       return { data: newBid, error: null };
     }
     return { data: state.bids, error: null };
@@ -771,10 +980,28 @@ export async function executeMockRequest(method, url, data, params) {
   }
 
   if (lowerUrl.includes('/payments/verify')) {
+    const tradeId = data?.trade_id || 'trd_401';
+    const targetTrade = (state.trades || []).find((t) => t._id === tradeId || t.id === tradeId);
+    if (targetTrade) {
+      targetTrade.status = 'settled';
+      targetTrade.settled_at = new Date().toISOString();
+    }
+    // Settle payouts
+    (state.payouts || []).forEach((p) => {
+      if (p.trade_id === tradeId || p._id === tradeId) {
+        p.status = 'settled';
+        p.settled_at = new Date().toISOString();
+      }
+    });
+    saveState(state);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('krishisetu_sync', { detail: { type: 'payment_verified', tradeId } }));
+    }
+
     return {
       data: {
         status: 'settled',
-        trade_id: data?.trade_id || 'trd_401',
+        trade_id: tradeId,
         message: 'Escrow payment verified. Pro-rata payouts distributed to farmers.',
       },
       error: null
