@@ -38,22 +38,22 @@ export default function PayoutsPage() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-2 border-b border-stone-200 dark:border-stone-800">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-green-900">Farmer Payout History / खात्यावरील जमा रक्कम</h1>
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+            <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">Farmer Payout History / खात्यावरील जमा रक्कम</h1>
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
               Live Sync
             </span>
           </div>
-          <p className="text-stone-600 text-sm mt-0.5">
+          <p className="text-stone-600 dark:text-stone-400 text-sm mt-0.5">
             Transparent per-farmer settlement breakdown for all completed double-auction trades.
           </p>
         </div>
         <Link
           to="/farmer/dashboard"
-          className="text-sm font-medium text-stone-600 hover:text-green-800 transition"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800/80 text-stone-700 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-700 text-xs font-semibold shadow-xs transition"
         >
           ← Back to Dashboard
         </Link>
@@ -61,31 +61,31 @@ export default function PayoutsPage() {
 
       {/* Summary KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white p-4 rounded-xl border border-stone-200 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wider text-stone-500">Settled Payouts</p>
-          <p className="text-2xl font-bold text-green-700 mt-1">{formatCurrency(settledEarnings)}</p>
-          <p className="text-xs text-stone-400 mt-1">Transferred directly to farmer bank account</p>
+        <div className="bg-white/95 dark:bg-[#162518]/95 p-4 rounded-xl border border-stone-200 dark:border-emerald-800/40 shadow-xs">
+          <p className="text-xs font-semibold uppercase tracking-wider text-stone-500 dark:text-stone-400">Settled Payouts</p>
+          <p className="text-2xl font-bold text-green-700 dark:text-[#D3D67A] mt-1">{formatCurrency(settledEarnings)}</p>
+          <p className="text-xs text-stone-400 dark:text-stone-400 mt-1">Transferred directly to farmer bank account</p>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-stone-200 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wider text-stone-500">Total Traded Volume</p>
-          <p className="text-2xl font-bold text-stone-800 mt-1">
-            {(totalVolumeKg / 100).toFixed(1)} <span className="text-sm font-normal text-stone-600">Qtl</span>
+        <div className="bg-white/95 dark:bg-[#162518]/95 p-4 rounded-xl border border-stone-200 dark:border-emerald-800/40 shadow-xs">
+          <p className="text-xs font-semibold uppercase tracking-wider text-stone-500 dark:text-stone-400">Total Traded Volume</p>
+          <p className="text-2xl font-bold text-stone-900 dark:text-stone-100 mt-1">
+            {(totalVolumeKg / 100).toFixed(1)} <span className="text-sm font-normal text-stone-600 dark:text-stone-300">Qtl</span>
           </p>
-          <p className="text-xs text-stone-400 mt-1">{totalVolumeKg.toLocaleString('en-IN')} kg across {payouts.length} auction trade(s)</p>
+          <p className="text-xs text-stone-400 dark:text-stone-400 mt-1">{totalVolumeKg.toLocaleString('en-IN')} kg across {payouts.length} auction trade(s)</p>
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-stone-200 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wider text-stone-500">Pending Settlement</p>
-          <p className="text-2xl font-bold text-amber-700 mt-1">
+        <div className="bg-white/95 dark:bg-[#162518]/95 p-4 rounded-xl border border-stone-200 dark:border-emerald-800/40 shadow-xs">
+          <p className="text-xs font-semibold uppercase tracking-wider text-stone-500 dark:text-stone-400">Pending Settlement</p>
+          <p className="text-2xl font-bold text-amber-600 dark:text-amber-400 mt-1">
             {formatCurrency(totalEarnings - settledEarnings)}
           </p>
-          <p className="text-xs text-stone-400 mt-1">Awaiting buyer payment capture</p>
+          <p className="text-xs text-stone-400 dark:text-stone-400 mt-1">Awaiting buyer payment capture</p>
         </div>
       </div>
 
       <Card>
-        <h2 className="text-lg font-bold text-stone-800 mb-4">Trade Payout Records</h2>
+        <h2 className="text-lg font-bold text-stone-900 dark:text-stone-100 mb-4">Trade Payout Records</h2>
         {loading ? (
           <div className="py-12 flex justify-center">
             <LoadingSpinner />
@@ -93,8 +93,8 @@ export default function PayoutsPage() {
         ) : payouts.length === 0 ? (
           <div className="text-center py-12 px-4">
             <span className="text-4xl mb-3 block">💰</span>
-            <h3 className="text-base font-semibold text-stone-700">No payout records yet</h3>
-            <p className="text-stone-500 text-sm mt-1 max-w-sm mx-auto">
+            <h3 className="text-base font-semibold text-stone-800 dark:text-stone-200">No payout records yet</h3>
+            <p className="text-stone-500 dark:text-stone-400 text-sm mt-1 max-w-sm mx-auto">
               Once your pooled produce is matched with buyer bids in an auction round, your share of the settlement will appear here.
             </p>
           </div>
@@ -102,39 +102,39 @@ export default function PayoutsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-stone-200 text-stone-500 text-xs uppercase tracking-wider">
-                  <th className="pb-3 font-semibold">Payout ID</th>
-                  <th className="pb-3 font-semibold">Crop</th>
-                  <th className="pb-3 font-semibold">Quantity</th>
-                  <th className="pb-3 font-semibold">Clearing Price</th>
-                  <th className="pb-3 font-semibold">Your Payout</th>
-                  <th className="pb-3 font-semibold">Status</th>
-                  <th className="pb-3 font-semibold">Date</th>
+                <tr className="border-b border-stone-200 dark:border-stone-800 text-stone-500 dark:text-stone-400 text-xs uppercase tracking-wider font-semibold">
+                  <th className="pb-3">Payout ID</th>
+                  <th className="pb-3">Crop</th>
+                  <th className="pb-3">Quantity</th>
+                  <th className="pb-3">Clearing Price</th>
+                  <th className="pb-3">Your Payout</th>
+                  <th className="pb-3">Status</th>
+                  <th className="pb-3">Date</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-stone-100">
+              <tbody className="divide-y divide-stone-100 dark:divide-stone-800/60">
                 {payouts.map((payout) => (
-                  <tr key={payout.id} className="hover:bg-stone-50/70 transition">
-                    <td className="py-3.5 font-mono text-xs font-medium text-stone-700">
+                  <tr key={payout.id} className="hover:bg-stone-50/70 dark:hover:bg-emerald-950/20 transition">
+                    <td className="py-3.5 font-mono text-xs font-bold text-stone-700 dark:text-stone-300">
                       {payout.id}
                     </td>
-                    <td className="py-3.5 font-semibold text-stone-900">{payout.crop}</td>
+                    <td className="py-3.5 font-bold text-stone-900 dark:text-stone-100 capitalize">{payout.crop}</td>
                     <td className="py-3.5 whitespace-nowrap">
-                      <span>{formatQuantity(payout.quantity_kg)}</span>
-                      <span className="text-xs text-stone-400 block">
+                      <span className="font-semibold text-stone-900 dark:text-stone-100">{formatQuantity(payout.quantity_kg)}</span>
+                      <span className="text-xs text-stone-400 dark:text-stone-400 block">
                         {(parseFloat(payout.quantity_kg) / 100).toFixed(1)} Qtl
                       </span>
                     </td>
-                    <td className="py-3.5 whitespace-nowrap text-stone-700">
+                    <td className="py-3.5 whitespace-nowrap text-stone-800 dark:text-stone-200 font-medium">
                       {formatCurrency(payout.clearing_price_per_kg)}/kg
                     </td>
-                    <td className="py-3.5 whitespace-nowrap font-bold text-green-700 text-base">
+                    <td className="py-3.5 whitespace-nowrap font-extrabold text-green-700 dark:text-[#D3D67A] text-base">
                       {formatCurrency(payout.amount)}
                     </td>
                     <td className="py-3.5 whitespace-nowrap">
                       <StatusBadge status={payout.status} />
                     </td>
-                    <td className="py-3.5 whitespace-nowrap text-xs text-stone-500">
+                    <td className="py-3.5 whitespace-nowrap text-xs text-stone-500 dark:text-stone-400">
                       {formatDate(payout.date || payout.settled_at)}
                     </td>
                   </tr>

@@ -162,28 +162,24 @@ export default function FarmerDashboard() {
         </div>
       </div>
 
-      {/* Buyer Direct Requirements Widget (Guaranteed Mandi Price) */}
-      <BuyerRequirementsWidget />
-
       {/* Main Grid: Listings (Left) + Widgets (Right) */}
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Listings Section (2 Cols) */}
         <div className="lg:col-span-2 space-y-4">
           <Card>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-              <h2 className="text-lg font-bold text-stone-800">Your Harvest Listings / पिकांची यादी</h2>
+              <h2 className="text-lg font-bold text-stone-900 dark:text-stone-100">Your Harvest Listings / पिकांची यादी</h2>
               
               {/* Status Filter Tabs */}
-              <div className="flex flex-wrap gap-1 bg-stone-100 p-1 rounded-lg text-xs font-medium">
+              <div className="flex flex-wrap gap-1 bg-stone-100 dark:bg-stone-800/80 p-1 rounded-lg text-xs font-medium border border-stone-200 dark:border-stone-700/60">
                 {['all', 'open', 'pooled', 'matched', 'settled'].map((st) => (
                   <button
                     key={st}
                     onClick={() => setFilterStatus(st)}
                     className={`px-2.5 py-1 rounded-md capitalize transition ${
                       filterStatus === st
-                        ? 'bg-white text-green-900 shadow-sm font-semibold'
-                        : 'text-stone-600 hover:text-stone-900'
+                        ? 'bg-white dark:bg-emerald-800 text-green-900 dark:text-emerald-100 shadow-sm font-semibold'
+                        : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
                     }`}
                   >
                     {st}
@@ -199,8 +195,8 @@ export default function FarmerDashboard() {
             ) : filteredListings.length === 0 ? (
               <div className="text-center py-12 px-4">
                 <span className="text-4xl mb-3 block">🌾</span>
-                <h3 className="text-base font-semibold text-stone-700">No listings found</h3>
-                <p className="text-stone-500 text-sm mt-1 max-w-sm mx-auto">
+                <h3 className="text-base font-semibold text-stone-800 dark:text-stone-200">No listings found</h3>
+                <p className="text-stone-500 dark:text-stone-400 text-sm mt-1 max-w-sm mx-auto">
                   {filterStatus === 'all'
                     ? "You haven't listed any produce yet. Submit your first harvest lot to discover fair market prices!"
                     : `No produce listings currently in '${filterStatus}' state.`}
@@ -215,7 +211,7 @@ export default function FarmerDashboard() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm">
                   <thead>
-                    <tr className="border-b border-stone-200 text-stone-500 text-xs uppercase tracking-wider">
+                    <tr className="border-b border-stone-200 dark:border-stone-800 text-stone-500 dark:text-stone-400 text-xs uppercase tracking-wider">
                       <th className="pb-3 font-semibold">Produce</th>
                       <th className="pb-3 font-semibold">Quantity</th>
                       <th className="pb-3 font-semibold">Ask / Min</th>
@@ -225,7 +221,7 @@ export default function FarmerDashboard() {
                       <th className="pb-3 font-semibold text-right">Action</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-stone-100">
+                  <tbody className="divide-y divide-stone-100 dark:divide-stone-800/60">
                     {filteredListings.map((listing) => {
                       const id = listing._id || listing.id;
                       const qty = parseFloat(listing.quantity_kg) || 0;
@@ -233,41 +229,41 @@ export default function FarmerDashboard() {
                       const minPrice = parseFloat(listing.min_acceptable_price_per_kg) || askPrice;
 
                       return (
-                        <tr key={id} className="hover:bg-stone-50/70 transition">
+                        <tr key={id} className="hover:bg-stone-50/70 dark:hover:bg-emerald-950/20 transition">
                           <td className="py-3.5 pr-2">
                             <div className="flex items-center gap-3">
                               {listing.image_url ? (
                                 <img
                                   src={listing.image_url}
                                   alt={listing.crop}
-                                  className="w-10 h-10 object-cover rounded-md border border-stone-200 flex-shrink-0"
+                                  className="w-10 h-10 object-cover rounded-md border border-stone-200 dark:border-stone-700 flex-shrink-0"
                                   onError={(e) => {
                                     e.target.style.display = 'none';
                                   }}
                                 />
                               ) : (
-                                <div className="w-10 h-10 bg-green-50 border border-green-200 rounded-md flex items-center justify-center text-lg flex-shrink-0">
+                                <div className="w-10 h-10 bg-green-50 dark:bg-emerald-950/60 border border-green-200 dark:border-emerald-800/60 rounded-md flex items-center justify-center text-lg flex-shrink-0">
                                   🌾
                                 </div>
                               )}
                               <div>
-                                <span className="font-semibold text-stone-900 block">{listing.crop}</span>
+                                <span className="font-bold text-stone-900 dark:text-stone-100 block">{listing.crop}</span>
                                 {listing.variety && (
-                                  <span className="text-xs text-stone-500">{listing.variety}</span>
+                                  <span className="text-xs text-stone-500 dark:text-stone-400">{listing.variety}</span>
                                 )}
                               </div>
                             </div>
                           </td>
                           <td className="py-3.5 whitespace-nowrap">
-                            <span className="font-medium text-stone-800">{formatQuantity(qty)}</span>
-                            <span className="text-xs text-stone-400 block">
+                            <span className="font-semibold text-stone-900 dark:text-stone-100">{formatQuantity(qty)}</span>
+                            <span className="text-xs text-stone-400 dark:text-stone-400 block">
                               {(qty / 100).toFixed(1)} Qtl
                             </span>
                           </td>
                           <td className="py-3.5 whitespace-nowrap">
-                            <span className="font-semibold text-green-700">{formatCurrency(askPrice)}/kg</span>
+                            <span className="font-bold text-green-700 dark:text-[#D3D67A]">{formatCurrency(askPrice)}/kg</span>
                             {minPrice !== askPrice && (
-                              <span className="text-xs text-stone-400 block">
+                              <span className="text-xs text-stone-400 dark:text-stone-400 block">
                                 Min: {formatCurrency(minPrice)}/kg
                               </span>
                             )}
@@ -278,7 +274,7 @@ export default function FarmerDashboard() {
                           <td className="py-3.5 whitespace-nowrap">
                             <StatusBadge status={listing.status} />
                           </td>
-                          <td className="py-3.5 whitespace-nowrap text-xs text-stone-500">
+                          <td className="py-3.5 whitespace-nowrap text-xs text-stone-500 dark:text-stone-400">
                             {formatDate(listing.created_at)}
                           </td>
                           <td className="py-3.5 whitespace-nowrap text-right">
@@ -286,12 +282,12 @@ export default function FarmerDashboard() {
                               <button
                                 onClick={() => handleCancel(id)}
                                 disabled={actionLoading === id}
-                                className="text-xs text-red-600 hover:text-red-800 font-medium px-2 py-1 rounded hover:bg-red-50 transition"
+                                className="text-xs border border-red-500/40 text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-500/10 px-2.5 py-1 rounded-md font-semibold transition"
                               >
                                 {actionLoading === id ? '...' : 'Cancel'}
                               </button>
                             ) : listing.status === 'settled' ? (
-                              <span className="text-xs text-green-700 font-medium">Paid ✓</span>
+                              <span className="text-xs text-emerald-700 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-800">Paid ✓</span>
                             ) : (
                               <span className="text-xs text-stone-400">—</span>
                             )}
@@ -312,17 +308,20 @@ export default function FarmerDashboard() {
           <WarehouseFinderWidget initialCrop="Onion" />
 
           {/* Educational / Guidance Card */}
-          <div className="bg-stone-50 p-4 rounded-xl border border-stone-200">
-            <h3 className="font-semibold text-stone-800 text-sm flex items-center gap-2">
+          <div className="bg-stone-50 dark:bg-[#162518]/90 p-4 rounded-xl border border-stone-200 dark:border-emerald-800/40 shadow-xs">
+            <h3 className="font-semibold text-stone-800 dark:text-stone-100 text-sm flex items-center gap-2">
               <span>💡</span> Smart Selling Advice
             </h3>
-            <p className="text-xs text-stone-600 mt-2 leading-relaxed">
+            <p className="text-xs text-stone-600 dark:text-stone-300 mt-2 leading-relaxed">
               When market prices are trending downward, the auction engine prioritizes lots with competitive minimum prices.
               If the forecast suggests rising prices next week, consider holding in nearby certified warehouses!
             </p>
           </div>
         </div>
       </div>
+
+      {/* Buyer Direct Requirements Widget (Guaranteed Mandi Price) */}
+      <BuyerRequirementsWidget />
     </div>
   );
 }

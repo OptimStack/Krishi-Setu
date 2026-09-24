@@ -46,44 +46,44 @@ export default function SubmitAskPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="max-w-4xl mx-auto space-y-6">
+      <div className="flex items-center justify-between pb-2 border-b border-stone-200 dark:border-stone-800">
         <div>
-          <h1 className="text-2xl font-bold text-green-900">List Your Produce / पीक नोंदणी</h1>
-          <p className="text-stone-600 text-sm mt-0.5">
-            Submit your harvest to be pooled and matched with bulk buyers through double auction.
+          <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">List Your Produce / पीक नोंदणी</h1>
+          <p className="text-stone-600 dark:text-stone-400 text-sm mt-0.5">
+            Submit your harvest to be pooled and matched with bulk buyers through transparent double auction.
           </p>
         </div>
         <Link
           to="/farmer/dashboard"
-          className="text-sm font-medium text-stone-600 hover:text-green-800 transition"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800/80 text-stone-700 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-700 text-xs font-semibold shadow-xs transition"
         >
-          &larr; Back to Dashboard
+          ← Back to Dashboard
         </Link>
       </div>
 
-      <div className="bg-gradient-to-r from-emerald-50 to-green-50 p-4 rounded-xl border border-green-200 shadow-sm flex items-start gap-3">
-        <span className="text-2xl">&#127793;</span>
+      <div className="bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-950/40 dark:to-green-950/40 p-4 rounded-xl border border-green-200 dark:border-emerald-800/50 shadow-sm flex items-start gap-3">
+        <span className="text-2xl">🌱</span>
         <div className="text-sm">
-          <h3 className="font-semibold text-green-900">How the Krishi-Setu Marketplace Works</h3>
-          <p className="text-green-800 mt-1 leading-relaxed">
-            1. <strong>List Produce:</strong> Tell us your crop, quantity, and minimum acceptable price.<br />
-            2. <strong>AI Quality Grading:</strong> Your uploaded photo is assessed for immediate quality grading.<br />
-            3. <strong>Smart Pooling:</strong> Lots from nearby farmers are aggregated into high-volume buyer batches.<br />
-            4. <strong>Double Auction:</strong> Fair clearing prices discovered automatically with direct payout!
+          <h3 className="font-semibold text-green-900 dark:text-[#D3D67A]">How the Krishi-Setu Marketplace Works</h3>
+          <p className="text-green-800 dark:text-stone-300 mt-1 leading-relaxed text-xs">
+            1. <strong>List Produce:</strong> Tell us your crop, quantity, and minimum acceptable reserve price.<br />
+            2. <strong>AI Quality Grading:</strong> Your uploaded photo is assessed for immediate computer vision quality grading.<br />
+            3. <strong>Smart Pooling:</strong> Lots from nearby farmers are aggregated into high-volume certified buyer batches.<br />
+            4. <strong>Double Auction:</strong> Fair clearing prices discovered automatically with direct escrow payout!
           </p>
         </div>
       </div>
 
       {error && (
-        <div className="p-4 bg-red-50 text-red-700 rounded-lg border border-red-200 text-sm font-medium flex items-center gap-2">
-          <span>&#9888;</span> {error}
+        <div className="p-4 bg-red-50 dark:bg-red-950/60 text-red-700 dark:text-red-300 rounded-lg border border-red-200 dark:border-red-800 text-sm font-medium flex items-center gap-2">
+          <span>⚠️</span> {error}
         </div>
       )}
 
       {successMsg && (
-        <div className="p-4 bg-green-50 text-green-800 rounded-lg border border-green-200 text-sm font-medium flex items-center gap-2">
-          <span>&#10003;</span> {successMsg}
+        <div className="p-4 bg-green-50 dark:bg-green-950/60 text-green-800 dark:text-green-300 rounded-lg border border-green-200 dark:border-green-800 text-sm font-medium flex items-center gap-2">
+          <span>✓</span> {successMsg}
         </div>
       )}
 
@@ -95,16 +95,14 @@ export default function SubmitAskPage() {
               variant="primary"
               onClick={() => navigate('/farmer/dashboard')}
             >
-              Go to Farmer Dashboard &rarr;
+              Go to Farmer Dashboard →
             </Button>
           </div>
         </div>
       )}
 
       {!gradingResult && (
-        <Card>
-          <AskForm onSubmit={handleSubmit} loading={loading} />
-        </Card>
+        <AskForm onSubmit={handleSubmit} loading={loading} />
       )}
     </div>
   );

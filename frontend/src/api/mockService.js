@@ -151,6 +151,40 @@ const getInitialState = () => ({
       status: 'settled',
       location: { address: 'Lasalgaon, Nashik', geo: [74.0150, 20.0650] },
       created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
+    },
+    {
+      _id: 'lst_106',
+      farmer_id: 'usr_farmer_1',
+      farmer_name: 'Ramesh Patil',
+      crop: 'wheat',
+      variety: 'Sharbati Gold',
+      quantity_kg: 1200.0,
+      quantity_remaining_kg: 1200.0,
+      ask_price_per_kg: 28.5,
+      min_acceptable_price_per_kg: 26.0,
+      quality_grade: 'A',
+      confidence_score: 0.95,
+      needs_human_review: false,
+      status: 'pooled',
+      location: { address: 'Niphad, Nashik', geo: [73.9898, 20.0875] },
+      created_at: new Date(Date.now() - 180 * 60000).toISOString(),
+    },
+    {
+      _id: 'lst_107',
+      farmer_id: 'usr_farmer_1',
+      farmer_name: 'Ramesh Patil',
+      crop: 'soybean',
+      variety: 'JS-335',
+      quantity_kg: 600.0,
+      quantity_remaining_kg: 600.0,
+      ask_price_per_kg: 44.0,
+      min_acceptable_price_per_kg: 41.0,
+      quality_grade: 'A',
+      confidence_score: 0.92,
+      needs_human_review: false,
+      status: 'open',
+      location: { address: 'Niphad, Nashik', geo: [73.9898, 20.0875] },
+      created_at: new Date(Date.now() - 240 * 60000).toISOString(),
     }
   ],
   batches: [
@@ -526,7 +560,55 @@ export async function executeMockRequest(method, url, data, params) {
         created_at: new Date().toISOString(),
       };
 
+      // Prevent rapid double-clicks (within 2 seconds with same crop & quantity)
+      const isDuplicate = state.listings.some(
+        (l) => l.farmer_id === (authUser?.id || 'usr_farmer_1') &&
+               l.crop === (listingData.crop || 'onion').toLowerCase() &&
+               l.quantity_kg === qty &&
+               (Date.now() - new Date(l.created_at).getTime()) < 2000
+      );
+      if (isDuplicate) {
+        return { data: state.listings[0], error: null };
+      }
+
       state.listings.unshift(newListing);
+
+      // Connect Farmer listing to Buyer's browsable batches
+      const batchCrop = newListing.crop;
+      const batchGrade = newListing.quality_grade || 'A';
+      state.batches = state.batches || [];
+      let matchingBatch = state.batches.find(
+        (b) => b.crop?.toLowerCase() === batchCrop.toLowerCase() &&
+               b.quality_grade?.toUpperCase() === batchGrade.toUpperCase() &&
+               b.status === 'open'
+      );
+      if (matchingBatch) {
+        matchingBatch.total_quantity_kg = (matchingBatch.total_quantity_kg || 0) + qty;
+        matchingBatch.available_quantity_kg = (matchingBatch.available_quantity_kg || 0) + qty;
+        matchingBatch.farmer_count = (matchingBatch.farmer_count || 1) + 1;
+        matchingBatch.listing_ids = matchingBatch.listing_ids || [];
+        if (!matchingBatch.listing_ids.includes(newListing._id)) {
+          matchingBatch.listing_ids.push(newListing._id);
+        }
+      } else {
+        const newBatch = {
+          _id: `batch_${Date.now()}`,
+          crop: batchCrop,
+          quality_grade: batchGrade,
+          total_quantity_kg: qty,
+          available_quantity_kg: qty,
+          weighted_ask_price_per_kg: askPrice,
+          min_clearing_price_per_kg: minPrice,
+          region: newListing.location?.address || 'Nashik, Maharashtra',
+          status: 'open',
+          listing_ids: [newListing._id],
+          farmer_count: 1,
+          current_highest_bid: 0,
+          created_at: new Date().toISOString(),
+        };
+        state.batches.unshift(newBatch);
+      }
+
       saveState(state);
       return { data: newListing, error: null };
     }

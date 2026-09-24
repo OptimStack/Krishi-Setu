@@ -194,35 +194,35 @@ export default function BuyerDashboard() {
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
       {/* Welcome Banner */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-gradient-to-r from-green-900 to-emerald-800 text-white p-6 rounded-2xl shadow-md">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-gradient-to-r from-[#2A5124] to-[#1c3917] dark:from-[#111f13] dark:to-[#172819] text-white p-6 rounded-2xl shadow-xl border border-[#D3D67A]/30">
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold tracking-tight">
               Welcome, {user?.name || 'Buyer'}! 🏢
             </h1>
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-700/80 text-emerald-100 border border-emerald-500/50">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#D3D67A]/20 text-[#D3D67A] border border-[#D3D67A]/40">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#D3D67A] animate-pulse"></span>
               Live Sync
             </span>
           </div>
-          <p className="text-emerald-200 text-sm mt-1">
+          <p className="text-stone-200 dark:text-stone-300 text-sm mt-1">
             Wholesale procurement & double-auction bidding dashboard
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Link to="/buyer/browse">
-            <button className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-4 py-2.5 rounded-lg shadow transition text-sm flex items-center gap-2">
+            <button className="bg-[#D3D67A] hover:bg-[#c2c56a] text-[#2A5124] font-bold px-4 py-2.5 rounded-lg shadow-md transition flex items-center gap-2 text-sm">
               <span>🔍</span> Browse Batches
             </button>
           </Link>
           <Link to="/buyer/submit-bid">
-            <button className="bg-amber-400 hover:bg-amber-500 text-stone-900 font-semibold px-4 py-2.5 rounded-lg shadow transition text-sm flex items-center gap-2">
+            <button className="bg-white/20 hover:bg-white/30 text-white font-semibold px-4 py-2.5 rounded-lg shadow transition text-sm flex items-center gap-2 border border-white/30">
               <span>➕</span> Place New Bid
             </button>
           </Link>
           <button
             onClick={fetchData}
-            className="bg-green-800/80 hover:bg-green-800 text-white px-3 py-2.5 rounded-lg text-sm transition"
+            className="bg-black/30 hover:bg-black/50 text-white px-3 py-2.5 rounded-lg text-sm transition border border-white/20"
             title="Refresh Data"
           >
             ↻
@@ -235,8 +235,8 @@ export default function BuyerDashboard() {
         <div
           className={`p-4 rounded-xl text-sm font-medium flex items-center justify-between shadow-sm ${
             feedback.type === 'error'
-              ? 'bg-red-50 text-red-700 border border-red-200'
-              : 'bg-emerald-50 text-emerald-800 border border-emerald-300'
+              ? 'bg-red-50 dark:bg-red-950/60 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800'
+              : 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
           }`}
         >
           <span>{feedback.text}</span>
@@ -251,31 +251,31 @@ export default function BuyerDashboard() {
 
       {/* KPI Metrics Summary */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="p-4 bg-white border border-stone-200 shadow-sm">
-          <div className="text-xs font-semibold text-stone-400 uppercase tracking-wider">Total Bids</div>
-          <div className="text-3xl font-extrabold text-stone-900 mt-1">{totalBids}</div>
-          <div className="text-xs text-stone-500 mt-1">Orders submitted</div>
-        </Card>
+        <div className="p-4 bg-white/95 dark:bg-[#162518]/95 backdrop-blur-sm rounded-xl border border-stone-200 dark:border-emerald-800/40 shadow-xs">
+          <div className="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider">Total Bids</div>
+          <div className="text-3xl font-extrabold text-stone-900 dark:text-stone-100 mt-1">{totalBids}</div>
+          <div className="text-xs text-stone-400 dark:text-stone-400 mt-1">Orders submitted</div>
+        </div>
 
-        <Card className="p-4 bg-white border border-stone-200 shadow-sm">
-          <div className="text-xs font-semibold text-emerald-600 uppercase tracking-wider">Active Bids</div>
-          <div className="text-3xl font-extrabold text-emerald-700 mt-1">{openBids.length}</div>
-          <div className="text-xs text-stone-500 mt-1">Awaiting auction clearing</div>
-        </Card>
+        <div className="p-4 bg-white/95 dark:bg-[#162518]/95 backdrop-blur-sm rounded-xl border border-stone-200 dark:border-emerald-800/40 shadow-xs">
+          <div className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Active Bids</div>
+          <div className="text-3xl font-extrabold text-emerald-700 dark:text-[#D3D67A] mt-1">{openBids.length}</div>
+          <div className="text-xs text-stone-400 dark:text-stone-400 mt-1">Awaiting auction clearing</div>
+        </div>
 
-        <Card className="p-4 bg-white border border-stone-200 shadow-sm">
-          <div className="text-xs font-semibold text-blue-600 uppercase tracking-wider">Won Trades</div>
-          <div className="text-3xl font-extrabold text-blue-700 mt-1">
+        <div className="p-4 bg-white/95 dark:bg-[#162518]/95 backdrop-blur-sm rounded-xl border border-stone-200 dark:border-emerald-800/40 shadow-xs">
+          <div className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Won Trades</div>
+          <div className="text-3xl font-extrabold text-blue-700 dark:text-blue-400 mt-1">
             {trades.length}
           </div>
-          <div className="text-xs text-stone-500 mt-1">{pendingTrades.length} pending checkout</div>
-        </Card>
+          <div className="text-xs text-stone-400 dark:text-stone-400 mt-1">{pendingTrades.length} pending checkout</div>
+        </div>
 
-        <Card className="p-4 bg-white border border-stone-200 shadow-sm">
-          <div className="text-xs font-semibold text-amber-600 uppercase tracking-wider">Total Volume</div>
-          <div className="text-3xl font-extrabold text-stone-900 mt-1">{totalProcurementQuintals} <span className="text-sm font-semibold text-stone-500">Qtl</span></div>
-          <div className="text-xs text-stone-500 mt-1">{formatQuantity(totalProcurementKg)}</div>
-        </Card>
+        <div className="p-4 bg-white/95 dark:bg-[#162518]/95 backdrop-blur-sm rounded-xl border border-stone-200 dark:border-emerald-800/40 shadow-xs">
+          <div className="text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider">Total Volume</div>
+          <div className="text-3xl font-extrabold text-stone-900 dark:text-stone-100 mt-1">{totalProcurementQuintals} <span className="text-sm font-semibold text-stone-500 dark:text-stone-400">Qtl</span></div>
+          <div className="text-xs text-stone-400 dark:text-stone-400 mt-1">{formatQuantity(totalProcurementKg)}</div>
+        </div>
       </div>
 
       {/* Primary View Switcher: Bids vs Trades vs Requirements */}
@@ -284,12 +284,12 @@ export default function BuyerDashboard() {
           onClick={() => setActiveTab('bids')}
           className={`pb-3 text-sm font-bold border-b-2 transition flex items-center gap-2 whitespace-nowrap ${
             activeTab === 'bids'
-              ? 'border-emerald-600 text-emerald-800 dark:text-emerald-400 font-bold'
+              ? 'border-[#2A5124] dark:border-[#D3D67A] text-[#2A5124] dark:text-[#D3D67A] font-bold'
               : 'border-transparent text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-200'
           }`}
         >
           <span>Procurement Bids</span>
-          <span className="text-xs bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 px-2 py-0.5 rounded-full">
+          <span className="text-xs bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 px-2 py-0.5 rounded-full font-semibold">
             {bids.length}
           </span>
         </button>
@@ -298,7 +298,7 @@ export default function BuyerDashboard() {
           onClick={() => setActiveTab('trades')}
           className={`pb-3 text-sm font-bold border-b-2 transition flex items-center gap-2 whitespace-nowrap ${
             activeTab === 'trades'
-              ? 'border-emerald-600 text-emerald-800 dark:text-emerald-400 font-bold'
+              ? 'border-[#2A5124] dark:border-[#D3D67A] text-[#2A5124] dark:text-[#D3D67A] font-bold'
               : 'border-transparent text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-200'
           }`}
         >
@@ -314,7 +314,7 @@ export default function BuyerDashboard() {
           onClick={() => setActiveTab('requirements')}
           className={`pb-3 text-sm font-bold border-b-2 transition flex items-center gap-2 whitespace-nowrap ${
             activeTab === 'requirements'
-              ? 'border-emerald-600 text-emerald-800 dark:text-emerald-400 font-bold'
+              ? 'border-[#2A5124] dark:border-[#D3D67A] text-[#2A5124] dark:text-[#D3D67A] font-bold'
               : 'border-transparent text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-200'
           }`}
         >
@@ -327,9 +327,9 @@ export default function BuyerDashboard() {
 
       {/* TAB 1: BIDS TABLE */}
       {activeTab === 'bids' && (
-        <Card className="p-0 overflow-hidden border border-stone-200 shadow-sm">
+        <Card className="p-0 overflow-hidden border border-stone-200 dark:border-emerald-800/40 shadow-xs">
           {/* Filter Navigation Tabs */}
-          <div className="flex border-b border-stone-200 bg-stone-50 px-4 pt-3 gap-2 overflow-x-auto">
+          <div className="flex border-b border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-[#111c12] px-4 pt-3 gap-2 overflow-x-auto">
             {[
               { key: 'all', label: 'All Bids', count: totalBids },
               { key: 'open', label: 'Open', count: openBids.length },
@@ -341,13 +341,13 @@ export default function BuyerDashboard() {
                 onClick={() => setFilterStatus(tab.key)}
                 className={`pb-3 px-3 text-xs font-semibold border-b-2 transition-colors whitespace-nowrap flex items-center gap-1.5 ${
                   filterStatus === tab.key
-                    ? 'border-green-700 text-green-800 font-bold'
-                    : 'border-transparent text-stone-500 hover:text-stone-800 hover:border-stone-300'
+                    ? 'border-green-700 dark:border-[#D3D67A] text-green-900 dark:text-[#D3D67A] font-bold'
+                    : 'border-transparent text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 hover:border-stone-300 dark:hover:border-stone-700'
                 }`}
               >
                 <span>{tab.label}</span>
-                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                  filterStatus === tab.key ? 'bg-green-100 text-green-900' : 'bg-stone-200 text-stone-600'
+                <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                  filterStatus === tab.key ? 'bg-green-100 dark:bg-emerald-950 text-green-900 dark:text-emerald-300' : 'bg-stone-200 dark:bg-stone-800 text-stone-600 dark:text-stone-300'
                 }`}>
                   {tab.count}
                 </span>
@@ -361,9 +361,9 @@ export default function BuyerDashboard() {
               <LoadingSpinner />
             </div>
           ) : filteredBids.length === 0 ? (
-            <div className="py-16 text-center text-stone-500 space-y-3">
+            <div className="py-16 text-center text-stone-500 dark:text-stone-400 space-y-3">
               <span className="text-4xl block">📝</span>
-              <p className="text-base font-medium text-stone-700">No {filterStatus !== 'all' ? filterStatus : ''} bids placed yet.</p>
+              <p className="text-base font-medium text-stone-700 dark:text-stone-300">No {filterStatus !== 'all' ? filterStatus : ''} bids placed yet.</p>
               <div className="pt-2">
                 <Link to="/buyer/submit-bid">
                   <Button className="text-xs">Place First Bid</Button>
@@ -373,7 +373,7 @@ export default function BuyerDashboard() {
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="bg-stone-100/70 border-b border-stone-200 text-stone-500 text-xs uppercase tracking-wider font-semibold">
+                <thead className="bg-stone-100/70 dark:bg-stone-900/60 border-b border-stone-200 dark:border-stone-800 text-stone-500 dark:text-stone-400 text-xs uppercase tracking-wider font-semibold">
                   <tr>
                     <th className="py-3.5 px-4">Commodity / Crop</th>
                     <th className="py-3.5 px-4">Min Grade</th>
@@ -385,7 +385,7 @@ export default function BuyerDashboard() {
                     <th className="py-3.5 px-4 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-stone-100">
+                <tbody className="divide-y divide-stone-100 dark:divide-stone-800/60">
                   {filteredBids.map((bid) => {
                     const bidId = bid._id || bid.id;
                     const qty = parseFloat(bid.quantity_needed_kg || bid.quantity) || 0;
@@ -394,26 +394,26 @@ export default function BuyerDashboard() {
                     const isOpen = bid.status === 'open';
 
                     return (
-                      <tr key={bidId} className="hover:bg-stone-50/80 transition-colors">
-                        <td className="py-3.5 px-4 font-semibold text-stone-900">
+                      <tr key={bidId} className="hover:bg-stone-50/80 dark:hover:bg-emerald-950/20 transition-colors">
+                        <td className="py-3.5 px-4 font-bold text-stone-900 dark:text-stone-100 capitalize">
                           {bid.crop || bid.commodity}
                         </td>
                         <td className="py-3.5 px-4">
                           <StatusBadge status={`grade_${(bid.min_quality_grade || bid.grade || 'C').toLowerCase()}`} />
                         </td>
-                        <td className="py-3.5 px-4 font-medium text-stone-800">
+                        <td className="py-3.5 px-4 font-semibold text-stone-900 dark:text-stone-100">
                           {formatQuantity(qty)}
                         </td>
-                        <td className="py-3.5 px-4 font-semibold text-green-800">
+                        <td className="py-3.5 px-4 font-bold text-green-700 dark:text-[#D3D67A]">
                           {formatCurrency(price)}/kg
                         </td>
-                        <td className="py-3.5 px-4 text-stone-800 font-medium">
+                        <td className="py-3.5 px-4 text-stone-900 dark:text-stone-100 font-semibold">
                           ₹{totalVal.toLocaleString('en-IN', { maximumFractionDigits: 2 })}
                         </td>
                         <td className="py-3.5 px-4">
                           <StatusBadge status={bid.status} />
                         </td>
-                        <td className="py-3.5 px-4 text-stone-500 text-xs">
+                        <td className="py-3.5 px-4 text-stone-500 dark:text-stone-400 text-xs">
                           {formatDate(bid.created_at)}
                         </td>
                         <td className="py-3.5 px-4 text-right">
@@ -422,7 +422,7 @@ export default function BuyerDashboard() {
                               type="button"
                               onClick={() => handleCancel(bidId)}
                               disabled={actionLoading === bidId}
-                              className="text-xs font-semibold text-red-600 hover:text-red-800 border border-red-200 hover:bg-red-50 px-2.5 py-1 rounded transition-colors disabled:opacity-50"
+                              className="text-xs border border-red-500/40 text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-500/10 px-2.5 py-1 rounded-md font-semibold transition"
                             >
                               {actionLoading === bidId ? 'Cancelling...' : 'Cancel'}
                             </button>
@@ -442,19 +442,19 @@ export default function BuyerDashboard() {
 
       {/* TAB 2: EXECUTED TRADES & PAYMENTS */}
       {activeTab === 'trades' && (
-        <Card className="p-0 overflow-hidden border border-stone-200 shadow-sm">
+        <Card className="p-0 overflow-hidden border border-stone-200 dark:border-emerald-800/40 shadow-xs">
           {trades.length === 0 ? (
-            <div className="py-16 text-center text-stone-500 space-y-3">
+            <div className="py-16 text-center text-stone-500 dark:text-stone-400 space-y-3">
               <span className="text-4xl block">🤝</span>
-              <p className="text-base font-semibold text-stone-800">No auction trades yet</p>
-              <p className="text-xs text-stone-500 max-w-md mx-auto">
+              <p className="text-base font-semibold text-stone-800 dark:text-stone-200">No auction trades yet</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400 max-w-md mx-auto">
                 When the double auction engine matches your bid against pooled farmer batches, the clearing trade will appear here for payment checkout.
               </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="bg-stone-100/70 border-b border-stone-200 text-stone-500 text-xs uppercase tracking-wider font-semibold">
+                <thead className="bg-stone-100/70 dark:bg-stone-900/60 border-b border-stone-200 dark:border-stone-800 text-stone-500 dark:text-stone-400 text-xs uppercase tracking-wider font-semibold">
                   <tr>
                     <th className="py-3.5 px-4">Trade Reference</th>
                     <th className="py-3.5 px-4">Crop</th>
@@ -465,25 +465,25 @@ export default function BuyerDashboard() {
                     <th className="py-3.5 px-4 text-right">Payment Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-stone-100">
+                <tbody className="divide-y divide-stone-100 dark:divide-stone-800/60">
                   {trades.map((trade) => {
                     const tradeId = trade._id || trade.id;
                     const isPending = trade.status === 'pending_payment' || trade.status === 'payment_processing';
                     const isSettled = trade.status === 'settled';
 
                     return (
-                      <tr key={tradeId} className="hover:bg-stone-50/80 transition-colors">
-                        <td className="py-3.5 px-4 font-mono text-xs font-bold text-stone-700">
+                      <tr key={tradeId} className="hover:bg-stone-50/80 dark:hover:bg-emerald-950/20 transition-colors">
+                        <td className="py-3.5 px-4 font-mono text-xs font-bold text-stone-700 dark:text-stone-300">
                           #{String(tradeId).slice(-6).toUpperCase()}
                         </td>
-                        <td className="py-3.5 px-4 font-bold text-stone-900">{trade.crop}</td>
-                        <td className="py-3.5 px-4 font-medium text-stone-800">
+                        <td className="py-3.5 px-4 font-bold text-stone-900 dark:text-stone-100 capitalize">{trade.crop}</td>
+                        <td className="py-3.5 px-4 font-semibold text-stone-900 dark:text-stone-100">
                           {formatQuantity(trade.quantity_kg)}
                         </td>
-                        <td className="py-3.5 px-4 font-semibold text-green-800">
+                        <td className="py-3.5 px-4 font-bold text-green-700 dark:text-[#D3D67A]">
                           {formatCurrency(trade.clearing_price_per_kg)}/kg
                         </td>
-                        <td className="py-3.5 px-4 font-bold text-base text-stone-900">
+                        <td className="py-3.5 px-4 font-bold text-base text-stone-900 dark:text-stone-100">
                           ₹{Number(trade.total_amount).toLocaleString('en-IN', { maximumFractionDigits: 2 })}
                         </td>
                         <td className="py-3.5 px-4">
@@ -502,7 +502,7 @@ export default function BuyerDashboard() {
                             </Button>
                           )}
                           {isSettled && (
-                            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-200">
+                            <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 rounded border border-emerald-200 dark:border-emerald-800">
                               Paid & Settled ✓
                             </span>
                           )}

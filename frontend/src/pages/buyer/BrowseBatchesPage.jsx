@@ -60,20 +60,26 @@ export default function BrowseBatchesPage() {
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-stone-200 pb-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-stone-200 dark:border-stone-800 pb-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-green-900">Browse Pooled Batches</h1>
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+            <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">Browse Pooled Batches</h1>
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
               Live Sync
             </span>
           </div>
-          <p className="text-sm text-stone-500 mt-0.5">
+          <p className="text-sm text-stone-600 dark:text-stone-400 mt-0.5">
             Pooled farmer produce ready for competitive double-auction bidding.
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Link
+            to="/buyer/dashboard"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800/80 text-stone-700 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-700 text-xs font-semibold shadow-xs transition"
+          >
+            ← Dashboard
+          </Link>
           <Button variant="outline" onClick={() => fetchBatches(false)} className="text-xs">
             ↻ Refresh
           </Button>
@@ -86,19 +92,19 @@ export default function BrowseBatchesPage() {
       </div>
 
       {/* Filter Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4 p-4 bg-white rounded-xl border border-stone-200 shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-4 p-4 bg-white/95 dark:bg-[#162518]/95 rounded-xl border border-stone-200 dark:border-emerald-800/40 shadow-xs">
         {/* Crop Filters */}
         <div className="flex items-center gap-1.5 overflow-x-auto py-1">
-          <span className="text-xs font-semibold text-stone-500 mr-1">Crop:</span>
+          <span className="text-xs font-semibold text-stone-500 dark:text-stone-400 mr-1">Crop:</span>
           {crops.map((c) => (
             <button
               key={c}
               type="button"
               onClick={() => setSelectedCrop(c)}
-              className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
+              className={`px-3 py-1 rounded-full text-xs font-semibold border transition-colors ${
                 selectedCrop === c
-                  ? 'bg-green-700 text-white border-green-700 shadow-sm'
-                  : 'bg-stone-50 text-stone-700 border-stone-200 hover:bg-stone-100'
+                  ? 'bg-green-700 text-white border-green-700 dark:bg-emerald-800 dark:border-emerald-700 shadow-sm'
+                  : 'bg-stone-50 dark:bg-stone-800/60 text-stone-700 dark:text-stone-300 border-stone-200 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-700'
               }`}
             >
               {c === 'all' ? 'All Crops' : c}
@@ -108,16 +114,16 @@ export default function BrowseBatchesPage() {
 
         {/* Grade Filters */}
         <div className="flex items-center gap-1.5">
-          <span className="text-xs font-semibold text-stone-500 mr-1">Grade:</span>
+          <span className="text-xs font-semibold text-stone-500 dark:text-stone-400 mr-1">Grade:</span>
           {grades.map((g) => (
             <button
               key={g}
               type="button"
               onClick={() => setSelectedGrade(g)}
-              className={`px-2.5 py-1 rounded-md text-xs font-medium border transition-colors ${
+              className={`px-2.5 py-1 rounded-md text-xs font-semibold border transition-colors ${
                 selectedGrade === g
-                  ? 'bg-stone-800 text-white border-stone-800'
-                  : 'bg-stone-50 text-stone-600 border-stone-200 hover:bg-stone-100'
+                  ? 'bg-stone-800 dark:bg-[#D3D67A] text-white dark:text-[#182d15] border-stone-800 dark:border-[#D3D67A]'
+                  : 'bg-stone-50 dark:bg-stone-800/60 text-stone-600 dark:text-stone-300 border-stone-200 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-700'
               }`}
             >
               {g === 'all' ? 'All' : `Grade ${g}`}
@@ -132,10 +138,10 @@ export default function BrowseBatchesPage() {
           <LoadingSpinner />
         </div>
       ) : batches.length === 0 ? (
-        <Card className="text-center py-16 px-4 bg-stone-50 border-dashed border-stone-300">
+        <Card className="text-center py-16 px-4 bg-stone-50 dark:bg-[#121c13] border-dashed border-stone-300 dark:border-stone-700">
           <span className="text-5xl mb-4 block">🌾</span>
-          <h3 className="text-lg font-bold text-stone-800 mb-2">No Active Pooled Batches Found</h3>
-          <p className="text-sm text-stone-500 max-w-md mx-auto mb-6">
+          <h3 className="text-lg font-bold text-stone-800 dark:text-stone-200 mb-2">No Active Pooled Batches Found</h3>
+          <p className="text-sm text-stone-500 dark:text-stone-400 max-w-md mx-auto mb-6">
             Farmers are currently listing produce. When listings reach threshold volume, our cross-farmer pooling engine groups them here. You can also place an open bid right now!
           </p>
           <div className="flex justify-center gap-3">
@@ -155,21 +161,21 @@ export default function BrowseBatchesPage() {
             const grade = batch.quality_grade || batch.grade;
             const totalKg = batch.total_quantity_kg || batch.quantity || 0;
             const totalQuintals = (totalKg / 100).toFixed(1);
-            const highestBid = batch.current_highest_bid || batch.currentBid;
+            const highestBid = parseFloat(batch.current_highest_bid || batch.currentBid) || 0;
 
             return (
               <Card
                 key={batchId}
-                className="flex flex-col h-full hover:border-green-400 hover:shadow-md transition-all group"
+                className="flex flex-col h-full hover:border-[#D3D67A]/60 hover:shadow-lg transition-all group"
               >
                 {/* Batch Top Header */}
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-center gap-3">
-                    <span className="text-3xl p-2 bg-stone-100 rounded-xl group-hover:scale-105 transition-transform">
+                    <span className="text-3xl p-2 bg-stone-100 dark:bg-emerald-950/60 rounded-xl group-hover:scale-105 transition-transform border border-stone-200/60 dark:border-emerald-800/40">
                       {getCropEmoji(cropName)}
                     </span>
                     <div>
-                      <h3 className="text-lg font-bold text-stone-900 group-hover:text-green-800 transition-colors">
+                      <h3 className="text-lg font-bold text-stone-900 dark:text-stone-100 group-hover:text-green-800 dark:group-hover:text-[#D3D67A] transition-colors capitalize">
                         {cropName}
                       </h3>
                       <p className="text-xs text-stone-400 font-mono">
@@ -181,33 +187,33 @@ export default function BrowseBatchesPage() {
                 </div>
 
                 {/* Details List */}
-                <div className="flex-grow space-y-2.5 text-sm mb-6 bg-stone-50/60 p-3.5 rounded-lg border border-stone-100">
+                <div className="flex-grow space-y-2.5 text-sm mb-6 bg-stone-50/80 dark:bg-[#111c12]/80 p-3.5 rounded-xl border border-stone-100 dark:border-emerald-900/40">
                   <div className="flex justify-between">
-                    <span className="text-stone-500">Total Pooled</span>
-                    <span className="font-semibold text-stone-800">
-                      {formatQuantity(totalKg)} <span className="text-xs text-stone-500 font-normal">({totalQuintals} Qtl)</span>
+                    <span className="text-stone-500 dark:text-stone-400">Total Pooled</span>
+                    <span className="font-bold text-stone-900 dark:text-stone-100">
+                      {formatQuantity(totalKg)} <span className="text-xs text-stone-400 font-normal">({totalQuintals} Qtl)</span>
                     </span>
                   </div>
 
                   {batch.region && (
                     <div className="flex justify-between">
-                      <span className="text-stone-500">Region</span>
-                      <span className="font-medium text-stone-700 truncate max-w-[160px] text-right">
+                      <span className="text-stone-500 dark:text-stone-400">Region</span>
+                      <span className="font-semibold text-stone-800 dark:text-stone-200 truncate max-w-[160px] text-right">
                         {batch.region}
                       </span>
                     </div>
                   )}
 
                   <div className="flex justify-between">
-                    <span className="text-stone-500">Farmers Pooled</span>
-                    <span className="font-medium text-stone-700">
+                    <span className="text-stone-500 dark:text-stone-400">Farmers Pooled</span>
+                    <span className="font-semibold text-stone-800 dark:text-stone-200">
                       {batch.listing_count || (batch.listing_ids ? batch.listing_ids.length : 1)} listings
                     </span>
                   </div>
 
-                  <div className="flex justify-between pt-1 border-t border-stone-200/60">
-                    <span className="text-stone-600 font-medium">Highest Open Bid</span>
-                    <span className="font-bold text-green-700">
+                  <div className="flex justify-between pt-1 border-t border-stone-200/60 dark:border-emerald-900/30">
+                    <span className="text-stone-600 dark:text-stone-400 font-medium">Highest Open Bid</span>
+                    <span className={highestBid > 0 ? "font-bold text-green-700 dark:text-[#D3D67A]" : "font-normal text-stone-400 dark:text-stone-500 italic"}>
                       {highestBid > 0 ? `${formatCurrency(highestBid)}/kg` : 'No bids yet'}
                     </span>
                   </div>
@@ -215,7 +221,7 @@ export default function BrowseBatchesPage() {
 
                 {/* Action Button */}
                 <Link to={`/buyer/bid/${batchId}`} className="mt-auto">
-                  <Button className="w-full font-semibold">
+                  <Button className="w-full font-bold">
                     Place Bid on this Batch →
                   </Button>
                 </Link>
