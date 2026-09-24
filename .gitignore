@@ -1,0 +1,146 @@
+# ==========================================
+# Krishi-Setu - Comprehensive Git Ignore
+# ==========================================
+
+# ------------------------------------------
+# Environment & Secret Files
+# ------------------------------------------
+.env
+.env.*
+!.env.example
+*.env
+*.env.*
+!.env*.example
+
+# ------------------------------------------
+# Python & Backend
+# ------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+venv*/
+env/
+env*/
+ENV/
+.venv/
+
+# Pytest & Coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# Flask / Server Logs
+instance/
+.webassets-cache
+*.log
+logs/
+
+# Uploaded Files / Media
+backend/uploads/*
+!backend/uploads/.gitkeep
+uploads/*
+!uploads/.gitkeep
+
+# ------------------------------------------
+# Node.js & Frontend (Vite / React)
+# ------------------------------------------
+frontend/node_modules/
+node_modules/
+frontend/dist/
+frontend/dist-ssr/
+dist/
+
+# NPM / Yarn / PNPM logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Vite cache
+frontend/.vite/
+.vite/
+
+# ------------------------------------------
+# ML / Data Science Artifacts
+# ------------------------------------------
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Large model binaries & checkpoints
+*.pkl
+*.joblib
+*.h5
+*.hdf5
+*.pt
+*.pth
+*.onnx
+*.bin
+*.tflite
+
+# Preserve folder structure with .gitkeep
+ml/saved_models/*
+!ml/saved_models/.gitkeep
+ml/datasets/raw/*
+!ml/datasets/raw/.gitkeep
+ml/datasets/processed/*
+!ml/datasets/processed/.gitkeep
+
+# Evaluation output images/temp files (keep report markdown)
+ml/evaluation/*.png
+ml/evaluation/*.jpg
+ml/evaluation/*.jpeg
+!ml/evaluation/.gitkeep
+
+# ------------------------------------------
+# OS & Editor Specific Files
+# ------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+[Dd]esktop.ini
+
+# IDEs & Editors
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.sublime-workspace
+*.sublime-project
+*.swp
+*.swo
+*~

@@ -1,0 +1,63 @@
+{
+  "model_architecture": "GradientBoostingVisualClassifier",
+  "trained_at": "2026-09-24T12:52:26.096819Z",
+  "accuracy": 0.975,
+  "total_training_samples": 480,
+  "total_test_samples": 120,
+  "classes": [
+    "Grade A",
+    "Grade B",
+    "Grade C"
+  ],
+  "confusion_matrix": [
+    [
+      40,
+      0,
+      0
+    ],
+    [
+      0,
+      39,
+      1
+    ],
+    [
+      0,
+      2,
+      38
+    ]
+  ],
+  "detailed_report": {
+    "Grade A": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 40.0
+    },
+    "Grade B": {
+      "precision": 0.9512195121951219,
+      "recall": 0.975,
+      "f1-score": 0.9629629629629629,
+      "support": 40.0
+    },
+    "Grade C": {
+      "precision": 0.9743589743589743,
+      "recall": 0.95,
+      "f1-score": 0.9620253164556962,
+      "support": 40.0
+    },
+    "accuracy": 0.975,
+    "macro avg": {
+      "precision": 0.9751928288513655,
+      "recall": 0.975,
+      "f1-score": 0.9749960931395529,
+      "support": 120.0
+    },
+    "weighted avg": {
+      "precision": 0.9751928288513654,
+      "recall": 0.975,
+      "f1-score": 0.974996093139553,
+      "support": 120.0
+    }
+  },
+  "confidence_threshold": 0.7
+}

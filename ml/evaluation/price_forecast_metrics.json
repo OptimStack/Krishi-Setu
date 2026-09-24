@@ -1,0 +1,36 @@
+{
+  "model_type": "RandomForestRegressor",
+  "trained_at": "2026-09-24T13:01:01.595850Z",
+  "num_training_samples": 7300,
+  "num_test_samples": 1825,
+  "mae_inr_per_quintal": 379.51,
+  "rmse_inr_per_quintal": 420.66,
+  "mape_percent": 15.99,
+  "r2_score": -6.0706,
+  "crops_supported": [
+    "Cotton",
+    "Gram (Chana)",
+    "Onion",
+    "Soybean",
+    "Wheat"
+  ],
+  "mandis_supported": [
+    "Akola",
+    "Latur",
+    "Nagpur",
+    "Nashik",
+    "Pune"
+  ],
+  "feature_list": [
+    "crop",
+    "mandi_name",
+    "month",
+    "day_of_week",
+    "day_of_year",
+    "arrivals_tonnes",
+    "price_lag_1",
+    "price_lag_7",
+    "price_rolling_7_mean",
+    "price_rolling_7_std"
+  ]
+}

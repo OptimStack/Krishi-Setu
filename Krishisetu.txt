@@ -1,0 +1,163 @@
+================================================================================
+SMART INDIA HACKATHON 2026 - PROBLEM STATEMENT REPORT
+================================================================================
+
+PS Number:      SIH26132
+Title:          Strengthening Market Linkages and Price Discovery for Farmers
+Organization:   Government of Maharashtra
+Theme:          Agriculture, FoodTech & Rural Development
+Overall Verdict: GREEN (Strong Recommended Pick)
+
+================================================================================
+1. OVERVIEW IN PLAIN TERMS
+================================================================================
+
+Many farmers, especially smallholders and producer groups, have limited
+visibility of current and expected prices across nearby markets, processors,
+institutional buyers, and digital trading channels.
+
+Why It Matters:
+This affects farmer income, food security, and rural access to information
+and markets. Even small efficiency gains in this system scale up to real,
+tangible improvements in rural livelihoods.
+
+================================================================================
+2. THE REAL PAIN POINTS
+================================================================================
+
+  1. Limited Price Visibility
+     Many farmers, especially smallholders and producer groups, have limited
+     visibility of current and expected prices across nearby markets,
+     processors, institutional buyers, and digital trading channels.
+
+  2. Fragmented Market Information
+     Information on quality specifications, demand, logistics, storage,
+     payment reliability, and buyer credentials may be fragmented across
+     multiple sources, making it hard for farmers to make informed decisions.
+
+  3. Weak Bargaining Position
+     Farmers may sell immediately after harvest because of liquidity or
+     storage constraints, which leaves them with weak bargaining power
+     against buyers.
+
+================================================================================
+3. WHAT THEY'RE ASKING FOR (FULL PROBLEM CONTEXT)
+================================================================================
+
+Many farmers, especially smallholders and producer groups, have limited
+visibility of current and expected prices across nearby markets, processors,
+institutional buyers, and digital trading channels. Information on quality
+specifications, demand, logistics, storage, payment reliability, and buyer
+credentials may be fragmented. Farmers may sell immediately after harvest
+because of liquidity or storage constraints and may have weak bargaining
+power. Buyers, meanwhile, may struggle to aggregate consistent volumes and
+verify quality.
+
+The challenge is to improve transparent price discovery and create reliable,
+efficient linkages from farm gate to suitable buyers.
+
+================================================================================
+4. EXPECTED SOLUTION - KEY POINTS
+================================================================================
+
+Outcome:
+  A market-intelligence and transaction-enablement solution that aggregates:
+    - Mandi (market) prices
+    - Buyer demand signals
+    - Quality requirements
+    - Arrival volumes
+    - Transport and storage options
+
+  ...and surfaces this information in a usable, actionable format for
+  farmers and buyers alike.
+
+Expected Outcomes Include:
+    - Improved farmer price realisation
+    - Reduced information asymmetry
+    - Lower transaction costs
+    - Stronger FPO (Farmer Producer Organization) aggregation
+    - Reduced post-harvest loss
+    - More reliable buyer sourcing
+
+================================================================================
+5. IMPACT AND BENEFITS
+================================================================================
+
+Direct Impact:
+  Affects farmer income, food security, and rural access to information and
+  markets. Small efficiency gains in this system scale to real, meaningful
+  improvements in livelihoods.
+
+Specific to Government of Maharashtra:
+  Many farmers, especially smallholders and producer groups, have limited
+  visibility of current and expected prices across nearby markets (as
+  described in the core problem statement above).
+
+================================================================================
+6. ARCHITECTURE - STRAIGHTFORWARD
+================================================================================
+
+Expect a typical 3-layer stack:
+
+  Layer 1 - Data / Integration Layer
+            (Mandi prices, buyer data, logistics data, storage data feeds)
+
+  Layer 2 - Core Logic / AI Layer
+            (Price prediction, matching logic, quality assessment)
+
+  Layer 3 - Presentation Layer
+            (Dashboard or mobile app interface for farmers/buyers)
+
+Note: Most bugs and integration issues show up at the SEAMS between layers.
+Budget real time for integration testing, not just for writing each layer
+in isolation.
+
+================================================================================
+7. OVERALL VERDICT: GREEN
+================================================================================
+
+Summary:
+  Strong balance of real innovation, manageable effort, and a workable
+  competitive field. A good default pick for most teams.
+
+Biggest Strength:
+  Genuine modern-tech core gives real substance to demo and defend -
+  not just a UI wrapper around a database.
+
+Biggest Risk:
+  The Expected Solution is thin in the official text. Teams will need to
+  make real interpretive calls on scope. Confirm assumptions before
+  building on them.
+
+Validate Before You Commit:
+  Confirm the exact scope of the Expected Solution ask with the source
+  Problem Statement before committing your team's 36 hours to it.
+
+================================================================================
+8. WHAT THE EVALUATOR WILL LIKELY ASK
+================================================================================
+
+  1. Where exactly is your input or training data coming from - real
+     Agriculture/FoodTech-domain data, or a synthetic/demo dataset
+     assembled for the hackathon?
+
+  2. What is the core AI or tech component actually doing that a simpler
+     rule-based system could not?
+
+  3. What happens when connectivity drops, hardware fails, or input data
+     is missing - does the system degrade gracefully, or does it just
+     break?
+
+  4. How would this hold up with real production-scale data instead of
+     your demo dataset?
+
+  5. Who exactly benefits from this, and how would you measure that it is
+     actually working after deployment - not just at demo time?
+
+================================================================================
+END OF REPORT
+================================================================================
+Source: SIH 2026 Problem Statement Catalogue (PS ID: SIH26132)
+Compiled from third-party SIH 2026 dataset. Recommend cross-checking exact
+wording against the official portal (sih.gov.in) before final submission.
+================================================================================

@@ -1,0 +1,17 @@
+[Unit]
+Description=Krishi-Setu Flask API (gunicorn)
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/krishi-setu/backend
+EnvironmentFile=/var/www/krishi-setu/backend/.env
+ExecStart=/var/www/krishi-setu/backend/venv/bin/gunicorn -w 4 -b 127.0.0.1:8000 run:app
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
