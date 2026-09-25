@@ -14,6 +14,7 @@ import PoolingPage from './pages/farmer/PoolingPage';
 import FarmerProductsPage from './pages/farmer/FarmerProductsPage';
 import ProductDetailPage from './pages/farmer/ProductDetailPage';
 import GradeCropPage from './pages/farmer/GradeCropPage';
+import AuctionListingPage from './pages/farmer/AuctionListingPage';
 import BuyerDashboard from './pages/buyer/BuyerDashboard';
 import BrowseBatchesPage from './pages/buyer/BrowseBatchesPage';
 import SubmitBidPage from './pages/buyer/SubmitBidPage';
@@ -83,7 +84,8 @@ function App() {
             
             <Route path="/farmer/*" element={<ProtectedRoute allowedRoles={['farmer']} />}>
               <Route path="dashboard" element={<FarmerDashboard />} />
-              <Route path="submit-ask" element={<SubmitAskPage />} />
+              <Route path="auction-listing" element={<AuctionListingPage />} />
+              <Route path="submit-ask" element={<AuctionListingPage />} />
               <Route path="grade" element={<GradeCropPage />} />
               <Route path="market" element={<MarketPricesPage />} />
               <Route path="advisor" element={<SaleAdvisorPage />} />

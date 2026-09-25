@@ -249,7 +249,7 @@ export default function FarmerDashboard() {
         </div>
 
         <div className="flex items-center gap-3 shrink-0">
-          <Link to="/farmer/submit-ask">
+          <Link to="/farmer/grade">
             <button className="bg-gradient-to-r from-[#255919] via-[#3f702b] to-[#D1BF4B] hover:opacity-95 text-white font-extrabold px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all hover:scale-[1.02] active:scale-95 flex items-center gap-2 text-xs md:text-sm cursor-pointer border border-[#D1BF4B]/40">
               <span>📷</span>
               <span>{t('start_selling', 'Start Selling')}</span>
