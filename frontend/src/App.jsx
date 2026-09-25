@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
+import Sidebar from './components/layout/Sidebar';
 import ProtectedRoute from './components/layout/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -13,10 +14,18 @@ import SubmitBidPage from './pages/buyer/SubmitBidPage';
 import AuctionMonitorPage from './pages/admin/AuctionMonitorPage';
 import GradingReviewQueuePage from './pages/admin/GradingReviewQueuePage';
 import IntroAnimation from './components/ui/IntroAnimation';
+import KrishiSetuAIAssistant from './components/widgets/KrishiSetuAIAssistant';
+import { useAuth } from './context/AuthContext';
+import { useOffline } from './context/OfflineContext';
 
 function App() {
+  const { user } = useAuth();
+  const { syncToast } = useOffline();
+
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [aiAssistantOpen, setAiAssistantOpen] = useState(false);
+
   const [showIntro, setShowIntro] = useState(() => {
-    // Play on initial visit in session
     return !sessionStorage.getItem('krishisetu_intro_played');
   });
 
@@ -31,6 +40,8 @@ function App() {
     setShowIntro(false);
   };
 
+  const isFarmer = user?.role === 'farmer';
+
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-[#F5F8F4] via-[#EBF3EA] to-[#DFEDE1] dark:from-[#071309] dark:via-[#0E1F12] dark:to-[#142617] flex flex-col font-sans text-stone-900 dark:text-stone-100 transition-colors duration-500">
       {/* Subtle organic ambient glow overlay */}
@@ -41,9 +52,24 @@ function App() {
 
       {showIntro && <IntroAnimation onComplete={handleIntroComplete} />}
 
-      <div className="relative z-10 flex flex-col min-h-screen">
-        <Navbar />
-        <main className="flex-grow container mx-auto px-4 py-8 md:py-10">
+      {/* Sync Toast Notification */}
+      {syncToast && (
+        <div className="fixed top-16 right-4 z-50 bg-emerald-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-2xl border border-emerald-400 flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
+          <span>🔄</span>
+          <span>{syncToast}</span>
+        </div>
+      )}
+
+      {/* Left Sidebar for Farmer (Matching Screenshot) */}
+      {isFarmer && (
+        <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
+      )}
+
+      {/* Main Layout Area */}
+      <div className={`relative z-10 flex flex-col min-h-screen transition-all ${isFarmer ? 'lg:pl-64' : ''}`}>
+        <Navbar onToggleSidebar={() => setSidebarOpen((prev) => !prev)} />
+
+        <main className="flex-grow container mx-auto px-4 sm:px-6 py-6 md:py-8">
           <Routes>
             <Route path="/" element={<Navigate to="/login" />} />
             <Route path="/login" element={<LoginPage onReplayIntro={() => setShowIntro(true)} />} />
@@ -69,6 +95,12 @@ function App() {
           </Routes>
         </main>
       </div>
+
+      {/* AI Assistant Widget (Voice, Multilingual, Floating launcher matching screenshot) */}
+      <KrishiSetuAIAssistant
+        isOpen={aiAssistantOpen}
+        setIsOpen={setAiAssistantOpen}
+      />
     </div>
   );
 }
