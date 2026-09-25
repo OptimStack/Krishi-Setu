@@ -12,10 +12,25 @@
  * - Pooling, double auction, and settlement simulation
  */
 
-const STORAGE_KEY = 'krishisetu_mock_state_v3';
+const STORAGE_KEY = 'krishisetu_mock_state_v4';
 
 // Seed state matching backend/demo_fixtures.json
 const getInitialState = () => ({
+  active_pool: {
+    id: 'batch_fpo_pune',
+    _id: 'batch_fpo_pune',
+    name: 'Pune FPO Hub — Pune Gultekdi Market',
+    crop: 'Tomato',
+    variety: 'Abhinav Hybrid',
+    quality_grade: 'Grade A',
+    current_quantity_kg: 750.0,
+    target_quantity_kg: 1200.0,
+    price_per_kg: 16.55,
+    status: 'open',
+    location: 'Baramati Cluster / Pune Gultekdi',
+    farmers_count: 4,
+    created_at: new Date(Date.now() - 1800000).toISOString(),
+  },
   users: [
     {
       id: 'usr_farmer_1',
@@ -188,6 +203,25 @@ const getInitialState = () => ({
     }
   ],
   batches: [
+    {
+      _id: 'batch_fpo_pune',
+      id: 'batch_fpo_pune',
+      crop: 'tomato',
+      quality_grade: 'A',
+      variety: 'Abhinav Hybrid',
+      total_quantity_kg: 1200.0,
+      current_quantity_kg: 750.0,
+      available_quantity_kg: 750.0,
+      weighted_ask_price_per_kg: 16.55,
+      ask_price_per_kg: 16.55,
+      min_clearing_price_per_kg: 15.00,
+      region: 'Pune FPO Hub — Pune Gultekdi Market',
+      status: 'open',
+      is_active_pool: true,
+      farmer_count: 4,
+      farmer_name: 'Pune District FPO Coalition (Ramesh Patil & 3 others)',
+      created_at: new Date(Date.now() - 1800000).toISOString(),
+    },
     {
       _id: 'batch_201',
       crop: 'soybean',
@@ -411,6 +445,7 @@ const loadState = () => {
     // Clear old legacy keys so users start with fresh, uncorrupted state
     localStorage.removeItem('krishisetu_mock_state_v1');
     localStorage.removeItem('krishisetu_mock_state_v2');
+    localStorage.removeItem('krishisetu_mock_state_v3');
 
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) return JSON.parse(raw);
@@ -835,12 +870,162 @@ export async function executeMockRequest(method, url, data, params) {
       };
       state.payouts.unshift(newPayout);
 
+      // If purchasing FPO pool batch, sync active_pool too
+      if (state.active_pool && (batchId === 'batch_fpo_pune' || batchId === state.active_pool.id)) {
+        state.active_pool.current_quantity_kg = 0;
+        state.active_pool.status = 'settled';
+      }
+
       saveState(state);
       if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('krishisetu_sync', { detail: { type: 'batch_purchased', trade, payout: newPayout } }));
+        window.dispatchEvent(new CustomEvent('krishisetu_sync', {
+          detail: { type: 'batch_purchased', trade, payout: newPayout, pool: state.active_pool }
+        }));
       }
       return { data: { success: true, trade, payout: newPayout }, error: null };
     }
+  }
+
+  // 6.1 Active FPO Aggregation Pool & Buy Stock
+  if (lowerUrl.includes('/active-pool')) {
+    if (!state.active_pool) {
+      state.active_pool = {
+        id: 'batch_fpo_pune',
+        _id: 'batch_fpo_pune',
+        name: 'Pune FPO Hub — Pune Gultekdi Market',
+        crop: 'Tomato',
+        variety: 'Abhinav Hybrid',
+        quality_grade: 'Grade A',
+        current_quantity_kg: 750.0,
+        target_quantity_kg: 1200.0,
+        price_per_kg: 16.55,
+        status: 'open',
+        location: 'Baramati Cluster / Pune Gultekdi',
+        farmers_count: 4,
+      };
+      saveState(state);
+    }
+    return { data: state.active_pool, error: null };
+  }
+
+  if (lowerUrl.includes('/buyer/buy-pool-stock')) {
+    if (!state.active_pool) {
+      state.active_pool = {
+        id: 'batch_fpo_pune',
+        _id: 'batch_fpo_pune',
+        name: 'Pune FPO Hub — Pune Gultekdi Market',
+        crop: 'Tomato',
+        variety: 'Abhinav Hybrid',
+        quality_grade: 'Grade A',
+        current_quantity_kg: 750.0,
+        target_quantity_kg: 1200.0,
+        price_per_kg: 16.55,
+        status: 'open',
+        location: 'Baramati Cluster / Pune Gultekdi',
+        farmers_count: 4,
+      };
+    }
+
+    const currentQty = parseFloat(state.active_pool.current_quantity_kg || 0);
+    const requestedQty = parseFloat(data?.quantity_kg || 250);
+    const qtyToBuy = Math.min(currentQty, requestedQty);
+
+    if (qtyToBuy <= 0) {
+      return { data: null, error: { message: 'This active pool has already been completely fulfilled or sold out.' } };
+    }
+
+    const price = parseFloat(data?.price_per_kg || state.active_pool.price_per_kg || 16.55);
+    const totalAmount = qtyToBuy * price;
+    const newQty = Math.max(0, currentQty - qtyToBuy);
+
+    state.active_pool.current_quantity_kg = newQty;
+    if (newQty <= 0) {
+      state.active_pool.status = 'settled';
+    }
+
+    // Sync corresponding batch in state.batches
+    const matchingBatch = (state.batches || []).find(
+      (b) => b._id === 'batch_fpo_pune' || b.id === 'batch_fpo_pune' || b.is_active_pool
+    );
+    if (matchingBatch) {
+      matchingBatch.available_quantity_kg = newQty;
+      matchingBatch.current_quantity_kg = newQty;
+      if (newQty <= 0) matchingBatch.status = 'settled';
+    }
+
+    const tradeId = `trd_${Date.now()}`;
+    const trade = {
+      _id: tradeId,
+      id: tradeId,
+      crop: state.active_pool.crop,
+      quality_grade: state.active_pool.quality_grade || 'Grade A',
+      quantity_kg: qtyToBuy,
+      clearing_price_per_kg: price,
+      total_amount: totalAmount,
+      buyer_id: authUser?.id || 'usr_buyer_1',
+      buyer_name: authUser?.name || 'FreshFarm Retail Pvt Ltd',
+      status: 'settled',
+      settled_at: new Date().toISOString(),
+      created_at: new Date().toISOString(),
+      farmer_shares: [
+        {
+          farmer_id: 'usr_farmer_1',
+          farmer_name: 'Ramesh Patil & Pune FPO Coalition',
+          quantity_kg: qtyToBuy,
+          payout_amount: totalAmount,
+          status: 'settled',
+        }
+      ]
+    };
+    state.trades.unshift(trade);
+
+    const payoutId = `PAY-${Date.now().toString().slice(-6)}`;
+    state.payouts = state.payouts || [];
+    const newPayout = {
+      id: payoutId,
+      _id: `pay_${Date.now()}`,
+      trade_id: tradeId,
+      farmer_id: 'usr_farmer_1',
+      farmer_name: 'Ramesh Patil (Pune FPO)',
+      crop: state.active_pool.crop,
+      quantity_kg: qtyToBuy,
+      clearing_price_per_kg: price,
+      amount: totalAmount,
+      gross_amount: totalAmount,
+      platform_fee: 0,
+      net_payout: totalAmount,
+      status: 'settled',
+      utr_ref: `UTR-KS-${Date.now().toString().slice(-6)}`,
+      date: new Date().toISOString(),
+      settled_at: new Date().toISOString(),
+      created_at: new Date().toISOString(),
+      note: `Stock purchase from Pune FPO Active Pool (${qtyToBuy} kg)`,
+    };
+    state.payouts.unshift(newPayout);
+
+    saveState(state);
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('krishisetu_sync', {
+        detail: {
+          type: 'pool_updated',
+          pool: state.active_pool,
+          trade,
+          payout: newPayout
+        }
+      }));
+    }
+
+    return {
+      data: {
+        success: true,
+        pool: state.active_pool,
+        trade,
+        payout: newPayout,
+        message: `Successfully purchased ${qtyToBuy} kg from active pool!`
+      },
+      error: null
+    };
   }
 
   if (lowerUrl.includes('/buyer/batches')) {

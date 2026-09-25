@@ -55,3 +55,14 @@ export const acceptBuyerBid = (data) => client.post('/farmer/accept-bid', data);
  */
 export const buyBatchDirect = (batchId, data = {}) => client.post(`/buyer/batches/${batchId}/buy-direct`, data);
 
+/**
+ * Fetch current FPO active aggregation pool progress.
+ */
+export const getActivePool = () => client.get('/buyer/active-pool');
+
+/**
+ * Buy stock directly from active FPO aggregation pool, reducing pool progress in real time.
+ * @param {Object} data - { quantity_kg, price_per_kg }
+ */
+export const buyPoolStock = (data) => client.post('/buyer/buy-pool-stock', data);
+

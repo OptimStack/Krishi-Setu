@@ -9,7 +9,7 @@ import LocationChangeModal from '../../components/widgets/LocationChangeModal';
 import PriceForecastWidget from '../../components/widgets/PriceForecastWidget';
 import WarehouseFinderWidget from '../../components/widgets/WarehouseFinderWidget';
 import { getListings, cancelListing } from '../../api/listings';
-import { getIncomingBuyerBids, acceptBuyerBid } from '../../api/bids';
+import { getIncomingBuyerBids, acceptBuyerBid, getActivePool } from '../../api/bids';
 import { formatCurrency, formatQuantity, formatDate } from '../../utils/format';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
@@ -23,18 +23,31 @@ export default function FarmerDashboard() {
 
   const [listings, setListings] = useState([]);
   const [buyerBids, setBuyerBids] = useState([]);
+  const [activePool, setActivePool] = useState({
+    id: 'batch_fpo_pune',
+    name: 'Pune FPO Hub — Pune Gultekdi Market',
+    crop: 'Tomato',
+    variety: 'Abhinav Hybrid',
+    quality_grade: 'A',
+    current_quantity_kg: 750,
+    target_quantity_kg: 1200,
+    price_per_kg: 16.55,
+    status: 'open',
+  });
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState('all');
   const [actionLoading, setActionLoading] = useState(null);
   const [acceptingBidId, setAcceptingBidId] = useState(null);
   const [feedback, setFeedback] = useState({ text: '', type: '' });
   const [showLocationModal, setShowLocationModal] = useState(false);
+  const [isMapPinMode, setIsMapPinMode] = useState(false);
 
   const fetchData = useCallback(async () => {
     try {
-      const [listRes, bidsRes] = await Promise.allSettled([
+      const [listRes, bidsRes, poolRes] = await Promise.allSettled([
         getListings(),
         getIncomingBuyerBids(),
+        getActivePool(),
       ]);
       if (listRes.status === 'fulfilled' && listRes.value?.data) {
         setListings(listRes.value.data);
@@ -42,8 +55,11 @@ export default function FarmerDashboard() {
       if (bidsRes.status === 'fulfilled' && bidsRes.value?.data) {
         setBuyerBids(bidsRes.value.data);
       }
+      if (poolRes.status === 'fulfilled' && poolRes.value?.data) {
+        setActivePool(poolRes.value.data);
+      }
     } catch (err) {
-      console.error('Failed to load listings or buyer bids:', err);
+      console.error('Failed to load listings, buyer bids or active pool:', err);
     } finally {
       setLoading(false);
     }
@@ -56,7 +72,10 @@ export default function FarmerDashboard() {
     // Poll for updates every 8 seconds so bids, auctions, and settlements update live
     const interval = setInterval(fetchData, 8000);
 
-    const handleSync = () => {
+    const handleSync = (e) => {
+      if (e?.detail?.pool) {
+        setActivePool(e.detail.pool);
+      }
       fetchData();
     };
 
@@ -364,13 +383,27 @@ export default function FarmerDashboard() {
             <span className="text-amber-500 text-sm">🥞</span>
           </div>
           <p className="text-2xl md:text-3xl font-black text-stone-900 dark:text-stone-100 mt-2">
-            750 <span className="text-sm font-medium text-stone-500">/ 1200 kg</span>
+            {Math.round(activePool.current_quantity_kg || 0)}{' '}
+            <span className="text-sm font-medium text-stone-500">/ {activePool.target_quantity_kg || 1200} kg</span>
           </p>
           <div className="w-full bg-stone-100 dark:bg-stone-800 rounded-full h-1.5 mt-2.5 overflow-hidden">
-            <div className="bg-gradient-to-r from-amber-500 to-emerald-500 h-1.5 rounded-full" style={{ width: '62.5%' }}></div>
+            <div
+              className="bg-gradient-to-r from-amber-500 to-emerald-500 h-1.5 rounded-full transition-all duration-500"
+              style={{
+                width: `${Math.min(
+                  100,
+                  Math.max(
+                    0,
+                    Math.round(
+                      ((activePool.current_quantity_kg || 0) / (activePool.target_quantity_kg || 1200)) * 100
+                    )
+                  )
+                )}%`,
+              }}
+            ></div>
           </div>
           <p className="text-[11px] text-stone-500 dark:text-stone-400 mt-1.5 font-medium truncate">
-            Pune FPO Hub — Pune Gultekdi Market
+            {activePool.name || 'Pune FPO Hub — Pune Gultekdi Market'}
           </p>
         </div>
 
@@ -393,7 +426,10 @@ export default function FarmerDashboard() {
 
       {/* 5. FARM & NEARBY MANDI MAP (Matching Screenshot) */}
       <div id="farm-map-section">
-        <FarmMandiMap />
+        <FarmMandiMap
+          isPinDropMode={isMapPinMode}
+          onPinDropped={() => setIsMapPinMode(false)}
+        />
       </div>
 
       {/* 6. END-TO-END MARKET LINKAGE JOURNEY STEPPER (Matching Screenshot) */}
@@ -802,6 +838,9 @@ export default function FarmerDashboard() {
       <LocationChangeModal
         isOpen={showLocationModal}
         onClose={() => setShowLocationModal(false)}
+        onChooseOnMap={() => {
+          setIsMapPinMode(true);
+        }}
       />
     </div>
   );

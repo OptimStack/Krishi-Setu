@@ -322,3 +322,102 @@ def buy_batch_direct(batch_id):
 
     return jsonify({"data": None, "error": {"code": "NOT_FOUND", "message": "Batch or Produce Lot not found"}}), 404
 
+
+@buyer_bp.route('/active-pool', methods=['GET'])
+def get_active_pool():
+    """Retrieve current FPO active aggregation pool progress."""
+    active_pool = db.active_pools.find_one({"status": "open"})
+    if not active_pool:
+        active_pool = {
+            "_id": "batch_fpo_pune",
+            "id": "batch_fpo_pune",
+            "name": "Pune FPO Hub — Pune Gultekdi Market",
+            "crop": "Tomato",
+            "variety": "Abhinav (Hybrid)",
+            "quality_grade": "Grade A",
+            "current_quantity_kg": 750.0,
+            "target_quantity_kg": 1200.0,
+            "price_per_kg": 16.55,
+            "status": "open",
+            "location": "Baramati Cluster / Pune Gultekdi",
+            "farmers_count": 4,
+        }
+    return jsonify({"data": serialize_doc(active_pool), "error": None}), 200
+
+
+@buyer_bp.route('/buy-pool-stock', methods=['POST'])
+@jwt_required()
+@role_required('buyer')
+def buy_pool_stock():
+    """Buy stock directly from active FPO aggregation pool, reducing pool progress."""
+    buyer_id = get_jwt_identity()
+    raw_data = request.get_json() or {}
+    now_iso = datetime.now(timezone.utc).isoformat()
+
+    active_pool = db.active_pools.find_one({"status": "open"})
+    if not active_pool:
+        active_pool = {
+            "_id": "batch_fpo_pune",
+            "name": "Pune FPO Hub — Pune Gultekdi Market",
+            "crop": "Tomato",
+            "quality_grade": "Grade A",
+            "current_quantity_kg": 750.0,
+            "target_quantity_kg": 1200.0,
+            "price_per_kg": 16.55,
+            "status": "open"
+        }
+
+    current_qty = float(active_pool.get("current_quantity_kg", 750.0))
+    requested_qty = float(raw_data.get("quantity_kg", 250.0))
+    qty_to_buy = min(current_qty, requested_qty)
+
+    if qty_to_buy <= 0:
+        return jsonify({"data": None, "error": {"code": "OUT_OF_STOCK", "message": "No stock remaining in this pool"}}), 400
+
+    price = float(raw_data.get("price_per_kg") or active_pool.get("price_per_kg", 16.55))
+    total_amount = qty_to_buy * price
+    new_qty = max(0.0, current_qty - qty_to_buy)
+
+    new_status = "settled" if new_qty <= 0 else "open"
+    db.active_pools.update_one(
+        {"_id": active_pool["_id"]},
+        {"$set": {"current_quantity_kg": new_qty, "status": new_status, "updated_at": now_iso}},
+        upsert=True
+    )
+    active_pool["current_quantity_kg"] = new_qty
+    active_pool["status"] = new_status
+
+    trade_doc = {
+        "crop": active_pool.get("crop", "Tomato"),
+        "quality_grade": active_pool.get("quality_grade", "Grade A"),
+        "quantity_kg": qty_to_buy,
+        "clearing_price_per_kg": price,
+        "total_amount": total_amount,
+        "buyer_id": ObjectId(buyer_id) if ObjectId.is_valid(buyer_id) else buyer_id,
+        "status": "settled",
+        "settled_at": now_iso,
+        "created_at": now_iso,
+        "farmer_shares": [
+            {
+                "farmer_id": "usr_farmer_1",
+                "farmer_name": "Ramesh Patil & FPO Members",
+                "quantity_kg": qty_to_buy,
+                "payout_amount": total_amount,
+                "status": "settled"
+            }
+        ]
+    }
+    t_res = db.trades.insert_one(trade_doc)
+    trade_doc["_id"] = t_res.inserted_id
+
+    return jsonify({
+        "data": {
+            "success": True,
+            "pool": serialize_doc(active_pool),
+            "trade": serialize_doc(trade_doc),
+            "message": f"Successfully purchased {qty_to_buy} kg from active pool!"
+        },
+        "error": None
+    }), 200
+
+

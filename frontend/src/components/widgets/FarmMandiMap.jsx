@@ -1,98 +1,204 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import L from 'leaflet';
 import { useLanguage } from '../../context/LanguageContext';
 import { useOffline } from '../../context/OfflineContext';
+import { getNearbyMandisForLocation, CLUSTER_COORDINATES } from '../../api/agmarknetService';
 
-export default function FarmMandiMap({ onSelectMandi }) {
+export default function FarmMandiMap({ onSelectMandi, isPinDropMode, onPinDropped }) {
   const { t } = useLanguage();
-  const { lastSavedLocation } = useOffline();
+  const { lastSavedLocation, setLastSavedLocation } = useOffline();
 
   const [mapMode, setMapMode] = useState('satellite'); // satellite | streets | terrain
-  const [zoomLevel, setZoomLevel] = useState(100);
-  const [selectedPin, setSelectedPin] = useState('baramati');
+  const [selectedMandiId, setSelectedMandiId] = useState('mandi_baramati');
+  const [pinDropActive, setPinDropActive] = useState(isPinDropMode || false);
 
-  const mandis = [
-    {
-      id: 'baramati',
-      name: 'Baramati APMC',
-      status: 'Live',
-      distanceKm: 0,
-      travelTime: '15 min',
-      priceQtl: 1655,
-      transportCost: 0,
-      netPrice: 1655,
-      crop: 'Tomato',
-      x: 52, // % coordinate on SVG map
-      y: 54,
-      isHome: true,
-    },
-    {
-      id: 'pune',
-      name: 'Pune Gultekdi Market Yard',
-      status: 'Live',
-      distanceKm: 84.5,
-      travelTime: '2 hr 36 min',
-      priceQtl: 1820,
-      transportCost: 210,
-      netPrice: 1610,
-      crop: 'Tomato',
-      x: 38,
-      y: 45,
-    },
-    {
-      id: 'pandharpur',
-      name: 'Pandharpur APMC',
-      status: 'Live',
-      distanceKm: 95.2,
-      travelTime: '2 hr 54 min',
-      priceQtl: 1740,
-      transportCost: 145,
-      netPrice: 1595,
-      crop: 'Tomato',
-      x: 64,
-      y: 65,
-    },
-    {
-      id: 'manchar',
-      name: 'Manchar APMC',
-      status: 'Live',
-      distanceKm: 116.2,
-      travelTime: '3 hr 24 min',
-      priceQtl: 1690,
-      transportCost: 180,
-      netPrice: 1510,
-      crop: 'Tomato',
-      x: 36,
-      y: 32,
-    },
-    {
-      id: 'lasalgaon',
-      name: 'Lasalgaon APMC',
-      status: 'Live',
-      distanceKm: 210,
-      travelTime: '4 hr 45 min',
-      priceQtl: 2450,
-      transportCost: 320,
-      netPrice: 2130,
-      crop: 'Onion',
-      x: 48,
-      y: 18,
-    },
-    {
-      id: 'solapur',
-      name: 'Solapur APMC',
-      status: 'Live',
-      distanceKm: 140,
-      travelTime: '3 hr 10 min',
-      priceQtl: 4350,
-      transportCost: 260,
-      netPrice: 4090,
-      crop: 'Soybean',
-      x: 75,
-      y: 58,
+  const mapContainerRef = useRef(null);
+  const mapInstanceRef = useRef(null);
+  const tileLayerRef = useRef(null);
+  const markersLayerRef = useRef(null);
+  const routesLayerRef = useRef(null);
+
+  // Determine current farm coordinates based on location string
+  const getFarmCoords = () => {
+    const locLower = (lastSavedLocation || 'baramati').toLowerCase();
+    for (const [key, val] of Object.entries(CLUSTER_COORDINATES)) {
+      if (locLower.includes(key)) {
+        return { lat: val.lat, lng: val.lng, name: val.name };
+      }
     }
-  ];
+    // Check if coordinates string was stored e.g. "18.1517, 74.5772"
+    const match = lastSavedLocation.match(/([0-9]+\.[0-9]+)[^0-9]+([0-9]+\.[0-9]+)/);
+    if (match) {
+      return { lat: parseFloat(match[1]), lng: parseFloat(match[2]), name: lastSavedLocation };
+    }
+    return { lat: 18.1517, lng: 74.5772, name: 'Baramati Cluster, Pune' };
+  };
 
-  const activeMandi = mandis.find((m) => m.id === selectedPin) || mandis[0];
+  const farmCoords = getFarmCoords();
+  const nearbyMandis = getNearbyMandisForLocation(farmCoords.lat, farmCoords.lng, 'tomato');
+  const activeMandi = nearbyMandis.find((m) => m.id === selectedMandiId) || nearbyMandis[0];
+
+  // Tile layer URLs
+  const getTileUrl = (mode) => {
+    switch (mode) {
+      case 'satellite':
+        return 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+      case 'terrain':
+        return 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png';
+      case 'streets':
+      default:
+        return 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    }
+  };
+
+  const getTileAttribution = (mode) => {
+    switch (mode) {
+      case 'satellite':
+        return 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, GIS User Community';
+      case 'terrain':
+        return 'Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; OpenTopoMap';
+      default:
+        return '&copy; OpenStreetMap contributors';
+    }
+  };
+
+  // Initialize Leaflet map
+  useEffect(() => {
+    if (!mapContainerRef.current) return;
+
+    if (!mapInstanceRef.current) {
+      const map = L.map(mapContainerRef.current, {
+        center: [farmCoords.lat, farmCoords.lng],
+        zoom: 9,
+        zoomControl: false,
+        attributionControl: false,
+      });
+
+      mapInstanceRef.current = map;
+
+      // Real Satellite Tile Layer
+      const tileLayer = L.tileLayer(getTileUrl('satellite'), {
+        maxZoom: 18,
+        attribution: getTileAttribution('satellite'),
+      }).addTo(map);
+      tileLayerRef.current = tileLayer;
+
+      // Layers for markers and lines
+      markersLayerRef.current = L.layerGroup().addTo(map);
+      routesLayerRef.current = L.layerGroup().addTo(map);
+
+      // Map Click Handler for Choose on Map
+      map.on('click', (e) => {
+        const { lat, lng } = e.latlng;
+        const newLocName = `Farm Pin (${lat.toFixed(4)}° N, ${lng.toFixed(4)}° E)`;
+        setLastSavedLocation(newLocName);
+        if (onPinDropped) onPinDropped({ lat, lng, name: newLocName });
+        setPinDropActive(false);
+      });
+    }
+
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
+  }, []);
+
+  // Update map tile mode
+  useEffect(() => {
+    if (!mapInstanceRef.current || !tileLayerRef.current) return;
+    mapInstanceRef.current.removeLayer(tileLayerRef.current);
+    const newTile = L.tileLayer(getTileUrl(mapMode), {
+      maxZoom: 18,
+      attribution: getTileAttribution(mapMode),
+    }).addTo(mapInstanceRef.current);
+    tileLayerRef.current = newTile;
+  }, [mapMode]);
+
+  // Update markers and route lines when farmCoords or mandis change
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map || !markersLayerRef.current || !routesLayerRef.current) return;
+
+    markersLayerRef.current.clearLayers();
+    routesLayerRef.current.clearLayers();
+
+    // 1. Add Farm Location Marker (Home Base)
+    const farmIconHtml = `
+      <div style="position: relative; display: flex; align-items: center; justify-content: center;">
+        <div style="position: absolute; width: 44px; height: 44px; background: rgba(34, 197, 94, 0.35); border-radius: 50%; animation: pulse 2s infinite;"></div>
+        <div style="width: 28px; height: 28px; background: #0b4d26; border: 2.5px solid #D3D67A; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+          🏡
+        </div>
+        <div style="position: absolute; bottom: -24px; white-space: nowrap; background: rgba(0,0,0,0.85); color: #fff; font-size: 10px; font-weight: bold; padding: 2px 8px; border-radius: 12px; border: 1px solid #D3D67A;">
+          📍 Farm (You)
+        </div>
+      </div>
+    `;
+
+    const farmMarker = L.marker([farmCoords.lat, farmCoords.lng], {
+      icon: L.divIcon({
+        className: 'custom-farm-marker',
+        html: farmIconHtml,
+        iconSize: [44, 44],
+        iconAnchor: [22, 22],
+      }),
+      zIndexOffset: 1000,
+    }).addTo(markersLayerRef.current);
+
+    farmMarker.bindPopup(`
+      <div style="font-family: sans-serif; font-size: 12px; color: #1e293b;">
+        <strong style="color: #0b4d26; display: block; font-size: 13px;">📍 ${farmCoords.name}</strong>
+        <span>Current registered collection point</span>
+      </div>
+    `);
+
+    // 2. Add Mandi Markers and Routes
+    nearbyMandis.slice(0, 8).forEach((mandi) => {
+      const isSelected = selectedMandiId === mandi.id;
+
+      // Draw route line from farm to this mandi
+      const routeLine = L.polyline(
+        [
+          [farmCoords.lat, farmCoords.lng],
+          [mandi.lat, mandi.lng]
+        ],
+        {
+          color: isSelected ? '#D3D67A' : '#10b981',
+          weight: isSelected ? 3.5 : 2,
+          dashArray: isSelected ? '6, 6' : '4, 4',
+          opacity: isSelected ? 0.95 : 0.6,
+        }
+      ).addTo(routesLayerRef.current);
+
+      const mandiIconHtml = `
+        <div style="cursor: pointer; display: flex; flex-direction: column; align-items: center;">
+          <div style="background: ${isSelected ? '#0b4d26' : 'rgba(15, 23, 42, 0.9)'}; color: #ffffff; border: 1.5px solid ${isSelected ? '#D3D67A' : 'rgba(255,255,255,0.4)'}; padding: 2px 7px; border-radius: 12px; font-size: 10px; font-weight: bold; white-space: nowrap; box-shadow: 0 4px 8px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 4px;">
+            <span>${mandi.name.split(' ')[0]}</span>
+            <span style="color: #D3D67A; font-weight: 800;">₹${mandi.modalPrice}</span>
+          </div>
+          <div style="width: 16px; height: 16px; background: ${isSelected ? '#D3D67A' : '#22c55e'}; border: 2px solid #ffffff; border-radius: 50%; margin-top: -3px; box-shadow: 0 2px 6px rgba(0,0,0,0.4);"></div>
+        </div>
+      `;
+
+      const mandiMarker = L.marker([mandi.lat, mandi.lng], {
+        icon: L.divIcon({
+          className: 'custom-mandi-marker',
+          html: mandiIconHtml,
+          iconSize: [110, 40],
+          iconAnchor: [55, 36],
+        }),
+      }).addTo(markersLayerRef.current);
+
+      mandiMarker.on('click', () => {
+        setSelectedMandiId(mandi.id);
+        if (onSelectMandi) onSelectMandi(mandi);
+      });
+    });
+
+    map.panTo([farmCoords.lat, farmCoords.lng]);
+  }, [farmCoords.lat, farmCoords.lng, selectedMandiId, nearbyMandis]);
 
   return (
     <div className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl border border-stone-200/90 dark:border-emerald-800/40 p-5 md:p-6 shadow-xl transition-all">
@@ -106,28 +212,38 @@ export default function FarmMandiMap({ onSelectMandi }) {
             </h2>
           </div>
           <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
-            {t('mandi_map_subtitle', 'Dynamic routes and travel times originating from Baramati Cluster, Pune')}
+            {t('mandi_map_subtitle', `Dynamic routes and travel times originating from ${lastSavedLocation}`)}
           </p>
         </div>
 
-        <span className="self-start sm:self-auto text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 px-3 py-1 rounded-full border border-emerald-300 dark:border-emerald-800 shrink-0">
-          {t('mandis_found', '22 Mandis Found')}
-        </span>
+        <div className="flex items-center gap-2">
+          {pinDropActive && (
+            <span className="text-xs font-bold text-amber-800 dark:text-amber-300 bg-amber-100 dark:bg-amber-950/80 px-3 py-1 rounded-full border border-amber-300 animate-pulse">
+              📍 Click map to set farm location
+            </span>
+          )}
+          <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 px-3 py-1 rounded-full border border-emerald-300 dark:border-emerald-800 shrink-0">
+            {nearbyMandis.length} Mandis Found
+          </span>
+        </div>
       </div>
 
-      {/* Map visual viewport */}
-      <div className="relative rounded-2xl overflow-hidden border border-stone-300/80 dark:border-emerald-800/60 shadow-inner bg-[#101b13] min-h-[360px] md:min-h-[440px] flex items-center justify-center select-none">
+      {/* Actual Satellite Map Viewport */}
+      <div className="relative rounded-2xl overflow-hidden border border-stone-300/80 dark:border-emerald-800/60 shadow-inner bg-[#101b13] min-h-[380px] md:min-h-[460px] flex items-center justify-center select-none">
+        {/* Leaflet DOM container */}
+        <div ref={mapContainerRef} className="w-full h-[460px] z-10" />
+
         {/* Top Floating Overlay Badge & Map Type Switchers */}
         <div className="absolute top-3 left-3 right-3 z-20 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
-          <div className="pointer-events-auto inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/75 backdrop-blur-md text-white text-xs font-bold border border-white/20 shadow-lg">
+          <div className="pointer-events-auto inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/80 backdrop-blur-md text-white text-xs font-bold border border-white/20 shadow-lg">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>Live Agriculture Grid: {lastSavedLocation}</span>
-            <span className="bg-emerald-600/90 text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider">
+            <span>Real Satellite Imagery: {lastSavedLocation}</span>
+            <span className="bg-emerald-600/90 text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider font-extrabold">
               {mapMode}
             </span>
           </div>
 
-          <div className="pointer-events-auto bg-black/75 backdrop-blur-md rounded-xl p-1 flex items-center gap-1 border border-white/20 shadow-lg text-xs font-semibold">
+          <div className="pointer-events-auto bg-black/80 backdrop-blur-md rounded-xl p-1 flex items-center gap-1 border border-white/20 shadow-lg text-xs font-semibold">
             {['satellite', 'streets', 'terrain'].map((mode) => (
               <button
                 key={mode}
@@ -141,172 +257,11 @@ export default function FarmMandiMap({ onSelectMandi }) {
                 {mode === 'satellite' ? '🛰️ Satellite' : mode === 'streets' ? '🗺️ Streets' : '⛰️ Terrain'}
               </button>
             ))}
-            <span className="text-[11px] text-stone-400 px-1 border-l border-white/20">
-              {zoomLevel}%
-            </span>
           </div>
         </div>
 
-        {/* Realistic SVG Agricultural & Topographic Map of Maharashtra Grid */}
-        <svg
-          className="w-full h-full absolute inset-0 transition-transform duration-300"
-          style={{ transform: `scale(${zoomLevel / 100})` }}
-          viewBox="0 0 1000 600"
-          preserveAspectRatio="xMidYMid slice"
-        >
-          <defs>
-            {/* Satellite Terrain Gradient */}
-            <radialGradient id="satGlow" cx="50%" cy="50%" r="60%">
-              <stop offset="0%" stopColor="#2c3b28" />
-              <stop offset="60%" stopColor="#1e2c1c" />
-              <stop offset="100%" stopColor="#0d170f" />
-            </radialGradient>
-            <linearGradient id="oceanGrad" x1="0%" y1="0%" x2="40%" y2="100%">
-              <stop offset="0%" stopColor="#153342" />
-              <stop offset="100%" stopColor="#0a1a24" />
-            </linearGradient>
-            <pattern id="topoGrid" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(211,214,122,0.08)" strokeWidth="1" />
-            </pattern>
-          </defs>
-
-          {/* Arabian Sea Coastline */}
-          <rect width="1000" height="600" fill="url(#satGlow)" />
-          <path
-            d="M 0,0 L 220,0 C 230,120 190,220 180,310 C 170,410 140,510 120,600 L 0,600 Z"
-            fill="url(#oceanGrad)"
-          />
-          <path
-            d="M 220,0 C 230,120 190,220 180,310 C 170,410 140,510 120,600"
-            fill="none"
-            stroke="#38bdf8"
-            strokeWidth="2.5"
-            strokeDasharray="4 2"
-          />
-
-          {/* Grid overlay */}
-          <rect width="1000" height="600" fill="url(#topoGrid)" />
-
-          {/* Western Ghats & Mountain ridges representation */}
-          <path
-            d="M 240,40 Q 230,180 220,300 T 190,580"
-            fill="none"
-            stroke="rgba(80,105,70,0.5)"
-            strokeWidth="45"
-            strokeLinecap="round"
-          />
-
-          {/* River Krishna & Bhima tributaries */}
-          <path
-            d="M 280,180 Q 420,290 600,340 T 920,440"
-            fill="none"
-            stroke="rgba(56,189,248,0.3)"
-            strokeWidth="3.5"
-            strokeLinecap="round"
-          />
-          <path
-            d="M 330,280 Q 520,350 740,430"
-            fill="none"
-            stroke="rgba(56,189,248,0.25)"
-            strokeWidth="2"
-          />
-
-          {/* City / Hub Labels on Map */}
-          <text x="130" y="240" fill="#94a3b8" fontSize="13" fontWeight="bold" opacity="0.6">Mumbai</text>
-          <text x="280" y="210" fill="#94a3b8" fontSize="13" fontWeight="bold" opacity="0.6">Thane</text>
-          <text x="490" y="110" fill="#cbd5e1" fontSize="13" fontWeight="bold" opacity="0.7">Nashik</text>
-          <text x="560" y="200" fill="#94a3b8" fontSize="12" fontWeight="bold" opacity="0.6">Ahmednagar</text>
-          <text x="360" y="295" fill="#f8fafc" fontSize="15" fontWeight="bold" opacity="0.9">Pune</text>
-          <text x="360" y="420" fill="#94a3b8" fontSize="13" fontWeight="bold" opacity="0.6">Satara</text>
-          <text x="360" y="550" fill="#94a3b8" fontSize="13" fontWeight="bold" opacity="0.6">Kolhapur</text>
-          <text x="730" y="370" fill="#f8fafc" fontSize="14" fontWeight="bold" opacity="0.8">Solapur</text>
-
-          {/* Agricultural Transport Corridors (Routes from Baramati to Mandis) */}
-          {mandis.map((m) => {
-            if (m.id === 'baramati') return null;
-            return (
-              <g key={`route_${m.id}`}>
-                <line
-                  x1={520}
-                  y1={324}
-                  x2={m.x * 10}
-                  y2={m.y * 6}
-                  stroke={selectedPin === m.id ? '#D3D67A' : 'rgba(34,197,94,0.45)'}
-                  strokeWidth={selectedPin === m.id ? '3.5' : '2'}
-                  strokeDasharray={selectedPin === m.id ? '6 4' : '4 3'}
-                  className={selectedPin === m.id ? 'animate-pulse' : ''}
-                />
-              </g>
-            );
-          })}
-
-          {/* Farm Home Base (Baramati Cluster) */}
-          <g transform="translate(520, 324)" className="cursor-pointer" onClick={() => setSelectedPin('baramati')}>
-            <circle r="22" fill="rgba(34,197,94,0.25)" className="animate-ping" />
-            <circle r="14" fill="#2A5124" stroke="#D3D67A" strokeWidth="2.5" />
-            <text y="4" textAnchor="middle" fill="#D3D67A" fontSize="12">🏡</text>
-            <rect x="-65" y="18" width="130" height="22" rx="11" fill="rgba(0,0,0,0.85)" stroke="#D3D67A" strokeWidth="1" />
-            <text x="0" y="33" textAnchor="middle" fill="#ffffff" fontSize="10.5" fontWeight="bold">
-              📍 Baramati (Your Farm)
-            </text>
-          </g>
-
-          {/* Interactive Mandi Pins */}
-          {mandis.map((m) => {
-            if (m.id === 'baramati') return null;
-            const px = m.x * 10;
-            const py = m.y * 6;
-            const isSelected = selectedPin === m.id;
-
-            return (
-              <g
-                key={m.id}
-                transform={`translate(${px}, ${py})`}
-                className="cursor-pointer group"
-                onClick={() => {
-                  setSelectedPin(m.id);
-                  if (onSelectMandi) onSelectMandi(m);
-                }}
-              >
-                <circle
-                  r={isSelected ? '16' : '10'}
-                  fill={isSelected ? '#D3D67A' : '#10b981'}
-                  stroke="#ffffff"
-                  strokeWidth="2"
-                  className="transition-all"
-                />
-                <text y="4" textAnchor="middle" fill={isSelected ? '#1c3618' : '#ffffff'} fontSize="10" fontWeight="bold">
-                  ₹
-                </text>
-
-                {/* Mandi label pill */}
-                <rect
-                  x="-55"
-                  y="-26"
-                  width="110"
-                  height="20"
-                  rx="10"
-                  fill={isSelected ? '#2A5124' : 'rgba(15,23,42,0.85)'}
-                  stroke={isSelected ? '#D3D67A' : 'rgba(255,255,255,0.2)'}
-                  strokeWidth="1"
-                />
-                <text
-                  x="0"
-                  y="-12"
-                  textAnchor="middle"
-                  fill="#ffffff"
-                  fontSize="9.5"
-                  fontWeight="bold"
-                >
-                  {m.name.split(' ')[0]} • ₹{m.priceQtl}
-                </text>
-              </g>
-            );
-          })}
-        </svg>
-
         {/* Selected Mandi Live Information Overlay Card (Bottom-Left) */}
-        <div className="absolute bottom-3 left-3 right-16 sm:right-auto z-20 bg-black/85 backdrop-blur-md p-3.5 rounded-xl border border-white/20 text-white max-w-sm shadow-2xl">
+        <div className="absolute bottom-3 left-3 right-16 sm:right-auto z-20 bg-black/90 backdrop-blur-md p-3.5 rounded-xl border border-white/20 text-white max-w-sm shadow-2xl pointer-events-auto">
           <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-1.5 mb-1.5">
             <div className="flex items-center gap-1.5">
               <span className="text-emerald-400 font-bold">●</span>
@@ -319,52 +274,60 @@ export default function FarmMandiMap({ onSelectMandi }) {
 
           <div className="grid grid-cols-3 gap-2 text-center text-xs">
             <div className="bg-white/5 p-1.5 rounded-lg border border-white/10">
-              <span className="text-[10px] text-stone-400 block">Gross Rate</span>
-              <span className="font-bold text-white">₹{activeMandi.priceQtl}/qtl</span>
+              <span className="text-[10px] text-stone-400 block">Agmarknet Modal</span>
+              <span className="font-bold text-white">₹{activeMandi.modalPrice}/qtl</span>
             </div>
             <div className="bg-white/5 p-1.5 rounded-lg border border-white/10">
-              <span className="text-[10px] text-stone-400 block">Freight/Toll</span>
+              <span className="text-[10px] text-stone-400 block">Freight / Toll</span>
               <span className="font-semibold text-amber-300">₹{activeMandi.transportCost}/qtl</span>
             </div>
-            <div className="bg-emerald-950/60 p-1.5 rounded-lg border border-emerald-500/40">
+            <div className="bg-emerald-950/70 p-1.5 rounded-lg border border-emerald-500/40">
               <span className="text-[10px] text-emerald-300 block font-semibold">Net In-Hand</span>
               <span className="font-extrabold text-[#D3D67A]">₹{activeMandi.netPrice}/qtl</span>
             </div>
           </div>
+
+          <div className="mt-2 text-[10px] text-stone-400 flex items-center justify-between">
+            <span>Source: {activeMandi.source}</span>
+            <span>Updated: {activeMandi.reportedDate}</span>
+          </div>
         </div>
 
         {/* Map Control Actions (Bottom-Right, matching screenshot) */}
-        <div className="absolute bottom-3 right-3 z-20 flex flex-col gap-1.5 bg-black/80 backdrop-blur-md p-1.5 rounded-xl border border-white/20 shadow-2xl">
+        <div className="absolute bottom-3 right-3 z-20 flex flex-col gap-1.5 bg-black/85 backdrop-blur-md p-1.5 rounded-xl border border-white/20 shadow-2xl pointer-events-auto">
           <button
-            onClick={() => setZoomLevel((z) => Math.min(z + 15, 160))}
+            onClick={() => mapInstanceRef.current?.zoomIn()}
             className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/25 text-white flex items-center justify-center font-bold text-base transition cursor-pointer"
             title="Zoom In"
           >
             +
           </button>
           <button
-            onClick={() => setZoomLevel((z) => Math.max(z - 15, 80))}
+            onClick={() => mapInstanceRef.current?.zoomOut()}
             className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/25 text-white flex items-center justify-center font-bold text-base transition cursor-pointer"
             title="Zoom Out"
           >
             −
           </button>
           <button
-            onClick={() => setSelectedPin('baramati')}
+            onClick={() => {
+              if (mapInstanceRef.current) {
+                mapInstanceRef.current.setView([farmCoords.lat, farmCoords.lng], 11);
+              }
+            }}
             className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/25 text-emerald-300 flex items-center justify-center text-sm transition cursor-pointer"
-            title="Locate Farm (Center on Baramati)"
+            title="Locate Farm (Center)"
           >
             🧭
           </button>
           <button
-            onClick={() => {
-              setZoomLevel(100);
-              setSelectedPin('baramati');
-            }}
-            className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/25 text-white flex items-center justify-center text-sm transition cursor-pointer"
-            title="Reset Map View"
+            onClick={() => setPinDropActive((p) => !p)}
+            className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm transition cursor-pointer ${
+              pinDropActive ? 'bg-amber-500 text-white animate-pulse' : 'bg-white/10 hover:bg-white/25 text-white'
+            }`}
+            title="Choose on Map (Click map to drop pin)"
           >
-            ↻
+            📌
           </button>
         </div>
       </div>

@@ -4,7 +4,7 @@ import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import StatusBadge from '../../components/ui/StatusBadge';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
-import { getBids, cancelBid, buyBatchDirect, createBid } from '../../api/bids';
+import { getBids, cancelBid, buyBatchDirect, createBid, getActivePool, buyPoolStock } from '../../api/bids';
 import { getBuyerTrades, createPaymentOrder, verifyPayment } from '../../api/payments';
 import { getRequirements, createRequirement } from '../../api/requirements';
 import { getAvailableProduce } from '../../api/listings';
@@ -17,6 +17,19 @@ export default function BuyerDashboard() {
   const [trades, setTrades] = useState([]);
   const [requirements, setRequirements] = useState([]);
   const [availableProduce, setAvailableProduce] = useState([]);
+  const [activePool, setActivePool] = useState({
+    id: 'batch_fpo_pune',
+    name: 'Pune FPO Hub — Pune Gultekdi Market',
+    crop: 'Tomato',
+    variety: 'Abhinav Hybrid',
+    quality_grade: 'Grade A',
+    current_quantity_kg: 750,
+    target_quantity_kg: 1200,
+    price_per_kg: 16.55,
+    status: 'open',
+  });
+  const [buyingPoolLoading, setBuyingPoolLoading] = useState(false);
+  const [poolBuyCustomQty, setPoolBuyCustomQty] = useState('');
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState('all');
   const [activeTab, setActiveTab] = useState('available_crops'); // 'available_crops' | 'bids' | 'trades' | 'requirements'
@@ -46,11 +59,12 @@ export default function BuyerDashboard() {
 
   const fetchData = useCallback(async () => {
     try {
-      const [bidsRes, tradesRes, reqsRes, produceRes] = await Promise.allSettled([
+      const [bidsRes, tradesRes, reqsRes, produceRes, poolRes] = await Promise.allSettled([
         getBids(),
         getBuyerTrades(),
         getRequirements(),
         getAvailableProduce(),
+        getActivePool(),
       ]);
 
       if (bidsRes.status === 'fulfilled' && bidsRes.value?.data) {
@@ -65,6 +79,9 @@ export default function BuyerDashboard() {
       if (produceRes.status === 'fulfilled' && produceRes.value?.data) {
         setAvailableProduce(produceRes.value.data);
       }
+      if (poolRes.status === 'fulfilled' && poolRes.value?.data) {
+        setActivePool(poolRes.value.data);
+      }
     } catch (err) {
       console.error('Failed to load buyer data:', err);
     } finally {
@@ -78,6 +95,9 @@ export default function BuyerDashboard() {
     const interval = setInterval(fetchData, 8000);
 
     const handleSync = (e) => {
+      if (e?.detail?.pool) {
+        setActivePool(e.detail.pool);
+      }
       fetchData();
     };
 
@@ -136,6 +156,50 @@ export default function BuyerDashboard() {
       setFeedback({ text: 'Error executing instant buy.', type: 'error' });
     } finally {
       setBuyingListingId(null);
+    }
+  };
+
+  const handleBuyPoolStock = async (quantityToBuy) => {
+    const qty = parseFloat(quantityToBuy || poolBuyCustomQty || activePool.current_quantity_kg);
+    if (!qty || qty <= 0) {
+      setFeedback({ text: 'Please specify a valid quantity in kg.', type: 'error' });
+      return;
+    }
+    if (qty > activePool.current_quantity_kg) {
+      setFeedback({
+        text: `Only ${activePool.current_quantity_kg} kg currently available in this pool.`,
+        type: 'error',
+      });
+      return;
+    }
+
+    const price = activePool.price_per_kg || 16.55;
+    const total = qty * price;
+
+    if (!window.confirm(`Confirm purchase of ${qty} kg of ${activePool.crop} at ₹${price}/kg (Total: ₹${total.toLocaleString('en-IN')}) from ${activePool.name}?`)) return;
+
+    setBuyingPoolLoading(true);
+    setFeedback({ text: '', type: '' });
+    try {
+      const res = await buyPoolStock({ quantity_kg: qty, price_per_kg: price });
+      if (res.error) {
+        setFeedback({ text: res.error.message || 'Failed to buy pool stock', type: 'error' });
+      } else {
+        setFeedback({
+          text: `🎉 Purchased ${qty} kg from active pool! Payout generated for participating farmers. Remaining pool: ${res.data?.pool?.current_quantity_kg !== undefined ? Math.round(res.data.pool.current_quantity_kg) : Math.round(activePool.current_quantity_kg - qty)} kg.`,
+          type: 'success',
+        });
+        if (res.data?.pool) {
+          setActivePool(res.data.pool);
+        }
+        setPoolBuyCustomQty('');
+        fetchData();
+        setActiveTab('trades');
+      }
+    } catch (err) {
+      setFeedback({ text: 'Error purchasing stock from active pool', type: 'error' });
+    } finally {
+      setBuyingPoolLoading(false);
     }
   };
 
@@ -366,6 +430,133 @@ export default function BuyerDashboard() {
           <div className="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">Total Volume</div>
           <div className="text-3xl font-black text-stone-900 dark:text-stone-100 mt-1">{totalProcurementQuintals} <span className="text-sm font-semibold text-stone-500 dark:text-stone-400">Qtl</span></div>
           <div className="text-xs text-stone-500 dark:text-stone-400 mt-1 font-medium">{formatQuantity(totalProcurementKg)}</div>
+        </div>
+      </div>
+
+      {/* ACTIVE FPO POOL AGGREGATION & PROCUREMENT CARD */}
+      <div className="bg-gradient-to-br from-emerald-950 via-[#102213] to-[#0a180e] border-2 border-[#D3D67A]/60 rounded-3xl p-6 md:p-7 text-white shadow-2xl relative overflow-hidden">
+        {/* Subtle decorative glow */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20"></div>
+
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="space-y-2 flex-1">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <span className="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-[#D3D67A] text-[#1c3618] shadow-xs">
+                🥞 Live FPO Aggregation Pool
+              </span>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-white/10 text-emerald-300 border border-white/10">
+                Baramati & Pune Cluster
+              </span>
+              <span className="inline-flex items-center gap-1.5 text-xs text-emerald-200">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Active Wholesale Stock</span>
+              </span>
+            </div>
+
+            <h2 className="text-xl md:text-2xl font-black tracking-tight text-white flex items-center gap-2 pt-1">
+              <span>🍅 {activePool.crop} ({activePool.variety || 'Abhinav Hybrid'})</span>
+              <span className="text-sm font-bold text-[#D3D67A] px-2 py-0.5 rounded-md bg-black/40 border border-[#D3D67A]/40">
+                {activePool.quality_grade || 'Grade A'}
+              </span>
+            </h2>
+
+            <p className="text-xs md:text-sm text-stone-300 font-medium">
+              {activePool.name} • Certified aggregation center. Farmers contribute lots together for bulk buyers.
+            </p>
+
+            {/* Progress Bar & Available metrics */}
+            <div className="pt-2 max-w-xl space-y-1.5">
+              <div className="flex justify-between items-baseline text-xs font-bold">
+                <span className="text-stone-300">
+                  Pool Progress: <strong className="text-white text-sm">{Math.round(activePool.current_quantity_kg || 0)} kg</strong> available
+                </span>
+                <span className="text-[#D3D67A]">
+                  Target: {activePool.target_quantity_kg || 1200} kg ({Math.min(100, Math.round(((activePool.current_quantity_kg || 0) / (activePool.target_quantity_kg || 1200)) * 100))}%)
+                </span>
+              </div>
+              <div className="w-full bg-black/50 rounded-full h-3 overflow-hidden border border-white/15 p-0.5">
+                <div
+                  className="bg-gradient-to-r from-amber-400 via-emerald-400 to-[#D3D67A] h-full rounded-full transition-all duration-700 shadow-sm"
+                  style={{
+                    width: `${Math.min(
+                      100,
+                      Math.max(0, Math.round(((activePool.current_quantity_kg || 0) / (activePool.target_quantity_kg || 1200)) * 100))
+                    )}%`,
+                  }}
+                ></div>
+              </div>
+              <div className="flex justify-between text-[11px] text-stone-400 pt-0.5">
+                <span>Wholesale modal rate: <strong className="text-white">₹{activePool.price_per_kg}/kg</strong></span>
+                <span>{activePool.farmers_count || 4} contributing farmers linked</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Buy Actions */}
+          <div className="bg-black/40 backdrop-blur-md rounded-2xl p-4 md:p-5 border border-white/15 flex flex-col gap-3 shrink-0 lg:w-72">
+            <div className="flex justify-between items-baseline">
+              <span className="text-xs font-semibold text-stone-300">Pool Buy Rate</span>
+              <span className="text-2xl font-black text-[#D3D67A]">₹{activePool.price_per_kg}<span className="text-xs font-normal text-stone-300">/kg</span></span>
+            </div>
+
+            {activePool.current_quantity_kg > 0 ? (
+              <>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <button
+                    type="button"
+                    disabled={buyingPoolLoading || activePool.current_quantity_kg < 150}
+                    onClick={() => handleBuyPoolStock(150)}
+                    className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold transition border border-white/10 cursor-pointer disabled:opacity-40"
+                  >
+                    Buy 150 kg
+                  </button>
+                  <button
+                    type="button"
+                    disabled={buyingPoolLoading || activePool.current_quantity_kg < 300}
+                    onClick={() => handleBuyPoolStock(300)}
+                    className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold transition border border-white/10 cursor-pointer disabled:opacity-40"
+                  >
+                    Buy 300 kg
+                  </button>
+                </div>
+
+                <div className="flex gap-2">
+                  <input
+                    type="number"
+                    min="10"
+                    max={activePool.current_quantity_kg}
+                    step="10"
+                    placeholder="Custom kg"
+                    value={poolBuyCustomQty}
+                    onChange={(e) => setPoolBuyCustomQty(e.target.value)}
+                    className="w-1/2 px-3 py-2 text-xs rounded-xl bg-black/50 border border-white/20 text-white font-bold placeholder-stone-400 focus:outline-none focus:border-[#D3D67A]"
+                  />
+                  <button
+                    type="button"
+                    disabled={buyingPoolLoading || !poolBuyCustomQty || parseFloat(poolBuyCustomQty) <= 0}
+                    onClick={() => handleBuyPoolStock(parseFloat(poolBuyCustomQty))}
+                    className="w-1/2 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs border border-white/20 cursor-pointer disabled:opacity-40 transition"
+                  >
+                    Buy Custom
+                  </button>
+                </div>
+
+                <button
+                  type="button"
+                  disabled={buyingPoolLoading}
+                  onClick={() => handleBuyPoolStock(activePool.current_quantity_kg)}
+                  className="w-full py-2.5 rounded-xl bg-[#D3D67A] hover:bg-[#c2c56a] text-[#1c3618] font-extrabold text-xs md:text-sm shadow-lg transition active:scale-95 cursor-pointer disabled:opacity-50 flex items-center justify-center gap-1.5"
+                >
+                  <span>⚡</span>
+                  <span>{buyingPoolLoading ? 'Processing...' : `Buy All (${Math.round(activePool.current_quantity_kg)} kg)`}</span>
+                </button>
+              </>
+            ) : (
+              <div className="text-center py-2 text-xs font-bold text-amber-300 bg-amber-950/60 rounded-xl p-2 border border-amber-800">
+                ✓ Full Pool Stock Purchased & Settled
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
