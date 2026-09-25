@@ -14,7 +14,9 @@ export default function Sidebar({ isOpen, setIsOpen }) {
     navigate('/login');
   };
 
-  const navItems = [
+  const isBuyer = user?.role === 'buyer';
+
+  const farmerNavItems = [
     {
       to: '/farmer/dashboard',
       label: t('dashboard', 'Dashboard'),
@@ -99,6 +101,52 @@ export default function Sidebar({ isOpen, setIsOpen }) {
     },
   ];
 
+  // Buyer navigation exactly matching Screenshots 1, 2, 3, 4 + Trades
+  const buyerNavItems = [
+    {
+      to: '/buyer/marketplace',
+      alias: ['/buyer/dashboard', '/buyer'],
+      label: 'Marketplace',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+      ),
+    },
+    {
+      to: '/buyer/offers',
+      alias: ['/buyer/orders'],
+      label: 'My Offers',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        </svg>
+      ),
+    },
+    {
+      to: '/buyer/delivery',
+      alias: ['/buyer/acceptance'],
+      label: 'Delivery Acceptance',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+        </svg>
+      ),
+    },
+    {
+      to: '/buyer/trades',
+      alias: ['/buyer/settlements'],
+      label: 'Trades & Settlements',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+        </svg>
+      ),
+    },
+  ];
+
+  const activeNavItems = isBuyer ? buyerNavItems : farmerNavItems;
+
   return (
     <>
       {/* Mobile Backdrop */}
@@ -127,7 +175,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
                   KrishiSetu AI
                 </h1>
                 <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#255919] dark:text-[#D1BF4B] block mt-0.5">
-                  FPO & MARKET LINKAGE
+                  FPO &amp; MARKET LINKAGE
                 </span>
               </div>
             </div>
@@ -147,18 +195,16 @@ export default function Sidebar({ isOpen, setIsOpen }) {
             </span>
 
             <nav className="space-y-1">
-              {navItems.map((item) => {
-                const isActive = location.pathname === item.to || (item.to.includes('#') && location.pathname === '/farmer/dashboard');
+              {activeNavItems.map((item) => {
+                const isExact = location.pathname === item.to;
+                const isAliased = item.alias && item.alias.some((a) => location.pathname === a || location.pathname.startsWith(a));
+                const isActive = isExact || isAliased;
 
                 return (
                   <button
                     key={item.label}
                     onClick={() => {
-                      if (item.customClick) {
-                        item.customClick();
-                      } else {
-                        navigate(item.to);
-                      }
+                      navigate(item.to);
                       setIsOpen(false);
                     }}
                     className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-left cursor-pointer ${
@@ -178,18 +224,18 @@ export default function Sidebar({ isOpen, setIsOpen }) {
           </div>
         </div>
 
-        {/* User Card & Logout (Bottom matching screenshot) */}
+        {/* User Card & Logout matching screenshot */}
         <div className="p-4 border-t border-stone-100 dark:border-emerald-900/30 space-y-3">
           <div className="flex items-center gap-3 p-2 bg-stone-50 dark:bg-[#111e13] rounded-xl border border-stone-200/80 dark:border-emerald-900/40">
             <div className="w-9 h-9 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 font-extrabold flex items-center justify-center text-sm border border-emerald-300 dark:border-emerald-700 shrink-0">
-              {user?.name ? user.name[0].toUpperCase() : 'R'}
+              {isBuyer ? (user?.name ? user.name[0].toUpperCase() : 'F') : (user?.name ? user.name[0].toUpperCase() : 'R')}
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-xs font-bold text-stone-900 dark:text-stone-100 truncate">
-                {user?.name || 'Ramesh Patil'}
+                {isBuyer ? (user?.name || 'FreshMart Foods Pvt. Ltd.') : (user?.name || 'Ramesh Patil')}
               </p>
               <p className="text-[11px] text-stone-500 dark:text-stone-400 capitalize">
-                {user?.role || 'Farmer'}
+                {user?.role || (isBuyer ? 'Buyer' : 'Farmer')}
               </p>
             </div>
           </div>

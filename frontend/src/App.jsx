@@ -17,6 +17,11 @@ import GradeCropPage from './pages/farmer/GradeCropPage';
 import AuctionListingPage from './pages/farmer/AuctionListingPage';
 import BuyerProcurementPage from './pages/farmer/BuyerProcurementPage';
 import BuyerDashboard from './pages/buyer/BuyerDashboard';
+import BuyerMarketplacePage from './pages/buyer/BuyerMarketplacePage';
+import BuyerOffersPage from './pages/buyer/BuyerOffersPage';
+import BuyerDeliveryPage from './pages/buyer/BuyerDeliveryPage';
+import BuyerTradesPage from './pages/buyer/BuyerTradesPage';
+import BuyerProductDetailPage from './pages/buyer/BuyerProductDetailPage';
 import BrowseBatchesPage from './pages/buyer/BrowseBatchesPage';
 import SubmitBidPage from './pages/buyer/SubmitBidPage';
 import AuctionMonitorPage from './pages/admin/AuctionMonitorPage';
@@ -49,6 +54,8 @@ function App() {
   };
 
   const isFarmer = user?.role === 'farmer';
+  const isBuyer = user?.role === 'buyer';
+  const hasSidebar = isFarmer || isBuyer;
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-[#F5F8F4] via-[#EBF3EA] to-[#DFEDE1] dark:from-[#071309] dark:via-[#0E1F12] dark:to-[#142617] flex flex-col font-sans text-stone-900 dark:text-stone-100 transition-colors duration-500">
@@ -68,13 +75,13 @@ function App() {
         </div>
       )}
 
-      {/* Left Sidebar for Farmer (Matching Screenshot) */}
-      {isFarmer && (
+      {/* Left Sidebar for Farmer & Buyer (Matching Screenshot) */}
+      {hasSidebar && (
         <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
       )}
 
       {/* Main Layout Area */}
-      <div className={`relative z-10 flex flex-col min-h-screen transition-all ${isFarmer ? 'lg:pl-64' : ''}`}>
+      <div className={`relative z-10 flex flex-col min-h-screen transition-all ${hasSidebar ? 'lg:pl-64' : ''}`}>
         {user && <Navbar onToggleSidebar={() => setSidebarOpen((prev) => !prev)} />}
 
         <main className="flex-grow container mx-auto px-4 sm:px-6 py-6 md:py-8">
@@ -99,7 +106,15 @@ function App() {
             </Route>
 
             <Route path="/buyer/*" element={<ProtectedRoute allowedRoles={['buyer']} />}>
-              <Route path="dashboard" element={<BuyerDashboard />} />
+              <Route path="dashboard" element={<BuyerMarketplacePage />} />
+              <Route path="marketplace" element={<BuyerMarketplacePage />} />
+              <Route path="offers" element={<BuyerOffersPage />} />
+              <Route path="orders" element={<BuyerOffersPage />} />
+              <Route path="delivery" element={<BuyerDeliveryPage />} />
+              <Route path="acceptance" element={<BuyerDeliveryPage />} />
+              <Route path="trades" element={<BuyerTradesPage />} />
+              <Route path="settlements" element={<BuyerTradesPage />} />
+              <Route path="products/:id" element={<BuyerProductDetailPage />} />
               <Route path="browse" element={<BrowseBatchesPage />} />
               <Route path="bid/:batchId" element={<SubmitBidPage />} />
               <Route path="submit-bid" element={<SubmitBidPage />} />
