@@ -85,14 +85,14 @@ export default function WarehouseFinderWidget({ initialCrop = 'All', lat = 19.99
             </p>
           </div>
         </div>
-        <span className="text-xs font-bold text-[#2A5124] dark:text-[#D3D67A] bg-[#2A5124]/10 dark:bg-[#D3D67A]/20 px-3 py-1 rounded-full border border-[#2A5124]/20 dark:border-[#D3D67A]/30 shrink-0 flex items-center gap-1.5 shadow-xs">
+        <span className="text-xs font-bold text-[#255919] dark:text-[#D1BF4B] bg-[#255919]/10 dark:bg-[#D1BF4B]/20 px-3 py-1 rounded-full border border-[#255919]/20 dark:border-[#D1BF4B]/30 shrink-0 flex items-center gap-1.5 shadow-xs">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
           150 km Radius
         </span>
       </div>
 
       {/* Filters Container */}
-      <div className="space-y-2.5 mb-4 p-3 bg-stone-50/70 dark:bg-[#0c160e]/60 rounded-xl border border-stone-200/80 dark:border-emerald-900/40">
+      <div className="space-y-2.5 mb-4 p-3 bg-stone-50/70 dark:bg-[#162719] rounded-xl border border-stone-200/80 dark:border-emerald-900/40">
         {/* Crop Pills */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs scrollbar-none">
           <span className="text-stone-500 dark:text-stone-400 font-bold uppercase text-[10px] shrink-0 mr-1">
@@ -104,8 +104,8 @@ export default function WarehouseFinderWidget({ initialCrop = 'All', lat = 19.99
               onClick={() => setCropFilter(c)}
               className={`px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
                 cropFilter === c
-                  ? 'bg-[#2A5124] dark:bg-[#D3D67A] text-white dark:text-[#0b170d] shadow-xs scale-105'
-                  : 'bg-white dark:bg-[#132215] text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 border border-stone-200 dark:border-emerald-900/40'
+                  ? 'bg-gradient-to-r from-[#255919] to-[#D1BF4B] text-white shadow-xs scale-105'
+                  : 'bg-white dark:bg-[#182b1c] text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-[#203a25] border border-stone-200 dark:border-emerald-900/40'
               }`}
             >
               {c}
@@ -124,8 +124,8 @@ export default function WarehouseFinderWidget({ initialCrop = 'All', lat = 19.99
               onClick={() => setTypeFilter(t.value)}
               className={`px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition flex items-center gap-1 cursor-pointer ${
                 typeFilter === t.value
-                  ? 'bg-[#2A5124] dark:bg-[#D3D67A] text-white dark:text-[#0b170d] shadow-xs'
-                  : 'bg-white dark:bg-[#132215] text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 border border-stone-200 dark:border-emerald-900/40'
+                  ? 'bg-gradient-to-r from-[#255919] to-[#D1BF4B] text-white shadow-xs'
+                  : 'bg-white dark:bg-[#182b1c] text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-[#203a25] border border-stone-200 dark:border-emerald-900/40'
               }`}
             >
               <span>{t.icon}</span>
@@ -154,7 +154,7 @@ export default function WarehouseFinderWidget({ initialCrop = 'All', lat = 19.99
             return (
               <div
                 key={id}
-                className="p-4 bg-stone-50/90 dark:bg-[#0c160e]/90 hover:bg-stone-100/90 dark:hover:bg-[#112014] rounded-2xl border border-stone-200/90 dark:border-emerald-900/50 hover:border-emerald-500/50 dark:hover:border-emerald-500/60 shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-3"
+                className="p-4 bg-stone-50/70 dark:bg-[#162719] hover:bg-stone-100/90 dark:hover:bg-[#182b1c] rounded-2xl border border-stone-200/90 dark:border-emerald-900/50 hover:border-emerald-500/50 dark:hover:border-emerald-500/60 shadow-xs hover:shadow-md transition-all flex flex-col justify-between gap-3"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>

@@ -395,19 +395,19 @@ export default function GradeCropPage() {
       </div>
 
       {/* Stepper Progress */}
-      <div className="bg-white dark:bg-stone-900 p-4 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-xs space-y-3">
+      <div className="bg-white/95 dark:bg-[#132215]/95 p-4 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] space-y-3">
         <div className="flex items-center justify-between text-xs font-bold text-stone-500 dark:text-stone-400 px-1">
-          <span className={step >= 1 ? 'text-emerald-700 dark:text-emerald-400' : ''}>
+          <span className={step >= 1 ? 'text-[#255919] dark:text-[#D1BF4B]' : ''}>
             1. {isMr ? 'पीक व जात माहिती' : isHi ? 'फसल विवरण' : 'Crop & Batch Info'}
           </span>
-          <span className={step >= 2 ? 'text-emerald-700 dark:text-emerald-400' : ''}>
+          <span className={step >= 2 ? 'text-[#255919] dark:text-[#D1BF4B]' : ''}>
             2. {isMr ? '३-कोनी फोटो' : isHi ? 'मल्टी-एंगल फोटो' : 'Multi-Angle Photos'}
           </span>
-          <span className={step >= 3 ? 'text-emerald-700 dark:text-emerald-400' : ''}>
+          <span className={step >= 3 ? 'text-[#255919] dark:text-[#D1BF4B]' : ''}>
             3. {isMr ? 'एआय प्रतवारी प्रमाणपत्र' : isHi ? 'एआई ग्रेडिंग परिणाम' : 'AI Analysis & Cert'}
           </span>
         </div>
-        <div className="w-full bg-stone-100 dark:bg-stone-800 rounded-full h-2 overflow-hidden">
+        <div className="w-full bg-stone-100 dark:bg-[#162719] rounded-full h-2 overflow-hidden">
           <div
             className="bg-gradient-to-r from-[#D1BF4B] to-[#255919] h-2 rounded-full transition-all duration-500"
             style={{ width: `${step === 1 ? 33 : step === 2 ? 66 : 100}%` }}
@@ -417,7 +417,7 @@ export default function GradeCropPage() {
 
       {/* STEP 1: CROP SELECTION & BATCH DETAILS */}
       {step === 1 && (
-        <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm p-6 space-y-6">
+        <div className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs hover:shadow-md border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] p-6 space-y-6 transition-all duration-300">
           <div>
             <h2 className="text-lg font-bold text-stone-900 dark:text-stone-100">
               {isMr ? 'पीक निवडा व प्रमाण सांगा' : isHi ? 'फसल चुनें एवं मात्रा दर्ज करें' : 'Select Crop & Volume Details'}
@@ -439,7 +439,7 @@ export default function GradeCropPage() {
               placeholder={isMr ? 'पीक शोधा (उदा. टोमॅटो, कांदा, सोयाबीन)...' : isHi ? 'फसल खोजें...' : 'Search crop catalog (e.g. Tomato, Onion, Soybean)...'}
               value={cropQuery}
               onChange={(e) => setCropQuery(e.target.value)}
-              className="w-full text-xs sm:text-sm pl-10 pr-4 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-hidden focus:ring-2 focus:ring-emerald-600"
+              className="w-full text-xs sm:text-sm pl-10 pr-4 py-2.5 rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 focus:outline-hidden focus:ring-2 focus:ring-[#255919] dark:focus:ring-[#D1BF4B]"
             />
           </div>
 
@@ -454,14 +454,14 @@ export default function GradeCropPage() {
                   onClick={() => handleSelectCrop(c)}
                   className={`p-3.5 rounded-xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between hover:-translate-y-0.5 ${
                     isSelected
-                      ? 'border-[#255919] dark:border-[#D1BF4B] bg-emerald-50/70 dark:bg-emerald-950/50 shadow-xs ring-1 ring-[#255919]'
-                      : 'border-stone-200 dark:border-stone-800 bg-stone-50/40 dark:bg-stone-800/40 hover:bg-stone-100 dark:hover:bg-stone-800'
+                      ? 'border-[#255919] dark:border-[#D1BF4B] bg-emerald-50/70 dark:bg-[#162719] shadow-xs ring-1 ring-[#255919] dark:ring-[#D1BF4B]'
+                      : 'border-stone-200 dark:border-emerald-900/40 bg-stone-50/60 dark:bg-[#162719]/60 hover:bg-stone-100 dark:hover:bg-[#182b1c]'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-2xl">{c.icon}</span>
                     {isSelected && (
-                      <span className="w-5 h-5 rounded-full bg-emerald-700 text-white flex items-center justify-center text-[11px] font-bold">
+                      <span className="w-5 h-5 rounded-full bg-[#255919] text-white flex items-center justify-center text-[11px] font-bold">
                         ✓
                       </span>
                     )}
@@ -480,7 +480,7 @@ export default function GradeCropPage() {
           </div>
 
           {/* Form Fields Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-stone-100 dark:border-stone-800">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-stone-100 dark:border-emerald-900/40">
             {/* Variety */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-stone-700 dark:text-stone-300">
@@ -489,7 +489,7 @@ export default function GradeCropPage() {
               <select
                 value={variety}
                 onChange={(e) => setVariety(e.target.value)}
-                className="w-full text-xs sm:text-sm p-2.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-hidden focus:ring-2 focus:ring-emerald-600"
+                className="w-full text-xs sm:text-sm p-2.5 rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 focus:outline-hidden focus:ring-2 focus:ring-[#255919]"
               >
                 {selectedCrop.varieties.map((v) => (
                   <option key={v} value={v}>
@@ -508,7 +508,7 @@ export default function GradeCropPage() {
                 type="number"
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
-                className="w-full text-xs sm:text-sm p-2.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-hidden focus:ring-2 focus:ring-emerald-600"
+                className="w-full text-xs sm:text-sm p-2.5 rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 focus:outline-hidden focus:ring-2 focus:ring-[#255919]"
               />
             </div>
 
@@ -520,7 +520,7 @@ export default function GradeCropPage() {
               <select
                 value={unit}
                 onChange={(e) => setUnit(e.target.value)}
-                className="w-full text-xs sm:text-sm p-2.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-hidden focus:ring-2 focus:ring-emerald-600"
+                className="w-full text-xs sm:text-sm p-2.5 rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 focus:outline-hidden focus:ring-2 focus:ring-[#255919]"
               >
                 <option value="crates">{isMr ? 'क्रॅट्स (Crates, ~20kg)' : 'Crates (Plastic, ~20kg)'}</option>
                 <option value="quintal">{isMr ? 'क्विंटल (Quintal, 100kg)' : 'Quintals (100 kg)'}</option>
@@ -540,7 +540,7 @@ export default function GradeCropPage() {
                 type="number"
                 value={askingPrice}
                 onChange={(e) => setAskingPrice(e.target.value)}
-                className="w-full text-xs sm:text-sm p-2.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-hidden focus:ring-2 focus:ring-emerald-600"
+                className="w-full text-xs sm:text-sm p-2.5 rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 focus:outline-hidden focus:ring-2 focus:ring-[#255919]"
               />
             </div>
 
@@ -553,7 +553,7 @@ export default function GradeCropPage() {
                 type="text"
                 value={packagingType}
                 onChange={(e) => setPackagingType(e.target.value)}
-                className="w-full text-xs sm:text-sm p-2.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-hidden"
+                className="w-full text-xs sm:text-sm p-2.5 rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 focus:outline-hidden"
               />
             </div>
 
@@ -566,16 +566,16 @@ export default function GradeCropPage() {
                 type="text"
                 value={collectionHub}
                 onChange={(e) => setCollectionHub(e.target.value)}
-                className="w-full text-xs sm:text-sm p-2.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-hidden"
+                className="w-full text-xs sm:text-sm p-2.5 rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 focus:outline-hidden"
               />
             </div>
           </div>
 
-          <div className="flex justify-end pt-4 border-t border-stone-100 dark:border-stone-800">
+          <div className="flex justify-end pt-4 border-t border-stone-100 dark:border-emerald-900/40">
             <button
               type="button"
               onClick={() => setStep(2)}
-              className="bg-gradient-to-r from-[#255919] to-[#386b24] hover:opacity-95 text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-xl transition shadow-md flex items-center gap-2 cursor-pointer hover:-translate-y-0.5"
+              className="bg-gradient-to-r from-[#255919] to-[#D1BF4B] hover:opacity-95 text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-xl transition shadow-md flex items-center gap-2 cursor-pointer hover:-translate-y-0.5 border border-[#D1BF4B]/40"
             >
               <span>{isMr ? 'पुढे: फोटो जोडा' : isHi ? 'आगे: फोटो अपलोड करें' : 'Next: Upload Multi-Angle Photos'}</span>
               <span>→</span>
@@ -586,7 +586,7 @@ export default function GradeCropPage() {
 
       {/* STEP 2: MULTI-ANGLE PHOTO PROTOCOL */}
       {step === 2 && (
-        <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm p-6 space-y-6">
+        <div className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs hover:shadow-md border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] p-6 space-y-6 transition-all duration-300">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h2 className="text-lg font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
@@ -605,7 +605,7 @@ export default function GradeCropPage() {
             <button
               type="button"
               onClick={handleLoadSamplePhotos}
-              className="bg-emerald-100 hover:bg-emerald-200 dark:bg-emerald-950 dark:hover:bg-emerald-900 text-emerald-800 dark:text-emerald-300 font-bold text-xs px-3.5 py-2 rounded-xl border border-emerald-300 dark:border-emerald-700 flex items-center gap-1.5 transition shrink-0 cursor-pointer"
+              className="bg-emerald-100 hover:bg-emerald-200 dark:bg-[#162719] text-[#255919] dark:text-[#D1BF4B] font-bold text-xs px-3.5 py-2 rounded-xl border border-emerald-300 dark:border-[#D1BF4B]/30 flex items-center gap-1.5 transition shrink-0 cursor-pointer"
             >
               <span>⚡</span>
               <span>{isMr ? `नमुना फोटो लोड करा (${selectedCrop.name})` : `Load 3 Field Photos (${selectedCrop.name})`}</span>
@@ -615,7 +615,7 @@ export default function GradeCropPage() {
           {/* 3 Photo Angle Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* Angle 1: Top View */}
-            <div className="bg-stone-50 dark:bg-stone-800/60 rounded-xl p-4 border border-stone-200 dark:border-stone-700 space-y-2.5">
+            <div className="bg-stone-50/70 dark:bg-[#162719] rounded-xl p-4 border border-stone-200/90 dark:border-emerald-900/40 space-y-2.5">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-stone-900 dark:text-stone-100">
                   1. Top View (वरचा देखावा)
@@ -645,7 +645,7 @@ export default function GradeCropPage() {
                   </button>
                 </div>
               ) : (
-                <label className="h-32 border-2 border-dashed border-stone-300 dark:border-stone-600 hover:border-emerald-500 rounded-lg flex flex-col items-center justify-center cursor-pointer transition text-xs text-stone-500 hover:text-emerald-700">
+                <label className="h-32 border-2 border-dashed border-stone-300 dark:border-emerald-900/60 hover:border-[#D1BF4B] rounded-lg flex flex-col items-center justify-center cursor-pointer transition text-xs text-stone-500 hover:text-[#255919] dark:hover:text-[#D1BF4B]">
                   <span className="text-lg">📷</span>
                   <span className="mt-1 font-semibold">Upload 90° Overhead</span>
                   <input
@@ -659,7 +659,7 @@ export default function GradeCropPage() {
             </div>
 
             {/* Angle 2: Side View */}
-            <div className="bg-stone-50 dark:bg-stone-800/60 rounded-xl p-4 border border-stone-200 dark:border-stone-700 space-y-2.5">
+            <div className="bg-stone-50/70 dark:bg-[#162719] rounded-xl p-4 border border-stone-200/90 dark:border-emerald-900/40 space-y-2.5">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-stone-900 dark:text-stone-100">
                   2. Side View (बाजूचा देखावा)
@@ -689,7 +689,7 @@ export default function GradeCropPage() {
                   </button>
                 </div>
               ) : (
-                <label className="h-32 border-2 border-dashed border-stone-300 dark:border-stone-600 hover:border-emerald-500 rounded-lg flex flex-col items-center justify-center cursor-pointer transition text-xs text-stone-500 hover:text-emerald-700">
+                <label className="h-32 border-2 border-dashed border-stone-300 dark:border-emerald-900/60 hover:border-[#D1BF4B] rounded-lg flex flex-col items-center justify-center cursor-pointer transition text-xs text-stone-500 hover:text-[#255919] dark:hover:text-[#D1BF4B]">
                   <span className="text-lg">📐</span>
                   <span className="mt-1 font-semibold">Upload Side / Caliber</span>
                   <input
@@ -703,7 +703,7 @@ export default function GradeCropPage() {
             </div>
 
             {/* Angle 3: Crate / Lot View */}
-            <div className="bg-stone-50 dark:bg-stone-800/60 rounded-xl p-4 border border-stone-200 dark:border-stone-700 space-y-2.5">
+            <div className="bg-stone-50/70 dark:bg-[#162719] rounded-xl p-4 border border-stone-200/90 dark:border-emerald-900/40 space-y-2.5">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-stone-900 dark:text-stone-100">
                   3. Crate / Lot (क्रॅट / ढीग)
@@ -733,7 +733,7 @@ export default function GradeCropPage() {
                   </button>
                 </div>
               ) : (
-                <label className="h-32 border-2 border-dashed border-stone-300 dark:border-stone-600 hover:border-emerald-500 rounded-lg flex flex-col items-center justify-center cursor-pointer transition text-xs text-stone-500 hover:text-emerald-700">
+                <label className="h-32 border-2 border-dashed border-stone-300 dark:border-emerald-900/60 hover:border-[#D1BF4B] rounded-lg flex flex-col items-center justify-center cursor-pointer transition text-xs text-stone-500 hover:text-[#255919] dark:hover:text-[#D1BF4B]">
                   <span className="text-lg">🧺</span>
                   <span className="mt-1 font-semibold">Upload Crate / Lot</span>
                   <input
@@ -748,12 +748,12 @@ export default function GradeCropPage() {
           </div>
 
           {/* Model Provenance Banner */}
-          <div className="p-4 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl text-xs space-y-1">
+          <div className="p-4 bg-emerald-50 dark:bg-[#162719] border border-emerald-200 dark:border-emerald-900/50 rounded-xl text-xs space-y-1">
             <div className="flex items-center justify-between">
               <span className="font-bold text-emerald-950 dark:text-emerald-200 flex items-center gap-1.5">
                 <span>✨</span> Field-Calibrated Computer Vision Backbone (YOLO11-seg)
               </span>
-              <span className="text-[10px] bg-emerald-200/80 dark:bg-emerald-900 text-emerald-900 dark:text-emerald-200 font-semibold px-2 py-0.5 rounded-full">
+              <span className="text-[10px] bg-emerald-200/80 dark:bg-[#1c3321] text-[#255919] dark:text-[#D1BF4B] font-semibold px-2 py-0.5 rounded-full border border-emerald-300 dark:border-[#D1BF4B]/30">
                 520+ Pune/Nashik Field Samples
               </span>
             </div>
@@ -764,7 +764,7 @@ export default function GradeCropPage() {
 
           {/* Progress Animation */}
           {analyzing && (
-            <div className="p-5 bg-stone-50 dark:bg-stone-800/80 rounded-xl border border-stone-200 dark:border-stone-700 space-y-3">
+            <div className="p-5 bg-stone-50/70 dark:bg-[#162719] rounded-xl border border-stone-200 dark:border-emerald-900/40 space-y-3">
               <div className="flex justify-between items-center text-xs font-bold text-stone-800 dark:text-stone-200">
                 <span className="flex items-center gap-2">
                   <span className="animate-spin text-emerald-700">⏳</span>
@@ -772,9 +772,9 @@ export default function GradeCropPage() {
                 </span>
                 <span className="font-mono">{progress}%</span>
               </div>
-              <div className="w-full bg-stone-200 dark:bg-stone-700 rounded-full h-2 overflow-hidden">
+              <div className="w-full bg-stone-200 dark:bg-[#182b1c] rounded-full h-2 overflow-hidden">
                 <div
-                  className="bg-emerald-700 h-2 rounded-full transition-all duration-300"
+                  className="bg-gradient-to-r from-[#255919] to-[#D1BF4B] h-2 rounded-full transition-all duration-300"
                   style={{ width: `${progress}%` }}
                 />
               </div>
@@ -782,12 +782,12 @@ export default function GradeCropPage() {
           )}
 
           {/* Navigation Buttons */}
-          <div className="flex justify-between pt-4 border-t border-stone-100 dark:border-stone-800">
+          <div className="flex justify-between pt-4 border-t border-stone-100 dark:border-emerald-900/40">
             <button
               type="button"
               onClick={() => setStep(1)}
               disabled={analyzing}
-              className="text-stone-600 dark:text-stone-400 font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 transition"
+              className="text-stone-600 dark:text-stone-300 font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl border border-stone-300 dark:border-[#D1BF4B]/40 hover:bg-stone-100 dark:hover:bg-[#162719] transition"
             >
               ← {isMr ? 'मागे' : isHi ? 'पीछे' : 'Back'}
             </button>
@@ -796,7 +796,7 @@ export default function GradeCropPage() {
               type="button"
               onClick={handleRunAnalysis}
               disabled={analyzing}
-              className="bg-gradient-to-r from-[#255919] via-[#3f702b] to-[#D1BF4B] hover:opacity-95 text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-xl transition shadow-md flex items-center gap-2 cursor-pointer hover:scale-[1.02] active:scale-95"
+              className="bg-gradient-to-r from-[#255919] via-[#3f702b] to-[#D1BF4B] hover:opacity-95 text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-xl transition shadow-md flex items-center gap-2 cursor-pointer hover:scale-[1.02] active:scale-95 border border-[#D1BF4B]/40"
             >
               <span>{analyzing ? 'Analyzing Quality...' : 'Run AI Quality Grading'}</span>
               <span>✨</span>
@@ -808,7 +808,7 @@ export default function GradeCropPage() {
       {/* STEP 3: QUALITY ANALYSIS CERTIFICATE & SAVE */}
       {step === 3 && gradeResult && (
         <div className="space-y-6">
-          <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-[#D1BF4B]/25 shadow-md overflow-hidden border-t-4 border-t-[#255919] dark:border-t-[#D1BF4B]">
+          <div className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/25 shadow-md overflow-hidden border-t-4 border-t-[#255919] dark:border-t-[#D1BF4B]">
             {/* Certificate Header Banner */}
             <div className="bg-gradient-to-r from-[#255919] via-[#3a6e29] to-[#D1BF4B] text-white p-6 sm:p-8 text-center">
               <div className="flex flex-wrap items-center justify-center gap-2 mb-3">
@@ -829,7 +829,7 @@ export default function GradeCropPage() {
 
             <div className="p-6 space-y-6">
               {/* Product Summary Grid */}
-              <div className="bg-stone-50 dark:bg-stone-800/60 rounded-xl p-4 border border-stone-200 dark:border-stone-800 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+              <div className="bg-stone-50/70 dark:bg-[#162719] rounded-xl p-4 border border-stone-200/90 dark:border-emerald-900/40 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
                 <div>
                   <span className="text-stone-400 block text-[11px]">{isMr ? 'पीक / जात:' : isHi ? 'फसल:' : 'Crop & Cultivar:'}</span>
                   <strong className="text-stone-900 dark:text-stone-100 font-bold">{selectedCrop.name} ({variety})</strong>
@@ -840,7 +840,7 @@ export default function GradeCropPage() {
                 </div>
                 <div>
                   <span className="text-stone-400 block text-[11px]">{isMr ? 'अपेक्षित दर:' : isHi ? 'अपेक्षित मूल्य:' : 'Target Price:'}</span>
-                  <strong className="text-emerald-700 dark:text-emerald-400 font-bold font-mono">₹{askingPrice} / {unit}</strong>
+                  <strong className="text-[#255919] dark:text-[#D1BF4B] font-bold font-mono">₹{askingPrice} / {unit}</strong>
                 </div>
                 <div>
                   <span className="text-stone-400 block text-[11px]">{isMr ? 'संकलन केंद्र:' : isHi ? 'हब स्थान:' : 'FPO Hub:'}</span>
@@ -855,7 +855,7 @@ export default function GradeCropPage() {
                 </div>
                 <div className="grid grid-cols-3 gap-3">
                   {Object.entries(photoPreviews).map(([ang, url]) => (
-                    <div key={ang} className="h-28 rounded-xl overflow-hidden bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 relative">
+                    <div key={ang} className="h-28 rounded-xl overflow-hidden bg-stone-100 dark:bg-[#162719] border border-stone-200 dark:border-emerald-900/40 relative">
                       {url ? (
                         <img src={url} alt={ang} className="w-full h-full object-cover" />
                       ) : (
@@ -875,24 +875,24 @@ export default function GradeCropPage() {
                   OpenCV Quality Gate Validation
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-xs">
-                  <div className="p-3 bg-stone-50 dark:bg-stone-800/60 rounded-xl border border-stone-200 dark:border-stone-700">
+                  <div className="p-3 bg-stone-50/70 dark:bg-[#162719] rounded-xl border border-stone-200/90 dark:border-emerald-900/40">
                     <span className="text-[11px] text-stone-500 dark:text-stone-400 block">Sharpness (Laplacian)</span>
                     <strong className="font-bold text-stone-800 dark:text-stone-200 font-mono text-sm">{gradeResult.blurScore}</strong>
                     <span className="text-[10px] text-emerald-700 dark:text-emerald-400 block mt-0.5 font-bold">✓ Passed (&gt; 100)</span>
                   </div>
-                  <div className="p-3 bg-stone-50 dark:bg-stone-800/60 rounded-xl border border-stone-200 dark:border-stone-700">
+                  <div className="p-3 bg-stone-50/70 dark:bg-[#162719] rounded-xl border border-stone-200/90 dark:border-emerald-900/40">
                     <span className="text-[11px] text-stone-500 dark:text-stone-400 block">Illumination Index</span>
                     <strong className="font-bold text-stone-800 dark:text-stone-200 font-mono text-sm">{gradeResult.brightnessScore}</strong>
                     <span className="text-[10px] text-emerald-700 dark:text-emerald-400 block mt-0.5 font-bold">✓ Passed (80–200)</span>
                   </div>
-                  <div className="p-3 bg-stone-50 dark:bg-stone-800/60 rounded-xl border border-stone-200 dark:border-stone-700">
+                  <div className="p-3 bg-stone-50/70 dark:bg-[#162719] rounded-xl border border-stone-200/90 dark:border-emerald-900/40">
                     <span className="text-[11px] text-stone-500 dark:text-stone-400 block">Crate / Lot Framing</span>
                     <strong className="font-bold text-stone-800 dark:text-stone-200 font-mono text-sm">{gradeResult.occupancyScore}%</strong>
                     <span className="text-[10px] text-emerald-700 dark:text-emerald-400 block mt-0.5 font-bold">✓ Passed (&gt; 55%)</span>
                   </div>
-                  <div className="p-3 bg-stone-50 dark:bg-stone-800/60 rounded-xl border border-stone-200 dark:border-stone-700">
+                  <div className="p-3 bg-stone-50/70 dark:bg-[#162719] rounded-xl border border-stone-200/90 dark:border-emerald-900/40">
                     <span className="text-[11px] text-stone-500 dark:text-stone-400 block">Gate Status</span>
-                    <strong className="font-bold text-emerald-700 dark:text-emerald-400 flex items-center justify-center gap-1 mt-0.5 text-xs">
+                    <strong className="font-bold text-[#255919] dark:text-[#D1BF4B] flex items-center justify-center gap-1 mt-0.5 text-xs">
                       <span>🛡️</span> Passed
                     </strong>
                   </div>
@@ -905,19 +905,19 @@ export default function GradeCropPage() {
                   Visual Parameters Assessed
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                  <div className="p-3 bg-stone-50 dark:bg-stone-800/60 rounded-xl border border-stone-200 dark:border-stone-700">
+                  <div className="p-3 bg-stone-50/70 dark:bg-[#162719] rounded-xl border border-stone-200/90 dark:border-emerald-900/40">
                     <span className="text-stone-400 block text-[10px]">Diameter &amp; Size Uniformity</span>
                     <strong className="text-stone-800 dark:text-stone-200">{gradeResult.parameters.sizeUniformity}</strong>
                   </div>
-                  <div className="p-3 bg-stone-50 dark:bg-stone-800/60 rounded-xl border border-stone-200 dark:border-stone-700">
+                  <div className="p-3 bg-stone-50/70 dark:bg-[#162719] rounded-xl border border-stone-200/90 dark:border-emerald-900/40">
                     <span className="text-stone-400 block text-[10px]">Surface Defect Ratio</span>
                     <strong className="text-stone-800 dark:text-stone-200">{gradeResult.parameters.surfaceDefectsPct}%</strong>
                   </div>
-                  <div className="p-3 bg-stone-50 dark:bg-stone-800/60 rounded-xl border border-stone-200 dark:border-stone-700">
+                  <div className="p-3 bg-stone-50/70 dark:bg-[#162719] rounded-xl border border-stone-200/90 dark:border-emerald-900/40">
                     <span className="text-stone-400 block text-[10px]">Ripeness / Maturity Index</span>
                     <strong className="text-stone-800 dark:text-stone-200">{gradeResult.parameters.ripenessIndex}</strong>
                   </div>
-                  <div className="p-3 bg-stone-50 dark:bg-stone-800/60 rounded-xl border border-stone-200 dark:border-stone-700">
+                  <div className="p-3 bg-stone-50/70 dark:bg-[#162719] rounded-xl border border-stone-200/90 dark:border-emerald-900/40">
                     <span className="text-stone-400 block text-[10px]">Color Uniformity Score</span>
                     <strong className="text-stone-800 dark:text-stone-200">{gradeResult.parameters.colorScore}</strong>
                   </div>
@@ -925,7 +925,7 @@ export default function GradeCropPage() {
               </div>
 
               {/* Mandatory AI Disclaimer */}
-              <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 p-4 rounded-xl flex items-start gap-3 text-xs text-amber-950 dark:text-amber-200 leading-relaxed shadow-xs">
+              <div className="bg-amber-50/90 dark:bg-[#201809]/95 border-2 border-amber-400/80 dark:border-amber-600/50 p-4 rounded-xl flex items-start gap-3 text-xs text-amber-950 dark:text-amber-200 leading-relaxed shadow-xs border-t-2 border-t-amber-500">
                 <span className="text-xl shrink-0 mt-0.5">⚠️</span>
                 <div>
                   <p className="font-bold mb-0.5">Mandatory AI Vision Protocol Notice:</p>
@@ -935,12 +935,12 @@ export default function GradeCropPage() {
             </div>
 
             {/* Action Buttons */}
-            <div className="bg-stone-50 dark:bg-stone-800/80 p-5 border-t border-stone-200 dark:border-stone-800 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="bg-stone-50/70 dark:bg-[#162719] p-5 border-t border-stone-200/90 dark:border-emerald-900/40 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
                 type="button"
                 disabled={saveLoading}
                 onClick={() => handleSaveProduct('DRAFT')}
-                className="w-full bg-white dark:bg-stone-700 hover:bg-stone-100 dark:hover:bg-stone-600 text-stone-800 dark:text-stone-200 font-bold py-3 px-4 rounded-xl text-xs sm:text-sm border border-stone-300 dark:border-stone-600 transition shadow-xs flex items-center justify-center gap-2 cursor-pointer hover:-translate-y-0.5"
+                className="w-full bg-white dark:bg-[#182b1c] hover:bg-stone-100 dark:hover:bg-[#1c3321] text-stone-800 dark:text-stone-200 font-bold py-3 px-4 rounded-xl text-xs sm:text-sm border border-stone-300 dark:border-emerald-800/60 transition shadow-xs flex items-center justify-center gap-2 cursor-pointer hover:-translate-y-0.5"
               >
                 <span>💾</span>
                 <span>{isMr ? 'मसुदा म्हणून जतन करा' : isHi ? 'ड्राफ्ट के रूप में सहेजें' : 'Save as Draft Product'}</span>
@@ -950,7 +950,7 @@ export default function GradeCropPage() {
                 type="button"
                 disabled={saveLoading}
                 onClick={() => handleSaveProduct('SUBMIT_FPO')}
-                className="w-full bg-gradient-to-r from-[#255919] to-[#386b24] hover:opacity-95 text-white font-bold py-3 px-4 rounded-xl text-xs sm:text-sm transition shadow-md flex items-center justify-center gap-2 cursor-pointer hover:-translate-y-0.5"
+                className="w-full bg-gradient-to-r from-[#255919] to-[#D1BF4B] hover:opacity-95 text-white font-bold py-3 px-4 rounded-xl text-xs sm:text-sm transition shadow-md flex items-center justify-center gap-2 cursor-pointer hover:-translate-y-0.5 border border-[#D1BF4B]/40"
               >
                 <span>🚀</span>
                 <span>{isMr ? 'FPO पडताळणी व पूलिंगसाठी पाठवा' : isHi ? 'FPO सत्यापन एवं पूलिंग हेतु जमा करें' : 'Submit for FPO Verification & Pooling'}</span>

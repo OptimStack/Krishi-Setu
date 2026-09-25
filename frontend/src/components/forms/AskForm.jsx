@@ -251,7 +251,7 @@ export default function AskForm({ onSubmit, loading }) {
       )}
 
       {/* SECTION 1: CROP & FARMER DETAILS */}
-      <div id="section-1" className="scroll-mt-36 p-5 rounded-2xl bg-white dark:bg-[#121c13] border border-stone-200 dark:border-emerald-800/40 shadow-xs space-y-4">
+      <div id="section-1" className="scroll-mt-36 p-5 md:p-6 rounded-2xl bg-white/95 dark:bg-[#132215]/95 border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs hover:shadow-md border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] transition-all space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-stone-200 dark:border-emerald-900/40">
           <div className="flex items-center gap-2">
             <span className="text-xl">🌾</span>
@@ -259,7 +259,7 @@ export default function AskForm({ onSubmit, loading }) {
               1. Crop & Farmer / FPO Details
             </h3>
           </div>
-          <span className="text-xs text-stone-400">Step 1 of 10</span>
+          <span className="text-xs font-semibold text-stone-500 dark:text-[#D1BF4B]">Step 1 of 10</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -289,8 +289,8 @@ export default function AskForm({ onSubmit, loading }) {
                 onClick={() => handleCropChange(c.id)}
                 className={`p-2.5 rounded-xl border text-left transition-all ${
                   crop === c.id
-                    ? 'border-[#2A5124] dark:border-[#D3D67A] bg-[#2A5124]/10 dark:bg-[#D3D67A]/20 font-bold text-[#2A5124] dark:text-[#D3D67A] shadow-xs'
-                    : 'border-stone-200 dark:border-stone-800 hover:bg-stone-50 dark:hover:bg-stone-900 text-stone-700 dark:text-stone-300'
+                    ? 'border-[#255919] dark:border-[#D1BF4B] bg-[#255919]/10 dark:bg-[#D1BF4B]/20 font-bold text-[#255919] dark:text-[#D1BF4B] shadow-xs'
+                    : 'border-stone-200 dark:border-emerald-900/40 hover:bg-stone-50 dark:hover:bg-[#162719] text-stone-700 dark:text-stone-300'
                 }`}
               >
                 <div className="text-sm font-semibold">{c.name}</div>
@@ -329,7 +329,7 @@ export default function AskForm({ onSubmit, loading }) {
       </div>
 
       {/* SECTION 2: QUALITY VERIFICATION & AI */}
-      <div id="section-2" className="scroll-mt-36 p-5 rounded-2xl bg-white dark:bg-[#121c13] border border-stone-200 dark:border-emerald-800/40 shadow-xs space-y-4">
+      <div id="section-2" className="scroll-mt-36 p-5 md:p-6 rounded-2xl bg-white/95 dark:bg-[#132215]/95 border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs hover:shadow-md border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] transition-all space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-stone-200 dark:border-emerald-900/40">
           <div className="flex items-center gap-2">
             <span className="text-xl">🔬</span>
@@ -337,11 +337,11 @@ export default function AskForm({ onSubmit, loading }) {
               2. Quality Verification & AI Computer Vision Grading
             </h3>
           </div>
-          <span className="text-xs text-stone-400">Step 2 of 10</span>
+          <span className="text-xs font-semibold text-stone-500 dark:text-[#D1BF4B]">Step 2 of 10</span>
         </div>
 
         {/* Multi-Angle AI Photo Upload Manager */}
-        <div className="p-5 rounded-2xl border border-stone-200 dark:border-emerald-800/40 bg-stone-50/50 dark:bg-stone-900/60 space-y-4">
+        <div className="p-5 rounded-2xl border border-stone-200/90 dark:border-emerald-900/40 bg-stone-50/70 dark:bg-[#162719] space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h4 className="text-sm font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
@@ -362,7 +362,7 @@ export default function AskForm({ onSubmit, loading }) {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
             {/* 1. TOP VIEW */}
-            <div className="bg-white dark:bg-stone-800/80 rounded-xl p-3.5 border border-stone-200 dark:border-stone-700 space-y-2.5">
+            <div className="bg-white dark:bg-[#182b1c] rounded-xl p-3.5 border border-stone-200/90 dark:border-emerald-900/40 space-y-2.5">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-stone-800 dark:text-stone-200">
                   1. Top View (वरचा देखावा)
@@ -391,7 +391,7 @@ export default function AskForm({ onSubmit, loading }) {
                   </button>
                 </div>
               ) : (
-                <label className="h-28 border-2 border-dashed border-stone-300 dark:border-stone-600 hover:border-emerald-500 rounded-lg flex flex-col items-center justify-center cursor-pointer transition text-xs text-stone-500 hover:text-emerald-700">
+                <label className="h-28 border-2 border-dashed border-stone-300 dark:border-emerald-900/60 hover:border-[#D1BF4B] rounded-lg flex flex-col items-center justify-center cursor-pointer transition text-xs text-stone-500 hover:text-emerald-700">
                   <span>📸 Upload Overhead</span>
                   <input
                     type="file"
@@ -404,7 +404,7 @@ export default function AskForm({ onSubmit, loading }) {
             </div>
 
             {/* 2. SIDE VIEW */}
-            <div className="bg-white dark:bg-stone-800/80 rounded-xl p-3.5 border border-stone-200 dark:border-stone-700 space-y-2.5">
+            <div className="bg-white dark:bg-[#182b1c] rounded-xl p-3.5 border border-stone-200/90 dark:border-emerald-900/40 space-y-2.5">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-stone-800 dark:text-stone-200">
                   2. Side View (बाजूचा देखावा)
@@ -433,7 +433,7 @@ export default function AskForm({ onSubmit, loading }) {
                   </button>
                 </div>
               ) : (
-                <label className="h-28 border-2 border-dashed border-stone-300 dark:border-stone-600 hover:border-emerald-500 rounded-lg flex flex-col items-center justify-center cursor-pointer transition text-xs text-stone-500 hover:text-emerald-700">
+                <label className="h-28 border-2 border-dashed border-stone-300 dark:border-emerald-900/60 hover:border-[#D1BF4B] rounded-lg flex flex-col items-center justify-center cursor-pointer transition text-xs text-stone-500 hover:text-emerald-700">
                   <span>📐 Upload Side / Caliber</span>
                   <input
                     type="file"
@@ -446,7 +446,7 @@ export default function AskForm({ onSubmit, loading }) {
             </div>
 
             {/* 3. CRATE / LOT VIEW */}
-            <div className="bg-white dark:bg-stone-800/80 rounded-xl p-3.5 border border-stone-200 dark:border-stone-700 space-y-2.5">
+            <div className="bg-white dark:bg-[#182b1c] rounded-xl p-3.5 border border-stone-200/90 dark:border-emerald-900/40 space-y-2.5">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-stone-800 dark:text-stone-200">
                   3. Crate / Lot View (क्रॅट / ढीग)
@@ -475,7 +475,7 @@ export default function AskForm({ onSubmit, loading }) {
                   </button>
                 </div>
               ) : (
-                <label className="h-28 border-2 border-dashed border-stone-300 dark:border-stone-600 hover:border-emerald-500 rounded-lg flex flex-col items-center justify-center cursor-pointer transition text-xs text-stone-500 hover:text-emerald-700">
+                <label className="h-28 border-2 border-dashed border-stone-300 dark:border-emerald-900/60 hover:border-[#D1BF4B] rounded-lg flex flex-col items-center justify-center cursor-pointer transition text-xs text-stone-500 hover:text-emerald-700">
                   <span>🧺 Upload Crate / Lot</span>
                   <input
                     type="file"
@@ -499,7 +499,7 @@ export default function AskForm({ onSubmit, loading }) {
               type="file"
               accept=".pdf,image/*"
               onChange={(e) => setCertFile(e.target.files?.[0])}
-              className="w-full text-xs text-stone-600 dark:text-stone-300 file:mr-2 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-medium file:bg-stone-200 dark:file:bg-stone-800"
+              className="w-full text-xs text-stone-600 dark:text-stone-300 file:mr-2 file:py-2 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-medium file:bg-stone-200 dark:file:bg-[#182b1c] dark:file:text-stone-200"
             />
           </div>
           <Input
@@ -518,7 +518,7 @@ export default function AskForm({ onSubmit, loading }) {
             <select
               value={verificationStatus}
               onChange={(e) => setVerificationStatus(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-[#0f1a10] border-stone-300 dark:border-emerald-900/60 text-sm text-stone-900 dark:text-stone-100"
+              className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-[#182b1c] border-stone-300 dark:border-emerald-900/60 text-sm text-stone-900 dark:text-stone-100"
             >
               <option value="system_ai">AI Computer Vision Model Analysis</option>
               <option value="committee_certified">APMC Mandi Grading Committee Certified</option>
@@ -533,7 +533,7 @@ export default function AskForm({ onSubmit, loading }) {
             <select
               value={selfDeclaredGrade}
               onChange={(e) => setSelfDeclaredGrade(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-[#0f1a10] border-stone-300 dark:border-emerald-900/60 text-sm font-bold text-stone-900 dark:text-stone-100"
+              className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-[#182b1c] border-stone-300 dark:border-emerald-900/60 text-sm font-bold text-stone-900 dark:text-stone-100"
             >
               <option value="A">Grade A (Export / Premium Wholesale Quality)</option>
               <option value="B">Grade B (Standard Market Wholesale)</option>
@@ -554,7 +554,7 @@ export default function AskForm({ onSubmit, loading }) {
       </div>
 
       {/* SECTION 3: QUANTITY */}
-      <div id="section-3" className="scroll-mt-36 p-5 rounded-2xl bg-white dark:bg-[#121c13] border border-stone-200 dark:border-emerald-800/40 shadow-xs space-y-4">
+      <div id="section-3" className="scroll-mt-36 p-5 md:p-6 rounded-2xl bg-white/95 dark:bg-[#132215]/95 border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs hover:shadow-md border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] transition-all space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-stone-200 dark:border-emerald-900/40">
           <div className="flex items-center gap-2">
             <span className="text-xl">⚖️</span>
@@ -562,7 +562,7 @@ export default function AskForm({ onSubmit, loading }) {
               3. Quantity Available & Minimum Sell Limits
             </h3>
           </div>
-          <span className="text-xs text-stone-400">Step 3 of 10</span>
+          <span className="text-xs font-semibold text-stone-500 dark:text-[#D1BF4B]">Step 3 of 10</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -584,7 +584,7 @@ export default function AskForm({ onSubmit, loading }) {
             <select
               value={quantityUnit}
               onChange={(e) => setQuantityUnit(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-[#0f1a10] border-stone-300 dark:border-emerald-900/60 text-sm font-bold text-stone-900 dark:text-stone-100"
+              className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-[#182b1c] border-stone-300 dark:border-emerald-900/60 text-sm font-bold text-stone-900 dark:text-stone-100"
             >
               <option value="kg">Kilograms (kg)</option>
               <option value="quintal">Quintals (100 kg)</option>
@@ -603,7 +603,7 @@ export default function AskForm({ onSubmit, loading }) {
           placeholder="e.g. 100 kg"
         />
 
-        <div className="p-3 bg-stone-50 dark:bg-stone-900/80 rounded-xl text-xs text-stone-600 dark:text-stone-300 border border-stone-200 dark:border-stone-800">
+        <div className="p-3 bg-stone-50/80 dark:bg-[#162719] rounded-xl text-xs text-stone-600 dark:text-stone-300 border border-stone-200/90 dark:border-emerald-900/40">
           💡 <strong>Smallholder note:</strong> If your total quantity is under 500 kg, our smart pooling engine will aggregate your produce with nearby farmers to unlock wholesale institutional pricing!
         </div>
 
@@ -619,7 +619,7 @@ export default function AskForm({ onSubmit, loading }) {
       </div>
 
       {/* SECTION 4: FPO POOLING */}
-      <div id="section-4" className="scroll-mt-36 p-5 rounded-2xl bg-white dark:bg-[#121c13] border border-stone-200 dark:border-emerald-800/40 shadow-xs space-y-4">
+      <div id="section-4" className="scroll-mt-36 p-5 md:p-6 rounded-2xl bg-white/95 dark:bg-[#132215]/95 border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs hover:shadow-md border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] transition-all space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-stone-200 dark:border-emerald-900/40">
           <div className="flex items-center gap-2">
             <span className="text-xl">🤝</span>
@@ -627,18 +627,18 @@ export default function AskForm({ onSubmit, loading }) {
               4. FPO & Cross-Farmer Lot Pooling
             </h3>
           </div>
-          <span className="text-xs text-stone-400">Step 4 of 10</span>
+          <span className="text-xs font-semibold text-stone-500 dark:text-[#D1BF4B]">Step 4 of 10</span>
         </div>
 
-        <label className="flex items-start gap-3 p-4 rounded-xl border border-emerald-300 dark:border-emerald-800 bg-emerald-50/50 dark:bg-emerald-950/40 cursor-pointer">
+        <label className="flex items-start gap-3 p-4 rounded-xl border border-emerald-300/80 dark:border-emerald-800/60 bg-emerald-50/50 dark:bg-[#162719] cursor-pointer">
           <input
             type="checkbox"
             checked={addToFpoPool}
             onChange={(e) => setAddToFpoPool(e.target.checked)}
-            className="mt-1 w-4 h-4 text-[#2A5124] rounded"
+            className="mt-1 w-4 h-4 text-[#255919] rounded"
           />
           <div>
-            <span className="font-bold text-sm text-[#2A5124] dark:text-[#D3D67A]">
+            <span className="font-bold text-sm text-[#255919] dark:text-[#D1BF4B]">
               Add produce to FPO / Regional Farmer Pool
             </span>
             <p className="text-xs text-stone-600 dark:text-stone-300 mt-0.5">
@@ -655,7 +655,7 @@ export default function AskForm({ onSubmit, loading }) {
             <select
               value={selectedFpo}
               onChange={(e) => setSelectedFpo(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-[#0f1a10] border-stone-300 dark:border-emerald-900/60 text-sm text-stone-900 dark:text-stone-100"
+              className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-[#182b1c] border-stone-300 dark:border-emerald-900/60 text-sm text-stone-900 dark:text-stone-100"
             >
               {FPO_OPTIONS.map((fpo) => (
                 <option key={fpo} value={fpo}>
@@ -671,7 +671,7 @@ export default function AskForm({ onSubmit, loading }) {
             type="checkbox"
             checked={poolingConsent}
             onChange={(e) => setPoolingConsent(e.target.checked)}
-            className="w-4 h-4 text-[#2A5124] rounded"
+            className="w-4 h-4 text-[#255919] rounded"
           />
           <span>
             I consent to combine produce of identical quality grade with nearby farmers.
@@ -690,7 +690,7 @@ export default function AskForm({ onSubmit, loading }) {
       </div>
 
       {/* SECTION 5: LOCATION */}
-      <div id="section-5" className="scroll-mt-36 p-5 rounded-2xl bg-white dark:bg-[#121c13] border border-stone-200 dark:border-emerald-800/40 shadow-xs space-y-4">
+      <div id="section-5" className="scroll-mt-36 p-5 md:p-6 rounded-2xl bg-white/95 dark:bg-[#132215]/95 border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs hover:shadow-md border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] transition-all space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-stone-200 dark:border-emerald-900/40">
           <div className="flex items-center gap-2">
             <span className="text-xl">📍</span>
@@ -698,7 +698,7 @@ export default function AskForm({ onSubmit, loading }) {
               5. Geographic Location
             </h3>
           </div>
-          <span className="text-xs text-stone-400">Step 5 of 10</span>
+          <span className="text-xs font-semibold text-stone-500 dark:text-[#D1BF4B]">Step 5 of 10</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -742,7 +742,7 @@ export default function AskForm({ onSubmit, loading }) {
       </div>
 
       {/* SECTION 6: STORAGE & eNWR */}
-      <div id="section-6" className="scroll-mt-36 p-5 rounded-2xl bg-white dark:bg-[#121c13] border border-stone-200 dark:border-emerald-800/40 shadow-xs space-y-4">
+      <div id="section-6" className="scroll-mt-36 p-5 md:p-6 rounded-2xl bg-white/95 dark:bg-[#132215]/95 border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs hover:shadow-md border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] transition-all space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-stone-200 dark:border-emerald-900/40">
           <div className="flex items-center gap-2">
             <span className="text-xl">🏬</span>
@@ -750,7 +750,7 @@ export default function AskForm({ onSubmit, loading }) {
               6. Storage Location & eNWR Documentation
             </h3>
           </div>
-          <span className="text-xs text-stone-400">Step 6 of 10</span>
+          <span className="text-xs font-semibold text-stone-500 dark:text-[#D1BF4B]">Step 6 of 10</span>
         </div>
 
         <div>
@@ -760,7 +760,7 @@ export default function AskForm({ onSubmit, loading }) {
           <select
             value={storageType}
             onChange={(e) => setStorageType(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-[#0f1a10] border-stone-300 dark:border-emerald-900/60 text-sm text-stone-900 dark:text-stone-100"
+            className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-[#182b1c] border-stone-300 dark:border-emerald-900/60 text-sm text-stone-900 dark:text-stone-100"
           >
             <option value="Farm On-Field Storage">Farm On-Field Storage (ताजे काढलेले)</option>
             <option value="Local Farmer Shed">Local Farmer Storage Shed (स्थानिक शेड)</option>
@@ -770,13 +770,13 @@ export default function AskForm({ onSubmit, loading }) {
         </div>
 
         {/* eNWR Section */}
-        <div className="p-4 rounded-xl border border-stone-300 dark:border-emerald-900/50 bg-stone-50 dark:bg-stone-900/50 space-y-3">
+        <div className="p-4 rounded-xl border border-stone-300/90 dark:border-emerald-900/50 bg-stone-50/70 dark:bg-[#162719] space-y-3">
           <label className="flex items-center gap-2 font-semibold text-sm cursor-pointer">
             <input
               type="checkbox"
               checked={hasEnwr}
               onChange={(e) => setHasEnwr(e.target.checked)}
-              className="w-4 h-4 text-[#2A5124] rounded"
+              className="w-4 h-4 text-[#255919] rounded"
             />
             <span>Produce is registered under an Electronic Negotiable Warehouse Receipt (eNWR)</span>
           </label>
@@ -812,7 +812,7 @@ export default function AskForm({ onSubmit, loading }) {
       </div>
 
       {/* SECTION 7: PRICING */}
-      <div id="section-7" className="scroll-mt-36 p-5 rounded-2xl bg-white dark:bg-[#121c13] border border-stone-200 dark:border-emerald-800/40 shadow-xs space-y-4">
+      <div id="section-7" className="scroll-mt-36 p-5 md:p-6 rounded-2xl bg-white/95 dark:bg-[#132215]/95 border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs hover:shadow-md border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] transition-all space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-stone-200 dark:border-emerald-900/40">
           <div className="flex items-center gap-2">
             <span className="text-xl">💰</span>
@@ -820,7 +820,7 @@ export default function AskForm({ onSubmit, loading }) {
               7. Double-Auction Reserve & Target Pricing
             </h3>
           </div>
-          <span className="text-xs text-stone-400">Step 7 of 10</span>
+          <span className="text-xs font-semibold text-stone-500 dark:text-[#D1BF4B]">Step 7 of 10</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -831,7 +831,7 @@ export default function AskForm({ onSubmit, loading }) {
             <select
               value={priceUnit}
               onChange={(e) => setPriceUnit(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-[#0f1a10] border-stone-300 dark:border-emerald-900/60 text-sm font-bold text-stone-900 dark:text-stone-100"
+              className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-[#182b1c] border-stone-300 dark:border-emerald-900/60 text-sm font-bold text-stone-900 dark:text-stone-100"
             >
               <option value="kg">₹ per kg</option>
               <option value="quintal">₹ per Quintal (100 kg)</option>
@@ -856,7 +856,7 @@ export default function AskForm({ onSubmit, loading }) {
           />
         </div>
 
-        <div className="p-3 bg-emerald-50 dark:bg-emerald-950/60 rounded-xl border border-emerald-200 dark:border-emerald-800 text-xs text-emerald-900 dark:text-emerald-300">
+        <div className="p-3 bg-emerald-50/80 dark:bg-[#162719] rounded-xl border border-emerald-200 dark:border-emerald-800/60 text-xs text-emerald-900 dark:text-emerald-200">
           📊 <strong>Fair Price Guarantee:</strong> In the double auction, your produce will never clear below your minimum acceptable price. If buyer bids exceed your ask, you automatically receive the higher market clearing equilibrium price!
         </div>
 
@@ -872,7 +872,7 @@ export default function AskForm({ onSubmit, loading }) {
       </div>
 
       {/* SECTION 8: AVAILABILITY */}
-      <div id="section-8" className="scroll-mt-36 p-5 rounded-2xl bg-white dark:bg-[#121c13] border border-stone-200 dark:border-emerald-800/40 shadow-xs space-y-4">
+      <div id="section-8" className="scroll-mt-36 p-5 md:p-6 rounded-2xl bg-white/95 dark:bg-[#132215]/95 border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs hover:shadow-md border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] transition-all space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-stone-200 dark:border-emerald-900/40">
           <div className="flex items-center gap-2">
             <span className="text-xl">📅</span>
@@ -880,7 +880,7 @@ export default function AskForm({ onSubmit, loading }) {
               8. Availability Windows & Delivery Deadlines
             </h3>
           </div>
-          <span className="text-xs text-stone-400">Step 8 of 10</span>
+          <span className="text-xs font-semibold text-stone-500 dark:text-[#D1BF4B]">Step 8 of 10</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -912,7 +912,7 @@ export default function AskForm({ onSubmit, loading }) {
       </div>
 
       {/* SECTION 9: DELIVERY & LOGISTICS */}
-      <div id="section-9" className="scroll-mt-36 p-5 rounded-2xl bg-white dark:bg-[#121c13] border border-stone-200 dark:border-emerald-800/40 shadow-xs space-y-4">
+      <div id="section-9" className="scroll-mt-36 p-5 md:p-6 rounded-2xl bg-white/95 dark:bg-[#132215]/95 border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs hover:shadow-md border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] transition-all space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-stone-200 dark:border-emerald-900/40">
           <div className="flex items-center gap-2">
             <span className="text-xl">🚚</span>
@@ -920,7 +920,7 @@ export default function AskForm({ onSubmit, loading }) {
               9. Delivery & Logistics Options
             </h3>
           </div>
-          <span className="text-xs text-stone-400">Step 9 of 10</span>
+          <span className="text-xs font-semibold text-stone-500 dark:text-[#D1BF4B]">Step 9 of 10</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -931,7 +931,7 @@ export default function AskForm({ onSubmit, loading }) {
             <select
               value={deliveryType}
               onChange={(e) => setDeliveryType(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-[#0f1a10] border-stone-300 dark:border-emerald-900/60 text-sm font-medium text-stone-900 dark:text-stone-100"
+              className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-[#182b1c] border-stone-300 dark:border-emerald-900/60 text-sm font-medium text-stone-900 dark:text-stone-100"
             >
               <option value="Buyer pickup">Buyer Pickup at Farmgate (खरेदीदार उचल करेल)</option>
               <option value="Farmer delivery">Farmer Delivery to Regional Hub (शेतकरी पोहोचवेल)</option>
@@ -954,7 +954,7 @@ export default function AskForm({ onSubmit, loading }) {
           <select
             value={packagingDetails}
             onChange={(e) => setPackagingDetails(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-[#0f1a10] border-stone-300 dark:border-emerald-900/60 text-sm text-stone-900 dark:text-stone-100"
+            className="w-full px-3 py-2 border rounded-lg bg-white dark:bg-[#182b1c] border-stone-300 dark:border-emerald-900/60 text-sm text-stone-900 dark:text-stone-100"
           >
             <option value="50 kg Jute Gunny Bags">50 kg Standard Jute Gunny Bags (बारदान पोते)</option>
             <option value="25 kg Plastic Ventilated Crates">25 kg Plastic Ventilated Crates (प्लास्टिक क्रेट्स)</option>
@@ -975,7 +975,7 @@ export default function AskForm({ onSubmit, loading }) {
       </div>
 
       {/* SECTION 10: SETTLEMENT & FINAL DECLARATION */}
-      <div id="section-10" className="scroll-mt-36 p-5 rounded-2xl bg-white dark:bg-[#121c13] border-2 border-[#2A5124]/40 dark:border-[#D3D67A]/50 shadow-lg space-y-5">
+      <div id="section-10" className="scroll-mt-36 p-5 md:p-6 rounded-2xl bg-white/95 dark:bg-[#132215]/95 border border-stone-200/90 dark:border-[#D1BF4B]/30 shadow-xs hover:shadow-md border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] transition-all space-y-5">
         <div className="flex items-center justify-between pb-3 border-b border-stone-200 dark:border-emerald-900/40">
           <div className="flex items-center gap-2">
             <span className="text-xl">✅</span>
@@ -983,11 +983,11 @@ export default function AskForm({ onSubmit, loading }) {
               10. Direct Payout Settlement & Final Confirmation
             </h3>
           </div>
-          <span className="text-xs font-bold text-emerald-600 dark:text-[#D3D67A]">Final Step</span>
+          <span className="text-xs font-bold text-[#255919] dark:text-[#D1BF4B]">Final Step</span>
         </div>
 
         {/* Payment Details */}
-        <div className="p-4 rounded-xl border border-stone-200 dark:border-emerald-900/40 bg-stone-50/50 dark:bg-stone-900/50 space-y-3">
+        <div className="p-4 rounded-xl border border-stone-200/90 dark:border-emerald-900/40 bg-stone-50/70 dark:bg-[#162719] space-y-3">
           <label className="block text-sm font-bold text-stone-800 dark:text-stone-200">
             Escrow Payout Settlement Details
           </label>
@@ -999,6 +999,7 @@ export default function AskForm({ onSubmit, loading }) {
                 value="upi"
                 checked={paymentMethod === 'upi'}
                 onChange={() => setPaymentMethod('upi')}
+                className="accent-[#255919]"
               />
               <span className="font-semibold text-stone-800 dark:text-stone-200">UPI ID</span>
             </label>
@@ -1009,6 +1010,7 @@ export default function AskForm({ onSubmit, loading }) {
                 value="bank"
                 checked={paymentMethod === 'bank'}
                 onChange={() => setPaymentMethod('bank')}
+                className="accent-[#255919]"
               />
               <span className="font-semibold text-stone-800 dark:text-stone-200">Bank Account (NEFT / RTGS)</span>
             </label>
@@ -1043,32 +1045,32 @@ export default function AskForm({ onSubmit, loading }) {
         </div>
 
         {/* Summary Overview */}
-        <div className="p-4 rounded-xl bg-[#2A5124]/10 dark:bg-[#D3D67A]/10 border border-[#2A5124]/30 dark:border-[#D3D67A]/30 text-xs space-y-2">
-          <h4 className="font-bold text-sm text-[#2A5124] dark:text-[#D3D67A] flex items-center gap-1.5">
+        <div className="p-4 rounded-xl bg-[#255919]/10 dark:bg-[#D1BF4B]/10 border border-[#255919]/25 dark:border-[#D1BF4B]/30 text-xs space-y-2">
+          <h4 className="font-bold text-sm text-[#255919] dark:text-[#D1BF4B] flex items-center gap-1.5">
             <span>📋</span> Harvest Listing Summary
           </h4>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-stone-700 dark:text-stone-300">
-            <div className="p-2 rounded-lg bg-white/60 dark:bg-black/20">
+            <div className="p-2.5 rounded-lg bg-white/80 dark:bg-[#182b1c] border border-stone-200/80 dark:border-emerald-900/40">
               <span className="text-[10px] uppercase font-bold text-stone-400 block">Crop</span>
               <strong className="text-sm text-stone-900 dark:text-stone-100">{crop.toUpperCase()}</strong> ({variety})
             </div>
-            <div className="p-2 rounded-lg bg-white/60 dark:bg-black/20">
+            <div className="p-2.5 rounded-lg bg-white/80 dark:bg-[#182b1c] border border-stone-200/80 dark:border-emerald-900/40">
               <span className="text-[10px] uppercase font-bold text-stone-400 block">Quantity</span>
               <strong className="text-sm text-stone-900 dark:text-stone-100">{totalQuantity} {quantityUnit}</strong>
             </div>
-            <div className="p-2 rounded-lg bg-white/60 dark:bg-black/20">
+            <div className="p-2.5 rounded-lg bg-white/80 dark:bg-[#182b1c] border border-stone-200/80 dark:border-emerald-900/40">
               <span className="text-[10px] uppercase font-bold text-stone-400 block">Reserve Price</span>
-              <strong className="text-sm text-emerald-700 dark:text-[#D3D67A]">₹{minAskPrice}/{priceUnit}</strong>
+              <strong className="text-sm text-emerald-700 dark:text-[#D1BF4B]">₹{minAskPrice}/{priceUnit}</strong>
             </div>
-            <div className="p-2 rounded-lg bg-white/60 dark:bg-black/20">
+            <div className="p-2.5 rounded-lg bg-white/80 dark:bg-[#182b1c] border border-stone-200/80 dark:border-emerald-900/40">
               <span className="text-[10px] uppercase font-bold text-stone-400 block">Quality Grade</span>
               <strong className="text-sm text-stone-900 dark:text-stone-100">Grade {selfDeclaredGrade}</strong>
             </div>
-            <div className="p-2 rounded-lg bg-white/60 dark:bg-black/20">
+            <div className="p-2.5 rounded-lg bg-white/80 dark:bg-[#182b1c] border border-stone-200/80 dark:border-emerald-900/40">
               <span className="text-[10px] uppercase font-bold text-stone-400 block">Location</span>
               <strong className="text-sm text-stone-900 dark:text-stone-100">{village}, {district}</strong>
             </div>
-            <div className="p-2 rounded-lg bg-white/60 dark:bg-black/20">
+            <div className="p-2.5 rounded-lg bg-white/80 dark:bg-[#182b1c] border border-stone-200/80 dark:border-emerald-900/40">
               <span className="text-[10px] uppercase font-bold text-stone-400 block">Pooling Setup</span>
               <strong className="text-sm text-stone-900 dark:text-stone-100">{addToFpoPool ? 'FPO Pool Enabled' : 'Solo Lot'}</strong>
             </div>
@@ -1081,7 +1083,7 @@ export default function AskForm({ onSubmit, loading }) {
             type="checkbox"
             checked={confirmOwnership}
             onChange={(e) => setConfirmOwnership(e.target.checked)}
-            className="mt-0.5 w-4 h-4 text-[#2A5124] rounded"
+            className="mt-0.5 w-4 h-4 text-[#255919] rounded"
             required
           />
           <span>
@@ -1094,7 +1096,7 @@ export default function AskForm({ onSubmit, loading }) {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full py-4 text-base font-extrabold bg-[#2A5124] hover:bg-[#1d3a19] dark:bg-[#D3D67A] dark:hover:bg-[#c2c56a] dark:text-[#182d15] text-white rounded-xl shadow-xl transition-all transform hover:-translate-y-0.5"
+            className="w-full py-4 text-base font-extrabold bg-gradient-to-r from-[#255919] to-[#D1BF4B] hover:opacity-95 text-white rounded-xl shadow-xl transition-all transform hover:-translate-y-0.5 cursor-pointer"
           >
             {loading ? 'Submitting to Marketplace...' : 'Submit Harvest Listing to Marketplace 🌾'}
           </Button>

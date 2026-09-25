@@ -218,11 +218,11 @@ export default function KrishiSetuAIAssistant({ isOpen, setIsOpen }) {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-[94vw] sm:w-[410px] h-[540px] max-h-[85vh] bg-white dark:bg-[#0f1d12] rounded-2xl shadow-2xl border-2 border-emerald-600/40 dark:border-emerald-800 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-200">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-[94vw] sm:w-[410px] h-[540px] max-h-[85vh] bg-white dark:bg-[#132215] rounded-2xl shadow-2xl border-2 border-stone-200/90 dark:border-[#D1BF4B]/30 border-t-4 border-t-[#255919] dark:border-t-[#D1BF4B] flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-200">
       {/* Header matching screenshot */}
-      <div className="bg-[#2A5124] dark:bg-[#122316] text-white px-4 py-3 border-b border-emerald-800/40 flex items-center justify-between shrink-0">
+      <div className="bg-gradient-to-r from-[#255919] to-[#1e3e15] dark:from-[#132215] dark:to-[#162719] text-white px-4 py-3 border-b border-emerald-800/40 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-full bg-emerald-700/60 border border-[#D3D67A]/50 flex items-center justify-center text-base">
+          <div className="w-8 h-8 rounded-full bg-emerald-700/60 border border-[#D1BF4B]/50 flex items-center justify-center text-base">
             🤖
           </div>
           <div>
@@ -247,7 +247,7 @@ export default function KrishiSetuAIAssistant({ isOpen, setIsOpen }) {
               <button
                 key={l}
                 onClick={() => setLang(l)}
-                className={`px-1.5 py-0.5 rounded transition ${lang === l ? 'bg-[#D3D67A] text-[#2A5124]' : 'text-stone-300 hover:text-white'}`}
+                className={`px-1.5 py-0.5 rounded transition ${lang === l ? 'bg-[#D1BF4B] text-[#255919]' : 'text-stone-300 hover:text-white'}`}
               >
                 {l === 'mr' ? 'मराठी' : l === 'hi' ? 'हिंदी' : 'EN'}
               </button>
@@ -272,7 +272,7 @@ export default function KrishiSetuAIAssistant({ isOpen, setIsOpen }) {
       </div>
 
       {/* Messages area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-[#F8FAF7] dark:bg-[#0c170f]">
+      <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-[#F8FAF7] dark:bg-[#132215]">
         {messages.map((m) => {
           const isAi = m.sender === 'ai';
           const textContent = typeof m.text === 'object' ? (m.text[lang] || m.text.en) : m.text;
@@ -291,7 +291,7 @@ export default function KrishiSetuAIAssistant({ isOpen, setIsOpen }) {
                   </span>
                   <button
                     onClick={() => speakText(textContent)}
-                    className="p-1 text-stone-500 hover:text-emerald-700 dark:hover:text-[#D3D67A] transition"
+                    className="p-1 text-stone-500 hover:text-emerald-700 dark:hover:text-[#D1BF4B] transition"
                     title="Read Aloud"
                   >
                     🔊
@@ -302,8 +302,8 @@ export default function KrishiSetuAIAssistant({ isOpen, setIsOpen }) {
               <div
                 className={`max-w-[88%] p-3.5 rounded-2xl text-xs md:text-sm leading-relaxed shadow-xs whitespace-pre-line ${
                   isAi
-                    ? 'bg-white dark:bg-[#152518] text-stone-800 dark:text-stone-100 border border-stone-200/80 dark:border-emerald-900/60 rounded-tl-xs'
-                    : 'bg-[#2A5124] text-white rounded-tr-xs font-medium'
+                    ? 'bg-white dark:bg-[#162719] text-stone-800 dark:text-stone-100 border border-stone-200/80 dark:border-emerald-900/60 rounded-tl-xs'
+                    : 'bg-gradient-to-r from-[#255919] to-[#386b24] text-white rounded-tr-xs font-medium shadow-xs'
                 }`}
               >
                 {textContent}
@@ -319,7 +319,7 @@ export default function KrishiSetuAIAssistant({ isOpen, setIsOpen }) {
       </div>
 
       {/* Suggested prompt chips */}
-      <div className="px-3 py-2 bg-stone-100/90 dark:bg-[#111e14] border-t border-stone-200/80 dark:border-emerald-900/40 flex items-center gap-1.5 overflow-x-auto no-scrollbar shrink-0 text-[11px]">
+      <div className="px-3 py-2 bg-stone-100/90 dark:bg-[#162719] border-t border-stone-200/80 dark:border-emerald-900/40 flex items-center gap-1.5 overflow-x-auto no-scrollbar shrink-0 text-[11px]">
         {[
           { key: 'ask_tomato', fallback: "What is today's tomato price near me?" },
           { key: 'ask_net', fallback: 'Which mandi gives me the best net return?' },
@@ -330,7 +330,7 @@ export default function KrishiSetuAIAssistant({ isOpen, setIsOpen }) {
             key={chip.key}
             type="button"
             onClick={() => handleSend(t(chip.key, chip.fallback))}
-            className="whitespace-nowrap px-2.5 py-1 rounded-full bg-white dark:bg-[#172b1b] text-stone-700 dark:text-stone-200 border border-stone-300/80 dark:border-emerald-800/60 hover:border-emerald-500 dark:hover:border-emerald-600 transition shadow-2xs font-medium"
+            className="whitespace-nowrap px-2.5 py-1 rounded-full bg-white dark:bg-[#182b1c] text-stone-700 dark:text-stone-200 border border-stone-300/80 dark:border-emerald-800/60 hover:border-emerald-500 dark:hover:border-emerald-600 transition shadow-2xs font-medium"
           >
             {t(chip.key, chip.fallback)}
           </button>
@@ -343,7 +343,7 @@ export default function KrishiSetuAIAssistant({ isOpen, setIsOpen }) {
           e.preventDefault();
           handleSend();
         }}
-        className="p-3 bg-white dark:bg-[#0f1d12] border-t border-stone-200 dark:border-emerald-900/60 flex items-center gap-2 shrink-0"
+        className="p-3 bg-white dark:bg-[#132215] border-t border-stone-200 dark:border-emerald-900/60 flex items-center gap-2 shrink-0"
       >
         <button
           type="button"
@@ -351,7 +351,7 @@ export default function KrishiSetuAIAssistant({ isOpen, setIsOpen }) {
           className={`p-2.5 rounded-xl border transition cursor-pointer flex items-center justify-center shrink-0 ${
             isListening
               ? 'bg-red-500 text-white border-red-600 animate-pulse'
-              : 'bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 border-stone-300 dark:border-stone-700'
+              : 'bg-stone-100 hover:bg-stone-200 dark:bg-[#182b1c] dark:hover:bg-[#203a25] text-stone-700 dark:text-stone-200 border-stone-300 dark:border-emerald-800/60'
           }`}
           title="Speak your question (Voice Input)"
         >

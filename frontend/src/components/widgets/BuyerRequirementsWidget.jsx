@@ -143,7 +143,7 @@ export default function BuyerRequirementsWidget() {
             return (
               <div
                 key={req._id}
-                className="req-card rounded-2xl p-5 bg-stone-50/90 dark:bg-[#0c160e]/90 border border-stone-200/90 dark:border-emerald-900/50 border-t-2 border-t-[#2A5124] dark:border-t-[#D3D67A] shadow-md flex flex-col justify-between hover:shadow-xl hover:scale-[1.01] transition-all"
+                className="req-card rounded-2xl p-5 bg-white/95 dark:bg-[#132215]/95 border border-stone-200/90 dark:border-[#D1BF4B]/20 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] shadow-xs flex flex-col justify-between hover:shadow-md hover:scale-[1.01] transition-all duration-300"
               >
                 <div>
                   <div className="flex justify-between items-start mb-2">
@@ -163,12 +163,12 @@ export default function BuyerRequirementsWidget() {
                   </p>
 
                   {/* Guaranteed Mandi Price Banner */}
-                  <div className="bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 rounded-lg p-2.5 mb-3">
+                  <div className="bg-emerald-50 dark:bg-[#162719] border border-emerald-200 dark:border-emerald-800/80 rounded-lg p-2.5 mb-3">
                     <div className="flex justify-between items-baseline">
                       <span className="text-xs text-emerald-800 dark:text-emerald-300 font-semibold">
                         Guaranteed Mandi Price:
                       </span>
-                      <span className="text-base font-extrabold text-[#2A5124] dark:text-[#D3D67A]">
+                      <span className="text-base font-extrabold text-[#255919] dark:text-[#D1BF4B]">
                         ₹{req.mandi_modal_price_per_kg.toFixed(2)}/kg
                       </span>
                     </div>
@@ -183,9 +183,9 @@ export default function BuyerRequirementsWidget() {
                       <span>Fulfilled: {formatQuantity(fulfilled)}</span>
                       <span>Needed: {formatQuantity(total)}</span>
                     </div>
-                    <div className="w-full bg-stone-200 dark:bg-stone-800 rounded-full h-2.5 overflow-hidden">
+                    <div className="w-full bg-stone-200 dark:bg-[#182b1c] rounded-full h-2.5 overflow-hidden">
                       <div
-                        className="bg-gradient-to-r from-[#2A5124] to-[#D3D67A] h-2.5 rounded-full transition-all duration-500"
+                        className="bg-gradient-to-r from-[#255919] to-[#D1BF4B] h-2.5 rounded-full transition-all duration-500"
                         style={{ width: `${percent}%` }}
                       />
                     </div>
@@ -200,7 +200,7 @@ export default function BuyerRequirementsWidget() {
                   <Button
                     onClick={() => handleOpenSupply(req)}
                     disabled={isFull}
-                    className="w-full text-xs py-2 bg-[#2A5124] hover:bg-[#1d3a19] dark:bg-[#D3D67A] dark:hover:bg-[#c2c56a] dark:text-[#182d15] text-white font-bold"
+                    className="w-full text-xs py-2 bg-gradient-to-r from-[#255919] to-[#D1BF4B] hover:opacity-95 text-white font-bold"
                   >
                     {isFull ? 'Requirement Fulfilled' : 'Supply Produce at Mandi Price →'}
                   </Button>
@@ -216,11 +216,11 @@ export default function BuyerRequirementsWidget() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
           <div
             ref={modalRef}
-            className="w-full max-w-md bg-white dark:bg-[#152317] rounded-2xl shadow-2xl border border-stone-200 dark:border-emerald-800/50 p-6 text-stone-900 dark:text-stone-100"
+            className="w-full max-w-md bg-white dark:bg-[#132215] rounded-2xl shadow-2xl border border-stone-200 dark:border-[#D1BF4B]/30 border-t-4 border-t-[#255919] dark:border-t-[#D1BF4B] p-6 text-stone-900 dark:text-stone-100"
           >
             <div className="flex justify-between items-start mb-4">
               <div>
-                <span className="text-xs font-bold text-emerald-700 dark:text-[#D3D67A] uppercase tracking-wider">
+                <span className="text-xs font-bold text-[#255919] dark:text-[#D1BF4B] uppercase tracking-wider">
                   Direct Mandi Procurement
                 </span>
                 <h3 className="text-xl font-bold mt-0.5">
@@ -248,7 +248,7 @@ export default function BuyerRequirementsWidget() {
             )}
 
             <form onSubmit={handleConfirmSupply} className="space-y-4">
-              <div className="p-3 bg-stone-50 dark:bg-black/30 rounded-lg text-xs space-y-1 border border-stone-200 dark:border-stone-800">
+              <div className="p-3 bg-stone-50/70 dark:bg-[#162719] rounded-lg text-xs space-y-1 border border-stone-200 dark:border-emerald-900/40">
                 <div className="flex justify-between">
                   <span className="text-stone-500">Crop / Variety:</span>
                   <span className="font-semibold capitalize">

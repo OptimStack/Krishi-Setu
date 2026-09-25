@@ -291,7 +291,7 @@ export default function MarketPricesPage() {
         <button
           onClick={handleRefresh}
           disabled={isRefreshing}
-          className="bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800 text-stone-700 dark:text-stone-200 text-xs font-semibold px-4 py-2 rounded-xl transition-all shadow-2xs flex items-center gap-2 shrink-0 cursor-pointer"
+          className="bg-white dark:bg-[#162719] border border-stone-300 dark:border-emerald-800/80 hover:bg-stone-50 dark:hover:bg-[#182b1c] text-stone-700 dark:text-stone-200 text-xs font-semibold px-4 py-2 rounded-xl transition-all shadow-2xs flex items-center gap-2 shrink-0 cursor-pointer"
         >
           <span className={isRefreshing ? 'animate-spin' : ''}>🔄</span>
           <span>{isRefreshing ? 'Refreshing...' : 'Live Feed Refresh'}</span>
@@ -299,9 +299,9 @@ export default function MarketPricesPage() {
       </div>
 
       {/* 2. Farm Location Banner with High (GPS) Badge & Change Farm Pin button matching Screenshot 3 */}
-      <div className="bg-white dark:bg-stone-900 p-4 rounded-2xl border border-emerald-300 dark:border-emerald-800/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="bg-white/95 dark:bg-[#132215]/95 p-4 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all duration-300">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-400 flex items-center justify-center text-base shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-[#162719] text-emerald-800 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50 flex items-center justify-center text-base shrink-0">
             📍
           </div>
           <div>
@@ -309,7 +309,7 @@ export default function MarketPricesPage() {
               <span>
                 Farm Location: <span className="text-emerald-800 dark:text-emerald-300">{farmerCoords.label}</span>
               </span>
-              <span className="bg-emerald-50 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold px-2 py-0.2 rounded border border-emerald-300 dark:border-emerald-800">
+              <span className="bg-emerald-50 dark:bg-[#162719] text-emerald-800 dark:text-emerald-300 text-[10px] font-bold px-2 py-0.2 rounded border border-emerald-300 dark:border-emerald-800">
                 High (GPS)
               </span>
             </div>
@@ -327,7 +327,7 @@ export default function MarketPricesPage() {
 
         <button
           onClick={() => setShowLocationModal(true)}
-          className="text-xs text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-800 hover:bg-emerald-100 px-3.5 py-1.5 rounded-xl font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 self-start sm:self-auto"
+          className="text-xs text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-[#162719] border border-emerald-300 dark:border-emerald-800/70 hover:bg-emerald-100 dark:hover:bg-[#182b1c] px-3.5 py-1.5 rounded-xl font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 self-start sm:self-auto"
         >
           <span>✏️</span> Change Farm Pin
         </button>
@@ -364,8 +364,8 @@ export default function MarketPricesPage() {
               onClick={() => setSelectedCrop(crop)}
               className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all shrink-0 cursor-pointer ${
                 isActive
-                  ? 'bg-gradient-to-r from-[#255919] to-[#386b24] text-white shadow-xs scale-105'
-                  : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
+                  ? 'bg-gradient-to-r from-[#255919] to-[#D1BF4B] text-white shadow-xs scale-105'
+                  : 'bg-stone-100 dark:bg-[#162719] text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-emerald-900/40 hover:bg-stone-200 dark:hover:bg-[#182b1c]'
               }`}
             >
               {crop}
@@ -375,13 +375,13 @@ export default function MarketPricesPage() {
       </div>
 
       {/* 5. Mandi Discovery Range & Sorting Control Bar matching Screenshot 3 */}
-      <div className="bg-white dark:bg-stone-900 p-4 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-xs space-y-3">
+      <div className="bg-white/95 dark:bg-[#132215]/95 p-4 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] shadow-xs space-y-3 transition-all duration-300">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <span className="font-bold text-xs text-stone-800 dark:text-stone-200 flex items-center gap-1.5">
               <span>⚙️</span> Mandi Discovery Range:
             </span>
-            <span className="text-xs font-mono bg-emerald-50 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 px-2 py-0.5 rounded-lg font-bold">
+            <span className="text-xs font-mono bg-emerald-50 dark:bg-[#162719] text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 px-2 py-0.5 rounded-lg font-bold">
               {searchRadiusKm >= 1000 ? 'Pan-India' : `${searchRadiusKm} km`}
             </span>
           </div>
@@ -400,7 +400,7 @@ export default function MarketPricesPage() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg px-2.5 py-1 text-xs font-semibold text-stone-800 dark:text-stone-200 focus:outline-hidden"
+                className="bg-stone-50 dark:bg-[#182b1c] border border-stone-200 dark:border-emerald-800/60 rounded-lg px-2.5 py-1 text-xs font-semibold text-stone-800 dark:text-stone-200 focus:outline-hidden focus:border-[#D1BF4B]"
               >
                 <option value="nearest">Nearest mandi</option>
                 <option value="price">Highest modal price</option>
@@ -421,8 +421,8 @@ export default function MarketPricesPage() {
                 onClick={() => setSearchRadiusKm(r)}
                 className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                   isSelected
-                    ? 'bg-gradient-to-r from-[#255919] to-[#386b24] text-white shadow-xs scale-105'
-                    : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
+                    ? 'bg-gradient-to-r from-[#255919] to-[#D1BF4B] text-white shadow-xs scale-105'
+                    : 'bg-stone-100 dark:bg-[#162719] text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-emerald-900/40 hover:bg-stone-200 dark:hover:bg-[#182b1c]'
                 }`}
               >
                 {r >= 1000 ? '1000 km (Pan-India)' : `${r} km`}
@@ -433,10 +433,10 @@ export default function MarketPricesPage() {
 
         {/* Custom Range Slider (collapsible) */}
         {showCustomSlider && (
-          <div className="p-3 bg-emerald-50/60 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 rounded-xl space-y-2 animate-in fade-in duration-150">
-            <div className="flex items-center justify-between text-xs font-semibold text-emerald-900 dark:text-emerald-300">
+          <div className="p-3 bg-stone-50/70 dark:bg-[#162719] border border-stone-200/90 dark:border-emerald-900/40 rounded-xl space-y-2 animate-in fade-in duration-150">
+            <div className="flex items-center justify-between text-xs font-semibold text-stone-900 dark:text-stone-200">
               <span>Dynamic Range Slider:</span>
-              <span className="font-mono font-bold">{searchRadiusKm} km</span>
+              <span className="font-mono font-bold text-emerald-700 dark:text-emerald-400">{searchRadiusKm} km</span>
             </div>
             <input
               type="range"
@@ -445,15 +445,15 @@ export default function MarketPricesPage() {
               step="25"
               value={searchRadiusKm}
               onChange={(e) => setSearchRadiusKm(parseInt(e.target.value, 10))}
-              className="w-full accent-emerald-600 h-2 bg-stone-200 dark:bg-stone-700 rounded-lg cursor-pointer"
+              className="w-full accent-[#255919] dark:accent-[#D1BF4B] h-2 bg-stone-200 dark:bg-[#182b1c] rounded-lg cursor-pointer"
             />
           </div>
         )}
       </div>
 
       {/* 6. Live Mandi Discovery Radar & Radius Circle Map matching Screenshot 3 */}
-      <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-xs overflow-hidden">
-        <div className="p-4 pb-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-100 dark:border-stone-800">
+      <div className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] shadow-xs overflow-hidden transition-all duration-300">
+        <div className="p-4 pb-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-100 dark:border-emerald-900/30">
           <div>
             <h3 className="text-sm font-bold text-stone-900 dark:text-stone-100 flex items-center gap-1.5">
               <span className="text-[#255919]">📍</span> Live Mandi Discovery Radar &amp; Radius Circle
@@ -478,7 +478,7 @@ export default function MarketPricesPage() {
             <span className="bg-[#255919] text-[10px] font-bold px-1.5 py-0.2 rounded ml-1">SATELLITE</span>
           </div>
 
-          <div className="absolute top-3 right-3 z-10 flex items-center bg-black/60 backdrop-blur-md rounded-xl p-0.5 border border-stone-600 text-xs text-white">
+          <div className="absolute top-3 right-3 z-10 flex items-center bg-[#132215]/80 backdrop-blur-md rounded-xl p-0.5 border border-emerald-900/50 text-xs text-white">
             <button
               onClick={() => setMapTileStyle('satellite')}
               className={`px-2 py-1 rounded-lg transition-colors cursor-pointer ${
@@ -507,16 +507,16 @@ export default function MarketPricesPage() {
         </div>
       </div>
 
-      {/* 7. Emerald NET REALIZATION ENGINE Waterfall Banner matching Screenshot 3 */}
+      {/* 7. NET REALIZATION ENGINE Waterfall Banner */}
       {activeMandi && (
-        <div className="bg-gradient-to-r from-emerald-50 via-white to-emerald-50 dark:from-emerald-950/60 dark:via-stone-900 dark:to-emerald-950/40 border border-emerald-300 dark:border-emerald-700/80 rounded-2xl shadow-sm p-4 sm:p-5 overflow-hidden">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-3 pb-3 border-b border-emerald-100 dark:border-emerald-900">
+        <div className="bg-gradient-to-r from-emerald-50/80 via-white to-emerald-50/80 dark:from-[#132215]/95 dark:via-[#162719] dark:to-[#132215]/95 border border-stone-200/90 dark:border-[#D1BF4B]/20 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] rounded-2xl shadow-xs p-4 sm:p-5 overflow-hidden transition-all duration-300">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-3 pb-3 border-b border-emerald-100 dark:border-emerald-900/50">
             <div>
               <div className="flex flex-wrap items-center gap-2">
-                <span className="bg-emerald-800 text-white text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded">
+                <span className="bg-[#255919] text-white text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded">
                   NET REALIZATION ENGINE
                 </span>
-                <span className="border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded">
+                <span className="border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-[#182b1c] text-amber-800 dark:text-amber-300 text-[10px] font-bold px-2 py-0.5 rounded">
                   DEMO DATA: Agmarknet Bulletin
                 </span>
                 <strong className="text-xs sm:text-sm font-bold text-stone-900 dark:text-stone-100">
@@ -543,13 +543,13 @@ export default function MarketPricesPage() {
 
           {/* 8-Card Waterfall Pipeline matching Screenshot 3 */}
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 text-center text-xs">
-            <div className="bg-white dark:bg-stone-800 p-2.5 rounded-xl border border-emerald-300 dark:border-emerald-700 shadow-2xs">
+            <div className="bg-white dark:bg-[#162719] p-2.5 rounded-xl border border-emerald-300 dark:border-emerald-700/60 shadow-2xs">
               <span className="text-[10px] text-emerald-700 dark:text-emerald-400 block font-bold">1. Gross Modal</span>
               <strong className="text-sm font-black text-stone-900 dark:text-stone-100 block">₹{activeMandi.modalPrice}</strong>
               <span className="text-[9px] text-stone-400 block">per quintal</span>
             </div>
 
-            <div className="bg-white dark:bg-stone-800 p-2.5 rounded-xl border border-rose-200 dark:border-rose-900/60 shadow-2xs">
+            <div className="bg-white dark:bg-[#162719] p-2.5 rounded-xl border border-rose-200 dark:border-rose-900/60 shadow-2xs">
               <span className="text-[10px] text-rose-600 dark:text-rose-400 block font-bold">2. Freight</span>
               <strong className="text-sm font-bold text-rose-700 dark:text-rose-400 block">
                 -₹{Math.round(selectedCalc.freight / (quantityKg / 100))}
@@ -557,7 +557,7 @@ export default function MarketPricesPage() {
               <span className="text-[9px] text-stone-400 block">{activeMandi.distanceKm} km</span>
             </div>
 
-            <div className="bg-white dark:bg-stone-800 p-2.5 rounded-xl border border-rose-200 dark:border-rose-900/60 shadow-2xs">
+            <div className="bg-white dark:bg-[#162719] p-2.5 rounded-xl border border-rose-200 dark:border-rose-900/60 shadow-2xs">
               <span className="text-[10px] text-rose-600 dark:text-rose-400 block font-bold">3. Handling</span>
               <strong className="text-sm font-bold text-rose-700 dark:text-rose-400 block">
                 -₹{Math.round(handlingFee / (quantityKg / 100))}
@@ -565,7 +565,7 @@ export default function MarketPricesPage() {
               <span className="text-[9px] text-stone-400 block">Staging/weigh</span>
             </div>
 
-            <div className="bg-white dark:bg-stone-800 p-2.5 rounded-xl border border-rose-200 dark:border-rose-900/60 shadow-2xs">
+            <div className="bg-white dark:bg-[#162719] p-2.5 rounded-xl border border-rose-200 dark:border-rose-900/60 shadow-2xs">
               <span className="text-[10px] text-rose-600 dark:text-rose-400 block font-bold">4. Packaging</span>
               <strong className="text-sm font-bold text-rose-700 dark:text-rose-400 block">
                 -₹{Math.round(packagingFee / (quantityKg / 100))}
@@ -573,7 +573,7 @@ export default function MarketPricesPage() {
               <span className="text-[9px] text-stone-400 block">CFB crates</span>
             </div>
 
-            <div className="bg-white dark:bg-stone-800 p-2.5 rounded-xl border border-rose-200 dark:border-rose-900/60 shadow-2xs">
+            <div className="bg-white dark:bg-[#162719] p-2.5 rounded-xl border border-rose-200 dark:border-rose-900/60 shadow-2xs">
               <span className="text-[10px] text-rose-600 dark:text-rose-400 block font-bold">5. APMC Cess</span>
               <strong className="text-sm font-bold text-rose-700 dark:text-rose-400 block">
                 -₹{Math.round(selectedCalc.commission / (quantityKg / 100))}
@@ -581,7 +581,7 @@ export default function MarketPricesPage() {
               <span className="text-[9px] text-stone-400 block">{commissionPct}% cess</span>
             </div>
 
-            <div className="bg-white dark:bg-stone-800 p-2.5 rounded-xl border border-rose-200 dark:border-rose-900/60 shadow-2xs">
+            <div className="bg-white dark:bg-[#162719] p-2.5 rounded-xl border border-rose-200 dark:border-rose-900/60 shadow-2xs">
               <span className="text-[10px] text-rose-600 dark:text-rose-400 block font-bold">6. Spoilage</span>
               <strong className="text-sm font-bold text-rose-700 dark:text-rose-400 block">
                 -₹{Math.round(selectedCalc.spoilageLoss / (quantityKg / 100))}
@@ -589,7 +589,7 @@ export default function MarketPricesPage() {
               <span className="text-[9px] text-stone-400 block">{spoilagePct}% shrinkage</span>
             </div>
 
-            <div className="bg-white dark:bg-stone-800 p-2.5 rounded-xl border border-amber-200 dark:border-amber-900/60 shadow-2xs">
+            <div className="bg-white dark:bg-[#162719] p-2.5 rounded-xl border border-amber-200 dark:border-amber-900/60 shadow-2xs">
               <span className="text-[10px] text-amber-700 dark:text-amber-400 block font-bold">7. FPO Fee</span>
               <strong className="text-sm font-bold text-amber-800 dark:text-amber-400 block">
                 -₹{Math.round(selectedCalc.fpoFee / (quantityKg / 100))}
@@ -597,7 +597,7 @@ export default function MarketPricesPage() {
               <span className="text-[9px] text-stone-400 block">{fpoFeePct}% service</span>
             </div>
 
-            <div className="bg-emerald-900 dark:bg-emerald-950 text-white p-2.5 rounded-xl shadow-xs">
+            <div className="bg-gradient-to-r from-[#255919] to-[#386b24] text-white p-2.5 rounded-xl shadow-xs">
               <span className="text-[10px] text-emerald-200 block font-bold">8. Take-Home</span>
               <strong className="text-sm font-black text-emerald-300 block">₹{Math.round(selectedCalc.netPerQtl)}</strong>
               <span className="text-[9px] text-emerald-100 block font-mono">₹{Math.round(selectedCalc.netTotal)} net</span>
@@ -618,10 +618,10 @@ export default function MarketPricesPage() {
               <div
                 key={mandi.id}
                 onClick={() => setSelectedMandiId(mandi.id)}
-                className={`bg-white dark:bg-stone-900 rounded-2xl border transition-all cursor-pointer overflow-hidden ${
+                className={`rounded-2xl border transition-all cursor-pointer overflow-hidden ${
                   isSelected
-                    ? 'border-emerald-600 ring-2 ring-emerald-500/20 shadow-md bg-emerald-50/20 dark:bg-emerald-950/20'
-                    : 'border-stone-200 dark:border-stone-800 hover:border-stone-300 dark:hover:border-stone-700 shadow-2xs'
+                    ? 'border-[#255919] dark:border-[#D1BF4B] ring-2 ring-[#255919]/20 shadow-md bg-white/95 dark:bg-[#132215]/95 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B]'
+                    : 'bg-white/95 dark:bg-[#132215]/95 border-stone-200/90 dark:border-[#D1BF4B]/20 hover:border-stone-300 dark:hover:border-emerald-700/60 shadow-xs border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B]'
                 }`}
               >
                 <div className="p-5 flex flex-col sm:flex-row justify-between items-start gap-4">
@@ -630,7 +630,7 @@ export default function MarketPricesPage() {
                       <h3 className="font-extrabold text-lg text-stone-900 dark:text-stone-50">
                         {mandi.mandi}
                       </h3>
-                      <span className="bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <span className="bg-emerald-50 dark:bg-[#162719] text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> LIVE APMC
                       </span>
                     </div>
@@ -665,7 +665,7 @@ export default function MarketPricesPage() {
                 </div>
 
                 {/* Net Take-Home Footer Strip matching Screenshot 3 */}
-                <div className="bg-stone-50 dark:bg-stone-800/60 px-5 py-3 border-t border-stone-100 dark:border-stone-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1.5 text-xs">
+                <div className="bg-stone-50/70 dark:bg-[#162719] px-5 py-3 border-t border-stone-100 dark:border-emerald-900/40 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1.5 text-xs">
                   <span className="text-stone-600 dark:text-stone-400">
                     Range: ₹{mandi.minPrice} - ₹{mandi.maxPrice}/qtl | Arrivals: {mandi.arrivalsQtl} qtl
                   </span>
@@ -678,7 +678,7 @@ export default function MarketPricesPage() {
           })}
 
           {/* Critical Advisory & Net Realization Notice Banner matching Screenshot 3 */}
-          <div className="bg-amber-50/90 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/80 p-4 rounded-2xl flex items-start gap-3 text-xs text-amber-950 dark:text-amber-200 leading-relaxed shadow-xs">
+          <div className="bg-amber-50/90 dark:bg-[#182b1c] border border-amber-200 dark:border-amber-800/80 p-4 rounded-2xl flex items-start gap-3 text-xs text-amber-950 dark:text-amber-200 leading-relaxed shadow-xs">
             <span className="text-amber-600 dark:text-amber-400 text-base shrink-0 mt-0.5">⚠️</span>
             <div className="space-y-1">
               <strong className="font-bold block text-amber-900 dark:text-amber-100">
@@ -693,10 +693,10 @@ export default function MarketPricesPage() {
 
         {/* Right Column: Transparent Net Calculator (1 col) matching Screenshot 3 */}
         <div className="lg:col-span-1">
-          <div className="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl shadow-sm p-5 space-y-4 sticky top-6">
-            <div className="border-b border-stone-100 dark:border-stone-800 pb-3">
+          <div className="bg-white/95 dark:bg-[#132215]/95 border border-stone-200/90 dark:border-[#D1BF4B]/20 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] rounded-2xl shadow-xs p-5 space-y-4 sticky top-6 transition-all duration-300">
+            <div className="border-b border-stone-100 dark:border-emerald-900/30 pb-3">
               <h3 className="font-bold text-base text-stone-900 dark:text-stone-100 flex items-center gap-1.5">
-                <span className="text-emerald-700">₹</span> Transparent Net Calculator
+                <span className="text-emerald-700 dark:text-emerald-400">₹</span> Transparent Net Calculator
               </h3>
               <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
                 Adjust parameters for <strong>{activeMandi?.mandi || 'Selected Mandi'}</strong>
@@ -713,19 +713,19 @@ export default function MarketPricesPage() {
                   type="number"
                   value={quantityKg}
                   onChange={(e) => setQuantityKg(Math.max(1, parseInt(e.target.value, 10) || 1))}
-                  className="w-full h-8 px-2.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 text-xs focus:outline-hidden focus:ring-2 focus:ring-emerald-600"
+                  className="w-full h-8 px-2.5 rounded-lg border border-stone-200 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 text-xs focus:outline-hidden focus:ring-2 focus:ring-[#255919] dark:focus:ring-[#D1BF4B]"
                 />
               </div>
 
               <div className="space-y-1">
                 <label className="text-[11px] font-semibold text-stone-600 dark:text-stone-300">
-                  Freight Rate (₹/km for solo vehicle) (₹/km for vehicle)
+                  Freight Rate (₹/km for solo vehicle)
                 </label>
                 <input
                   type="number"
                   value={freightPerKm}
                   onChange={(e) => setFreightPerKm(Math.max(0, parseInt(e.target.value, 10) || 0))}
-                  className="w-full h-8 px-2.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 text-xs focus:outline-hidden focus:ring-2 focus:ring-emerald-600"
+                  className="w-full h-8 px-2.5 rounded-lg border border-stone-200 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 text-xs focus:outline-hidden focus:ring-2 focus:ring-[#255919] dark:focus:ring-[#D1BF4B]"
                 />
               </div>
 
@@ -738,7 +738,7 @@ export default function MarketPricesPage() {
                     type="number"
                     value={handlingFee}
                     onChange={(e) => setHandlingFee(Math.max(0, parseInt(e.target.value, 10) || 0))}
-                    className="w-full h-8 px-2.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 text-xs focus:outline-hidden"
+                    className="w-full h-8 px-2.5 rounded-lg border border-stone-200 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 text-xs focus:outline-hidden"
                   />
                 </div>
                 <div className="space-y-1">
@@ -749,7 +749,7 @@ export default function MarketPricesPage() {
                     type="number"
                     value={packagingFee}
                     onChange={(e) => setPackagingFee(Math.max(0, parseInt(e.target.value, 10) || 0))}
-                    className="w-full h-8 px-2.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 text-xs focus:outline-hidden"
+                    className="w-full h-8 px-2.5 rounded-lg border border-stone-200 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 text-xs focus:outline-hidden"
                   />
                 </div>
               </div>
@@ -757,13 +757,13 @@ export default function MarketPricesPage() {
               <div className="grid grid-cols-2 gap-2">
                 <div className="space-y-1">
                   <label className="text-[11px] font-semibold text-stone-600 dark:text-stone-300">
-                    APMC Commission (5%) (%)
+                    APMC Commission (%)
                   </label>
                   <input
                     type="number"
                     value={commissionPct}
                     onChange={(e) => setCommissionPct(Math.max(0, parseFloat(e.target.value) || 0))}
-                    className="w-full h-8 px-2.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 text-xs focus:outline-hidden"
+                    className="w-full h-8 px-2.5 rounded-lg border border-stone-200 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 text-xs focus:outline-hidden"
                   />
                 </div>
                 <div className="space-y-1">
@@ -775,25 +775,25 @@ export default function MarketPricesPage() {
                     step="0.5"
                     value={fpoFeePct}
                     onChange={(e) => setFpoFeePct(Math.max(0, parseFloat(e.target.value) || 0))}
-                    className="w-full h-8 px-2.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 text-xs focus:outline-hidden"
+                    className="w-full h-8 px-2.5 rounded-lg border border-stone-200 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 text-xs focus:outline-hidden"
                   />
                 </div>
               </div>
 
               <div className="space-y-1">
                 <label className="text-[11px] font-semibold text-stone-600 dark:text-stone-300">
-                  In-Transit Spoilage Buffer (2%) (%)
+                  In-Transit Spoilage Buffer (%)
                 </label>
                 <input
                   type="number"
                   value={spoilagePct}
                   onChange={(e) => setSpoilagePct(Math.max(0, parseFloat(e.target.value) || 0))}
-                  className="w-full h-8 px-2.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 text-xs focus:outline-hidden"
+                  className="w-full h-8 px-2.5 rounded-lg border border-stone-200 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 text-xs focus:outline-hidden"
                 />
               </div>
 
               {/* Itemized Deductions Breakdown matching Screenshot 3 */}
-              <div className="space-y-1.5 pt-3 border-t border-stone-100 dark:border-stone-800 text-stone-600 dark:text-stone-400 text-[11px]">
+              <div className="space-y-1.5 pt-3 border-t border-stone-100 dark:border-emerald-900/30 text-stone-600 dark:text-stone-400 text-[11px]">
                 <div className="flex justify-between">
                   <span>Gross Value ({quantityKg} kg @ ₹{activeMandi?.modalPrice || 0}/qtl):</span>
                   <span className="font-semibold text-stone-900 dark:text-stone-100">
@@ -827,12 +827,12 @@ export default function MarketPricesPage() {
               </div>
 
               {/* Multi-Scenario Projections: Low / Expected / High matching Screenshot 3 */}
-              <div className="pt-3 border-t border-stone-100 dark:border-stone-800">
+              <div className="pt-3 border-t border-stone-100 dark:border-emerald-900/30">
                 <div className="text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-1.5">
                   REALIZATION PROJECTIONS (LOW / EXPECTED / HIGH)
                 </div>
                 <div className="grid grid-cols-3 gap-1.5 text-center text-[10px]">
-                  <div className="bg-stone-50 dark:bg-stone-800/80 p-2 rounded-lg border border-stone-200 dark:border-stone-700">
+                  <div className="bg-stone-50/70 dark:bg-[#162719] p-2 rounded-lg border border-stone-200 dark:border-emerald-900/40">
                     <span className="text-stone-400 block text-[9px]">Low (₹{activeMandi?.minPrice || 0})</span>
                     <strong className="text-stone-900 dark:text-stone-100 text-xs block mt-0.5">
                       ₹{Math.round(calculateNet(activeMandi, activeMandi?.minPrice || 0).netTotal)}
@@ -842,7 +842,7 @@ export default function MarketPricesPage() {
                     </span>
                   </div>
 
-                  <div className="bg-emerald-50 dark:bg-emerald-950/80 p-2 rounded-lg border border-emerald-300 dark:border-emerald-800">
+                  <div className="bg-emerald-50 dark:bg-[#182b1c] p-2 rounded-lg border border-emerald-300 dark:border-[#D1BF4B]/40">
                     <span className="text-emerald-800 dark:text-emerald-300 font-bold block text-[9px]">
                       Expected (₹{activeMandi?.modalPrice || 0})
                     </span>
@@ -854,7 +854,7 @@ export default function MarketPricesPage() {
                     </span>
                   </div>
 
-                  <div className="bg-stone-50 dark:bg-stone-800/80 p-2 rounded-lg border border-stone-200 dark:border-stone-700">
+                  <div className="bg-stone-50/70 dark:bg-[#162719] p-2 rounded-lg border border-stone-200 dark:border-emerald-900/40">
                     <span className="text-stone-400 block text-[9px]">High (₹{activeMandi?.maxPrice || 0})</span>
                     <strong className="text-stone-900 dark:text-stone-100 text-xs block mt-0.5">
                       ₹{Math.round(calculateNet(activeMandi, activeMandi?.maxPrice || 0).netTotal)}
@@ -867,7 +867,7 @@ export default function MarketPricesPage() {
               </div>
 
               {/* Best Estimated Net Outcome Footer matching Screenshot 3 */}
-              <div className="pt-3 border-t border-stone-200 dark:border-stone-800">
+              <div className="pt-3 border-t border-stone-200 dark:border-emerald-900/30">
                 <div className="flex justify-between items-end mb-1">
                   <span className="font-bold text-stone-900 dark:text-stone-100 text-xs">
                     Best Estimated Net Outcome:

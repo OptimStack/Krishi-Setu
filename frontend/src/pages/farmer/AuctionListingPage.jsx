@@ -290,21 +290,21 @@ export default function AuctionListingPage() {
   return (
     <div className="max-w-5xl mx-auto space-y-6 pb-20 font-sans animate-in fade-in duration-300">
       {/* 1. Header Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-stone-200 dark:border-stone-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-stone-200/90 dark:border-[#D1BF4B]/20">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
             <span className="text-xl">⚖️</span>
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-950/60 px-2.5 py-1 rounded-full border border-emerald-300 dark:border-emerald-800">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#255919] dark:text-[#D1BF4B] bg-emerald-100/80 dark:bg-[#182b1c] px-2.5 py-1 rounded-full border border-emerald-300 dark:border-[#D1BF4B]/40">
               {isMr ? 'अधिकृत लिलाव नोंदणी' : isHi ? 'राष्ट्रीय नीलामी पंजीकरण' : 'National Auction Registry'}
             </span>
-            <span className="text-[11px] font-bold bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-300 px-2 py-0.5 rounded-full border border-amber-300 dark:border-amber-800">
+            <span className="text-[11px] font-bold bg-amber-100/80 dark:bg-[#231e0c] text-amber-900 dark:text-[#D1BF4B] px-2 py-0.5 rounded-full border border-amber-300/80 dark:border-[#D1BF4B]/30">
               WDRA eNWR Verified
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">
             {isMr ? 'लिलावासाठी पीक नोंदणी' : isHi ? 'नीलामी हेतु फसल पंजीकरण' : 'Register Produce for Double-Auction'}
           </h1>
-          <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-400 mt-1">
+          <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-300 mt-1">
             {isMr
               ? '१०-सूत्रीय प्रमाणित नोंदणी: गुणवत्ता प्रमाणपत्र, ई-एनडब्लूआर पावती आणि एफपीओ पूलिंगसह थेट खरेदीदारांना विका.'
               : isHi
@@ -317,14 +317,14 @@ export default function AuctionListingPage() {
           <button
             type="button"
             onClick={handlePreFillSample}
-            className="bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-semibold px-3 py-2 rounded-xl border border-stone-300 dark:border-stone-700 transition cursor-pointer flex items-center gap-1.5"
+            className="bg-white/95 dark:bg-[#162719] hover:bg-stone-50 dark:hover:bg-[#1a3020] text-stone-800 dark:text-stone-200 text-xs font-bold px-3 py-2 rounded-xl border border-stone-300 dark:border-[#D1BF4B]/40 transition-all cursor-pointer flex items-center gap-1.5 shadow-xs hover:-translate-y-0.5"
           >
             <span>⚡</span>
             <span>{isMr ? 'नमुना माहिती भरा' : 'Pre-fill Demo Lot'}</span>
           </button>
           <Link
             to="/farmer/products"
-            className="text-xs font-semibold text-stone-600 dark:text-stone-300 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700 px-3 py-2 rounded-xl hover:bg-stone-50 dark:hover:bg-stone-800 transition"
+            className="text-xs font-bold text-stone-700 dark:text-stone-200 bg-white/95 dark:bg-[#162719] border border-stone-200 dark:border-[#D1BF4B]/30 px-3 py-2 rounded-xl hover:bg-stone-50 dark:hover:bg-[#1a3020] transition-all hover:-translate-y-0.5"
           >
             {isMr ? 'माझी उत्पादने' : 'My Products'} →
           </Link>
@@ -332,7 +332,7 @@ export default function AuctionListingPage() {
       </div>
 
       {errorMsg && (
-        <div className="p-4 bg-red-50 dark:bg-red-950/50 border border-red-300 dark:border-red-800 rounded-2xl text-red-900 dark:text-red-200 text-xs font-medium flex items-center gap-2">
+        <div className="p-4 bg-red-50/90 dark:bg-red-950/40 border border-red-300 dark:border-red-800/80 rounded-2xl text-red-900 dark:text-red-200 text-xs font-medium flex items-center gap-2">
           <span>⚠️</span>
           <span>{errorMsg}</span>
         </div>
@@ -341,17 +341,17 @@ export default function AuctionListingPage() {
       {/* Main Multi-Section Form */}
       <form onSubmit={handleSubmitAuction} className="space-y-6">
         {/* 1. Crop / Product Details Card */}
-        <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200/90 dark:border-stone-800 shadow-xs p-5 sm:p-6 space-y-4 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between pb-2 border-b border-stone-100 dark:border-stone-800">
+        <div className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs p-5 sm:p-6 space-y-4 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
+          <div className="flex items-center justify-between pb-2 border-b border-stone-100 dark:border-emerald-900/40">
             <div className="flex items-center gap-2.5">
-              <span className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 flex items-center justify-center font-bold text-xs">
+              <span className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-[#1c3321] text-[#255919] dark:text-[#D1BF4B] flex items-center justify-center font-bold text-xs border border-emerald-200 dark:border-emerald-800/60">
                 1
               </span>
               <h2 className="text-base font-bold text-stone-900 dark:text-stone-100">
                 {isMr ? 'पीक आणि जात माहिती' : isHi ? 'फसल एवं किस्म विवरण' : 'Crop & Commodity Details'}
               </h2>
             </div>
-            <span className="text-xs text-stone-400 font-mono">Step 1 of 10</span>
+            <span className="text-xs text-stone-400 dark:text-stone-500 font-mono">Step 1 of 10</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
@@ -369,7 +369,7 @@ export default function AuctionListingPage() {
                     setMinAskingPrice(found.defaultPrice.toFixed(2));
                   }
                 }}
-                className="w-full rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 p-2.5 font-medium focus:ring-2 focus:ring-[#255919] focus:outline-hidden"
+                className="w-full rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 p-2.5 font-medium focus:ring-2 focus:ring-[#255919] focus:outline-hidden"
               >
                 {COMMODITY_CATALOG.map((c) => (
                   <option key={c.name} value={c.name}>
@@ -386,7 +386,7 @@ export default function AuctionListingPage() {
               <select
                 value={variety}
                 onChange={(e) => setVariety(e.target.value)}
-                className="w-full rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 p-2.5 font-medium focus:ring-2 focus:ring-[#255919] focus:outline-hidden"
+                className="w-full rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 p-2.5 font-medium focus:ring-2 focus:ring-[#255919] focus:outline-hidden"
               >
                 {currentCropObj.varieties.map((v) => (
                   <option key={v} value={v}>
@@ -404,29 +404,29 @@ export default function AuctionListingPage() {
                 type="date"
                 value={availabilityDate}
                 onChange={(e) => setAvailabilityDate(e.target.value)}
-                className="w-full rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 p-2.5 focus:ring-2 focus:ring-[#255919] focus:outline-hidden"
+                className="w-full rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 p-2.5 focus:ring-2 focus:ring-[#255919] focus:outline-hidden"
               />
             </div>
           </div>
         </div>
 
         {/* 2. Quality Verification & Lab Certificate Card */}
-        <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200/90 dark:border-stone-800 shadow-xs p-5 sm:p-6 space-y-4 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between pb-2 border-b border-stone-100 dark:border-stone-800">
+        <div className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs p-5 sm:p-6 space-y-4 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
+          <div className="flex items-center justify-between pb-2 border-b border-stone-100 dark:border-emerald-900/40">
             <div className="flex items-center gap-2.5">
-              <span className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 flex items-center justify-center font-bold text-xs">
+              <span className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-[#1c3321] text-[#255919] dark:text-[#D1BF4B] flex items-center justify-center font-bold text-xs border border-emerald-200 dark:border-emerald-800/60">
                 2
               </span>
               <div>
                 <h2 className="text-base font-bold text-stone-900 dark:text-stone-100">
                   {isMr ? 'गुणवत्ता तपासणी व प्रमाणपत्र' : isHi ? 'गुणवत्ता सत्यापन एवं परीक्षण प्रमाणपत्र' : 'Quality Verification & Certificate'}
                 </h2>
-                <p className="text-[11px] text-stone-500">
+                <p className="text-[11px] text-stone-500 dark:text-stone-400">
                   System/Committee Verified — Not farmer self-entered grade
                 </p>
               </div>
             </div>
-            <span className="text-xs text-stone-400 font-mono">Step 2 of 10</span>
+            <span className="text-xs text-stone-400 dark:text-stone-500 font-mono">Step 2 of 10</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
@@ -441,7 +441,7 @@ export default function AuctionListingPage() {
                   value={certNumber}
                   onChange={(e) => setCertNumber(e.target.value)}
                   placeholder="e.g. AGMARK-MH-2026-88194"
-                  className="w-full rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 p-2.5 font-mono"
+                  className="w-full rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 p-2.5 font-mono"
                 />
               </div>
 
@@ -449,11 +449,11 @@ export default function AuctionListingPage() {
                 <label className="block text-stone-700 dark:text-stone-300 font-semibold mb-1">
                   Verification Status (System / Committee)
                 </label>
-                <div className="p-2.5 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-800 rounded-xl flex items-center justify-between">
-                  <span className="font-bold text-emerald-900 dark:text-emerald-200">
+                <div className="p-2.5 bg-emerald-50 dark:bg-[#162719] border border-emerald-300 dark:border-emerald-800/80 rounded-xl flex items-center justify-between">
+                  <span className="font-bold text-emerald-900 dark:text-emerald-300">
                     🛡️ {verificationStatus}
                   </span>
-                  <span className="text-[10px] bg-emerald-200 dark:bg-emerald-900 text-emerald-900 dark:text-emerald-200 px-2 py-0.5 rounded-full font-bold">
+                  <span className="text-[10px] bg-emerald-200/80 dark:bg-[#1e3823] text-emerald-950 dark:text-[#D1BF4B] px-2 py-0.5 rounded-full font-bold">
                     Govt Calibrated
                   </span>
                 </div>
@@ -466,7 +466,7 @@ export default function AuctionListingPage() {
                 <select
                   value={selfDeclaredGrade}
                   onChange={(e) => setSelfDeclaredGrade(e.target.value)}
-                  className="w-full rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 p-2.5"
+                  className="w-full rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 p-2.5"
                 >
                   <option value="Grade A">Grade A — Export / Supermarket Premium</option>
                   <option value="Grade B">Grade B — Fair Average Quality (FAQ)</option>
@@ -481,7 +481,7 @@ export default function AuctionListingPage() {
                 <label className="block text-stone-700 dark:text-stone-300 font-semibold mb-1">
                   Upload / Scan Quality Testing Certificate (PDF / Image)
                 </label>
-                <label className="border-2 border-dashed border-stone-300 dark:border-stone-700 hover:border-emerald-600 rounded-xl p-3 flex items-center justify-between cursor-pointer transition bg-stone-50/50 dark:bg-stone-800/40">
+                <label className="border-2 border-dashed border-stone-300 dark:border-emerald-800/60 hover:border-emerald-600 rounded-xl p-3 flex items-center justify-between cursor-pointer transition bg-stone-50/70 dark:bg-[#162719]">
                   <div className="flex items-center gap-2">
                     <span className="text-xl">📄</span>
                     <div className="text-left">
@@ -491,7 +491,7 @@ export default function AuctionListingPage() {
                       <span className="text-[10px] text-stone-400">Click to upload lab test scan</span>
                     </div>
                   </div>
-                  <span className="text-[10px] bg-stone-200 dark:bg-stone-700 px-2 py-1 rounded-lg font-bold">
+                  <span className="text-[10px] bg-stone-200 dark:bg-[#1f3622] text-stone-800 dark:text-stone-200 px-2 py-1 rounded-lg font-bold">
                     Browse
                   </span>
                   <input
@@ -516,15 +516,15 @@ export default function AuctionListingPage() {
                     <img
                       src={photoPreview}
                       alt="Crop Preview"
-                      className="w-16 h-16 rounded-xl object-cover border border-emerald-300 shadow-xs shrink-0"
+                      className="w-16 h-16 rounded-xl object-cover border border-emerald-300 dark:border-emerald-700 shadow-xs shrink-0"
                     />
                   )}
-                  <label className="flex-1 border-2 border-dashed border-stone-300 dark:border-stone-700 hover:border-emerald-600 rounded-xl p-2.5 flex items-center justify-between cursor-pointer transition text-stone-600 dark:text-stone-400">
+                  <label className="flex-1 border-2 border-dashed border-stone-300 dark:border-emerald-800/60 hover:border-emerald-600 rounded-xl p-2.5 flex items-center justify-between cursor-pointer transition text-stone-600 dark:text-stone-300 bg-stone-50/70 dark:bg-[#162719]">
                     <span className="flex items-center gap-2">
                       <span>📷</span>
                       <span className="font-medium">Attach High-Res Photo</span>
                     </span>
-                    <span className="text-[10px] bg-stone-200 dark:bg-stone-700 px-2 py-1 rounded-lg font-bold">
+                    <span className="text-[10px] bg-stone-200 dark:bg-[#1f3622] text-stone-800 dark:text-stone-200 px-2 py-1 rounded-lg font-bold">
                       Upload
                     </span>
                     <input
@@ -547,17 +547,17 @@ export default function AuctionListingPage() {
         </div>
 
         {/* 3. Quantity & Lot Sizing Card */}
-        <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200/90 dark:border-stone-800 shadow-xs p-5 sm:p-6 space-y-4 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between pb-2 border-b border-stone-100 dark:border-stone-800">
+        <div className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs p-5 sm:p-6 space-y-4 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
+          <div className="flex items-center justify-between pb-2 border-b border-stone-100 dark:border-emerald-900/40">
             <div className="flex items-center gap-2.5">
-              <span className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 flex items-center justify-center font-bold text-xs">
+              <span className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-[#1c3321] text-[#255919] dark:text-[#D1BF4B] flex items-center justify-center font-bold text-xs border border-emerald-200 dark:border-emerald-800/60">
                 3
               </span>
               <h2 className="text-base font-bold text-stone-900 dark:text-stone-100">
                 {isMr ? 'प्रमाण आणि किमान विक्री मर्यादा' : isHi ? 'मात्रा एवं न्यूनतम बिक्री सीमा' : 'Quantity & Minimum Lot Size'}
               </h2>
             </div>
-            <span className="text-xs text-stone-400 font-mono">Step 3 of 10</span>
+            <span className="text-xs text-stone-400 dark:text-stone-500 font-mono">Step 3 of 10</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
@@ -569,7 +569,7 @@ export default function AuctionListingPage() {
                 type="number"
                 value={totalQuantity}
                 onChange={(e) => setTotalQuantity(e.target.value)}
-                className="w-full rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 p-2.5 font-bold"
+                className="w-full rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 p-2.5 font-bold"
               />
             </div>
 
@@ -580,7 +580,7 @@ export default function AuctionListingPage() {
               <select
                 value={quantityUnit}
                 onChange={(e) => setQuantityUnit(e.target.value)}
-                className="w-full rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 p-2.5 font-semibold"
+                className="w-full rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 p-2.5 font-semibold"
               >
                 <option value="quintal">Quintal (100 kg)</option>
                 <option value="kg">Kilogram (kg)</option>
@@ -597,28 +597,28 @@ export default function AuctionListingPage() {
                 type="number"
                 value={minSellingQuantity}
                 onChange={(e) => setMinSellingQuantity(e.target.value)}
-                className="w-full rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 p-2.5 font-bold"
+                className="w-full rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 p-2.5 font-bold"
               />
             </div>
           </div>
         </div>
 
         {/* 4. FPO Pooling Consent Card */}
-        <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200/90 dark:border-stone-800 shadow-xs p-5 sm:p-6 space-y-4 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between pb-2 border-b border-stone-100 dark:border-stone-800">
+        <div className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs p-5 sm:p-6 space-y-4 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
+          <div className="flex items-center justify-between pb-2 border-b border-stone-100 dark:border-emerald-900/40">
             <div className="flex items-center gap-2.5">
-              <span className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 flex items-center justify-center font-bold text-xs">
+              <span className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-[#1c3321] text-[#255919] dark:text-[#D1BF4B] flex items-center justify-center font-bold text-xs border border-emerald-200 dark:border-emerald-800/60">
                 4
               </span>
               <h2 className="text-base font-bold text-stone-900 dark:text-stone-100">
                 {isMr ? 'एफपीओ सहकार पूलिंग' : isHi ? 'एफपीओ समूह पूलिंग' : 'FPO Collective Pooling'}
               </h2>
             </div>
-            <span className="text-xs text-stone-400 font-mono">Step 4 of 10</span>
+            <span className="text-xs text-stone-400 dark:text-stone-500 font-mono">Step 4 of 10</span>
           </div>
 
           <div className="space-y-3 text-xs">
-            <label className="flex items-start gap-3 p-3.5 bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800 rounded-xl cursor-pointer">
+            <label className="flex items-start gap-3 p-3.5 bg-emerald-50/70 dark:bg-[#162719] border border-emerald-300 dark:border-emerald-800/80 rounded-xl cursor-pointer">
               <input
                 type="checkbox"
                 checked={addToPool}
@@ -629,7 +629,7 @@ export default function AuctionListingPage() {
                 <span className="font-bold text-stone-900 dark:text-stone-100 block">
                   Add produce to FPO pool (Pooling Consent: YES)
                 </span>
-                <span className="text-stone-600 dark:text-stone-400 block mt-0.5">
+                <span className="text-stone-600 dark:text-stone-300 block mt-0.5">
                   Combine this lot with other local farmers into full-truckload (FTL) dispatches to save 25%-35% freight deductions and qualify for high-volume corporate bids.
                 </span>
               </div>
@@ -643,7 +643,7 @@ export default function AuctionListingPage() {
                 <select
                   value={selectedFpoPool}
                   onChange={(e) => setSelectedFpoPool(e.target.value)}
-                  className="w-full rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 p-2.5 font-medium"
+                  className="w-full rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 p-2.5 font-medium"
                 >
                   <option value="Pune FPO Hub — Baramati Cluster (Gultekdi APMC)">
                     Pune FPO Hub — Baramati Cluster (Gultekdi APMC) • Closing in 4 hrs
@@ -661,17 +661,17 @@ export default function AuctionListingPage() {
         </div>
 
         {/* 5. Location Details Card */}
-        <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200/90 dark:border-stone-800 shadow-xs p-5 sm:p-6 space-y-4 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between pb-2 border-b border-stone-100 dark:border-stone-800">
+        <div className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs p-5 sm:p-6 space-y-4 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
+          <div className="flex items-center justify-between pb-2 border-b border-stone-100 dark:border-emerald-900/40">
             <div className="flex items-center gap-2.5">
-              <span className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 flex items-center justify-center font-bold text-xs">
+              <span className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-[#1c3321] text-[#255919] dark:text-[#D1BF4B] flex items-center justify-center font-bold text-xs border border-emerald-200 dark:border-emerald-800/60">
                 5
               </span>
               <h2 className="text-base font-bold text-stone-900 dark:text-stone-100">
                 {isMr ? 'स्थान आणि संकलन पत्ता' : isHi ? 'स्थान एवं पिकअप पता' : 'Location & Collection Details'}
               </h2>
             </div>
-            <span className="text-xs text-stone-400 font-mono">Step 5 of 10</span>
+            <span className="text-xs text-stone-400 dark:text-stone-500 font-mono">Step 5 of 10</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
@@ -681,7 +681,7 @@ export default function AuctionListingPage() {
                 type="text"
                 value={state}
                 onChange={(e) => setState(e.target.value)}
-                className="w-full rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 p-2.5"
+                className="w-full rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 p-2.5"
               />
             </div>
             <div>
@@ -690,7 +690,7 @@ export default function AuctionListingPage() {
                 type="text"
                 value={district}
                 onChange={(e) => setDistrict(e.target.value)}
-                className="w-full rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 p-2.5"
+                className="w-full rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 p-2.5"
               />
             </div>
             <div>
@@ -699,7 +699,7 @@ export default function AuctionListingPage() {
                 type="text"
                 value={taluk}
                 onChange={(e) => setTaluk(e.target.value)}
-                className="w-full rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 p-2.5"
+                className="w-full rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 p-2.5"
               />
             </div>
           </div>
@@ -713,28 +713,28 @@ export default function AuctionListingPage() {
               value={pickupAddress}
               onChange={(e) => setPickupAddress(e.target.value)}
               placeholder="Detailed farm address or FPO collection center"
-              className="w-full rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 p-2.5"
+              className="w-full rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 p-2.5"
             />
           </div>
         </div>
 
         {/* 6. Storage & Documentation (eNWR) Card */}
-        <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200/90 dark:border-stone-800 shadow-xs p-5 sm:p-6 space-y-4 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between pb-2 border-b border-stone-100 dark:border-stone-800">
+        <div className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs p-5 sm:p-6 space-y-4 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
+          <div className="flex items-center justify-between pb-2 border-b border-stone-100 dark:border-emerald-900/40">
             <div className="flex items-center gap-2.5">
-              <span className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 flex items-center justify-center font-bold text-xs">
+              <span className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-[#1c3321] text-[#255919] dark:text-[#D1BF4B] flex items-center justify-center font-bold text-xs border border-emerald-200 dark:border-emerald-800/60">
                 6
               </span>
               <div>
                 <h2 className="text-base font-bold text-stone-900 dark:text-stone-100">
                   {isMr ? 'साठवणूक आणि ई-एनडब्लूआर (eNWR)' : isHi ? 'भंडारण एवं eNWR प्रलेखन' : 'Storage & Documentation (eNWR)'}
                 </h2>
-                <p className="text-[11px] text-stone-500">
+                <p className="text-[11px] text-stone-500 dark:text-stone-400">
                   Electronic Negotiable Warehouse Receipt (WDRA Compliant)
                 </p>
               </div>
             </div>
-            <span className="text-xs text-stone-400 font-mono">Step 6 of 10</span>
+            <span className="text-xs text-stone-400 dark:text-stone-500 font-mono">Step 6 of 10</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
@@ -746,7 +746,7 @@ export default function AuctionListingPage() {
                 <select
                   value={storageType}
                   onChange={(e) => setStorageType(e.target.value)}
-                  className="w-full rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 p-2.5 font-medium"
+                  className="w-full rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 p-2.5 font-medium"
                 >
                   <option value="WDRA-Accredited Warehouse (eNWR)">WDRA-Accredited Warehouse (eNWR)</option>
                   <option value="State Warehousing Corporation (MSWC)">State Warehousing Corporation (MSWC)</option>
@@ -764,7 +764,7 @@ export default function AuctionListingPage() {
                   value={enwrNumber}
                   onChange={(e) => setEnwrNumber(e.target.value)}
                   placeholder="WDRA-eNWR-MH-2026-XXXX"
-                  className="w-full rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 p-2.5 font-mono"
+                  className="w-full rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 p-2.5 font-mono"
                 />
               </div>
 
@@ -776,7 +776,7 @@ export default function AuctionListingPage() {
                   type="number"
                   value={enwrQuantity}
                   onChange={(e) => setEnwrQuantity(e.target.value)}
-                  className="w-full rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 p-2.5 font-bold"
+                  className="w-full rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 p-2.5 font-bold"
                 />
               </div>
             </div>
@@ -785,7 +785,7 @@ export default function AuctionListingPage() {
               <label className="block text-stone-700 dark:text-stone-300 font-semibold mb-1">
                 Upload eNWR Document / Scan Copy
               </label>
-              <label className="h-44 border-2 border-dashed border-stone-300 dark:border-stone-700 hover:border-emerald-600 rounded-2xl p-4 flex flex-col items-center justify-center cursor-pointer transition text-center bg-stone-50/50 dark:bg-stone-800/40">
+              <label className="h-44 border-2 border-dashed border-stone-300 dark:border-emerald-800/60 hover:border-emerald-600 rounded-2xl p-4 flex flex-col items-center justify-center cursor-pointer transition text-center bg-stone-50/70 dark:bg-[#162719]">
                 <span className="text-3xl mb-1">📜</span>
                 <span className="font-bold text-stone-800 dark:text-stone-200">
                   {enwrFile ? enwrFile.name : 'Upload Electronic Receipt (PDF / Image)'}
@@ -793,7 +793,7 @@ export default function AuctionListingPage() {
                 <span className="text-[10px] text-stone-400 mt-1 max-w-xs">
                   WDRA compliant eNWR enables warehouse electronic transfer without truck transport.
                 </span>
-                <span className="mt-3 text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 px-3 py-1 rounded-lg border border-emerald-300 dark:border-emerald-700">
+                <span className="mt-3 text-[10px] font-bold bg-emerald-100/90 dark:bg-[#1f3622] text-[#255919] dark:text-[#D1BF4B] px-3 py-1 rounded-lg border border-emerald-300 dark:border-emerald-700">
                   Browse File
                 </span>
                 <input
@@ -812,17 +812,17 @@ export default function AuctionListingPage() {
         </div>
 
         {/* 7. Auction / Pricing Card */}
-        <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200/90 dark:border-stone-800 shadow-xs p-5 sm:p-6 space-y-4 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between pb-2 border-b border-stone-100 dark:border-stone-800">
+        <div className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs p-5 sm:p-6 space-y-4 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
+          <div className="flex items-center justify-between pb-2 border-b border-stone-100 dark:border-emerald-900/40">
             <div className="flex items-center gap-2.5">
-              <span className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 flex items-center justify-center font-bold text-xs">
+              <span className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-[#1c3321] text-[#255919] dark:text-[#D1BF4B] flex items-center justify-center font-bold text-xs border border-emerald-200 dark:border-emerald-800/60">
                 7
               </span>
               <h2 className="text-base font-bold text-stone-900 dark:text-stone-100">
                 {isMr ? 'लिलाव आणि अपेक्षित भाव' : isHi ? 'नीलामी एवं आरक्षित मूल्य' : 'Auction & Reserve Pricing'}
               </h2>
             </div>
-            <span className="text-xs text-stone-400 font-mono">Step 7 of 10</span>
+            <span className="text-xs text-stone-400 dark:text-stone-500 font-mono">Step 7 of 10</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
@@ -837,7 +837,7 @@ export default function AuctionListingPage() {
                   step="0.1"
                   value={minAskingPrice}
                   onChange={(e) => setMinAskingPrice(e.target.value)}
-                  className="w-full pl-7 pr-3 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 font-bold text-sm"
+                  className="w-full pl-7 pr-3 py-2.5 rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 font-bold text-sm"
                 />
               </div>
             </div>
@@ -853,7 +853,7 @@ export default function AuctionListingPage() {
                   step="0.1"
                   value={preferredTargetPrice}
                   onChange={(e) => setPreferredTargetPrice(e.target.value)}
-                  className="w-full pl-7 pr-3 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 font-bold text-sm"
+                  className="w-full pl-7 pr-3 py-2.5 rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 font-bold text-sm"
                 />
               </div>
             </div>
@@ -865,7 +865,7 @@ export default function AuctionListingPage() {
               <select
                 value={priceUnit}
                 onChange={(e) => setPriceUnit(e.target.value)}
-                className="w-full rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 p-2.5 font-semibold"
+                className="w-full rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 p-2.5 font-semibold"
               >
                 <option value="per_kg">₹ per kg</option>
                 <option value="per_quintal">₹ per quintal (100 kg)</option>
@@ -874,14 +874,14 @@ export default function AuctionListingPage() {
           </div>
 
           {/* Real-time Auction Value Estimation */}
-          <div className="p-4 bg-stone-50 dark:bg-stone-800/60 rounded-xl border border-stone-200 dark:border-stone-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div className="p-4 bg-stone-50/70 dark:bg-[#162719] rounded-xl border border-stone-200 dark:border-emerald-900/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
             <div>
               <span className="text-stone-500 dark:text-stone-400 block text-[11px]">
                 Estimated Gross Lot Auction Value:
               </span>
-              <strong className="text-xl sm:text-2xl font-black text-emerald-800 dark:text-[#D1BF4B]">
+              <strong className="text-xl sm:text-2xl font-black text-[#255919] dark:text-[#D1BF4B]">
                 ₹{calculatedMetrics.minGrossValue.toLocaleString('en-IN')}{' '}
-                <span className="text-xs font-normal text-stone-500">
+                <span className="text-xs font-normal text-stone-500 dark:text-stone-400">
                   (Reserve Floor @ ₹{calculatedMetrics.ratePerKg}/kg)
                 </span>
               </strong>
@@ -897,17 +897,17 @@ export default function AuctionListingPage() {
         </div>
 
         {/* 8. Availability Window Card */}
-        <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200/90 dark:border-stone-800 shadow-xs p-5 sm:p-6 space-y-4 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between pb-2 border-b border-stone-100 dark:border-stone-800">
+        <div className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs p-5 sm:p-6 space-y-4 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
+          <div className="flex items-center justify-between pb-2 border-b border-stone-100 dark:border-emerald-900/40">
             <div className="flex items-center gap-2.5">
-              <span className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 flex items-center justify-center font-bold text-xs">
+              <span className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-[#1c3321] text-[#255919] dark:text-[#D1BF4B] flex items-center justify-center font-bold text-xs border border-emerald-200 dark:border-emerald-800/60">
                 8
               </span>
               <h2 className="text-base font-bold text-stone-900 dark:text-stone-100">
                 {isMr ? 'उपलब्धता आणि वितरण मुदत' : isHi ? 'उपलब्धता एवं आपूर्ति समयसीमा' : 'Availability Window & Deadline'}
               </h2>
             </div>
-            <span className="text-xs text-stone-400 font-mono">Step 8 of 10</span>
+            <span className="text-xs text-stone-400 dark:text-stone-500 font-mono">Step 8 of 10</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
@@ -919,7 +919,7 @@ export default function AuctionListingPage() {
                 type="date"
                 value={availableFrom}
                 onChange={(e) => setAvailableFrom(e.target.value)}
-                className="w-full rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 p-2.5"
+                className="w-full rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 p-2.5"
               />
             </div>
 
@@ -931,24 +931,24 @@ export default function AuctionListingPage() {
                 type="date"
                 value={availableUntil}
                 onChange={(e) => setAvailableUntil(e.target.value)}
-                className="w-full rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 p-2.5"
+                className="w-full rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 p-2.5"
               />
             </div>
           </div>
         </div>
 
         {/* 9. Delivery / Logistics Card */}
-        <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200/90 dark:border-stone-800 shadow-xs p-5 sm:p-6 space-y-4 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between pb-2 border-b border-stone-100 dark:border-stone-800">
+        <div className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs p-5 sm:p-6 space-y-4 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
+          <div className="flex items-center justify-between pb-2 border-b border-stone-100 dark:border-emerald-900/40">
             <div className="flex items-center gap-2.5">
-              <span className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 flex items-center justify-center font-bold text-xs">
+              <span className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-[#1c3321] text-[#255919] dark:text-[#D1BF4B] flex items-center justify-center font-bold text-xs border border-emerald-200 dark:border-emerald-800/60">
                 9
               </span>
               <h2 className="text-base font-bold text-stone-900 dark:text-stone-100">
                 {isMr ? 'वाहतूक आणि पॅकिंग' : isHi ? 'परिवहन एवं पैकेजिंग' : 'Delivery & Logistics'}
               </h2>
             </div>
-            <span className="text-xs text-stone-400 font-mono">Step 9 of 10</span>
+            <span className="text-xs text-stone-400 dark:text-stone-500 font-mono">Step 9 of 10</span>
           </div>
 
           <div className="space-y-4 text-xs">
@@ -985,15 +985,15 @@ export default function AuctionListingPage() {
                       onClick={() => setDeliveryMode(mode.id)}
                       className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
                         isSelected
-                          ? 'border-[#255919] dark:border-[#D1BF4B] bg-emerald-50/80 dark:bg-emerald-950/50 shadow-xs ring-1 ring-[#255919]'
-                          : 'border-stone-200 dark:border-stone-800 bg-stone-50/40 dark:bg-stone-800/40 hover:bg-stone-100 dark:hover:bg-stone-800'
+                          ? 'border-[#255919] dark:border-[#D1BF4B] bg-emerald-50/80 dark:bg-[#182b1c] shadow-xs ring-1 ring-[#255919] dark:ring-[#D1BF4B]'
+                          : 'border-stone-200 dark:border-emerald-900/40 bg-stone-50/50 dark:bg-[#162719] hover:bg-stone-100 dark:hover:bg-[#1a3020]'
                       }`}
                     >
                       <span className="text-2xl block mb-1">{mode.icon}</span>
                       <strong className="text-stone-900 dark:text-stone-100 block text-xs">
                         {mode.label}
                       </strong>
-                      <span className="text-[11px] text-stone-500 block mt-0.5 leading-tight">
+                      <span className="text-[11px] text-stone-500 dark:text-stone-400 block mt-0.5 leading-tight">
                         {mode.desc}
                       </span>
                     </div>
@@ -1011,7 +1011,7 @@ export default function AuctionListingPage() {
                   type="number"
                   value={maxDeliveryDistanceKm}
                   onChange={(e) => setMaxDeliveryDistanceKm(e.target.value)}
-                  className="w-full sm:w-60 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 p-2.5"
+                  className="w-full sm:w-60 rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 p-2.5"
                 />
               </div>
             )}
@@ -1025,24 +1025,24 @@ export default function AuctionListingPage() {
                 value={packagingDetails}
                 onChange={(e) => setPackagingDetails(e.target.value)}
                 placeholder="e.g. Corrugated plastic crates 20kg, 50kg gunny bags, palletized"
-                className="w-full rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 p-2.5"
+                className="w-full rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 p-2.5"
               />
             </div>
           </div>
         </div>
 
         {/* 10. Farmer/FPO Details, Payment & Final Confirmation Card */}
-        <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200/90 dark:border-stone-800 shadow-xs p-5 sm:p-6 space-y-5 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] hover:-translate-y-0.5 hover:shadow-md transition-all duration-200">
-          <div className="flex items-center justify-between pb-2 border-b border-stone-100 dark:border-stone-800">
+        <div className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs p-5 sm:p-6 space-y-5 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
+          <div className="flex items-center justify-between pb-2 border-b border-stone-100 dark:border-emerald-900/40">
             <div className="flex items-center gap-2.5">
-              <span className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 flex items-center justify-center font-bold text-xs">
+              <span className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-[#1c3321] text-[#255919] dark:text-[#D1BF4B] flex items-center justify-center font-bold text-xs border border-emerald-200 dark:border-emerald-800/60">
                 10
               </span>
               <h2 className="text-base font-bold text-stone-900 dark:text-stone-100">
                 {isMr ? 'शेतकरी तपशील, बँक खाते आणि अंतिम पुष्टी' : isHi ? 'किसान विवरण, बैंक खाता एवं अंतिम पुष्टि' : 'Farmer Details, Payment & Final Confirmation'}
               </h2>
             </div>
-            <span className="text-xs text-stone-400 font-mono">Step 10 of 10</span>
+            <span className="text-xs text-stone-400 dark:text-stone-500 font-mono">Step 10 of 10</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
@@ -1054,7 +1054,7 @@ export default function AuctionListingPage() {
                 type="text"
                 value={farmerName}
                 onChange={(e) => setFarmerName(e.target.value)}
-                className="w-full rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 p-2.5 font-semibold"
+                className="w-full rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 p-2.5 font-semibold"
               />
             </div>
 
@@ -1066,7 +1066,7 @@ export default function AuctionListingPage() {
                 type="text"
                 value={farmerPhone}
                 onChange={(e) => setFarmerPhone(e.target.value)}
-                className="w-full rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 p-2.5 font-mono"
+                className="w-full rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 p-2.5 font-mono"
               />
             </div>
 
@@ -1078,13 +1078,13 @@ export default function AuctionListingPage() {
                 type="text"
                 value={bankAccount}
                 onChange={(e) => setBankAccount(e.target.value)}
-                className="w-full rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 p-2.5 font-mono font-bold"
+                className="w-full rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 p-2.5 font-mono font-bold"
               />
             </div>
           </div>
 
           {/* Mandatory Ownership & Authorization Checkbox */}
-          <div className="p-4 bg-emerald-50/60 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl space-y-2 text-xs">
+          <div className="p-4 bg-emerald-50/70 dark:bg-[#162719] border border-emerald-300 dark:border-emerald-800/80 rounded-xl space-y-2 text-xs">
             <label className="flex items-start gap-3 cursor-pointer">
               <input
                 type="checkbox"
@@ -1103,8 +1103,8 @@ export default function AuctionListingPage() {
           </div>
 
           {/* Final Submit Button */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-stone-200 dark:border-stone-800">
-            <div className="text-xs text-stone-500">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-stone-200/90 dark:border-emerald-900/40">
+            <div className="text-xs text-stone-500 dark:text-stone-400">
               Double-Auction Match Engine clears orders at 11:30 AM &amp; 3:30 PM daily.
             </div>
 
@@ -1123,42 +1123,42 @@ export default function AuctionListingPage() {
       {/* Celebratory Modal on Successful Auction Submission */}
       {submittedLot && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-stone-900 rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-emerald-300 dark:border-emerald-700 relative text-center">
-            <div className="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 mx-auto flex items-center justify-center text-3xl shadow-xs">
+          <div className="bg-white/95 dark:bg-[#132215]/95 rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-emerald-300 dark:border-[#D1BF4B]/40 relative text-center">
+            <div className="w-16 h-16 rounded-full bg-emerald-100 dark:bg-[#1e3823] text-emerald-800 dark:text-[#D1BF4B] mx-auto flex items-center justify-center text-3xl shadow-xs border border-emerald-300 dark:border-[#D1BF4B]/30">
               🎉
             </div>
 
             <div className="space-y-1">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950 px-2.5 py-0.5 rounded-full border border-emerald-300 dark:border-emerald-800">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#255919] dark:text-[#D1BF4B] bg-emerald-50 dark:bg-[#182b1c] px-2.5 py-0.5 rounded-full border border-emerald-300 dark:border-[#D1BF4B]/40">
                 Auction Registry Confirmed
               </span>
               <h3 className="text-2xl font-black text-stone-900 dark:text-stone-100 tracking-tight">
                 Lot Successfully Submitted for Auction!
               </h3>
               <p className="text-xs text-stone-500 dark:text-stone-400">
-                Lot Reference: <strong className="font-mono text-emerald-700 dark:text-emerald-400">{submittedLot.id}</strong>
+                Lot Reference: <strong className="font-mono text-emerald-700 dark:text-[#D1BF4B]">{submittedLot.id}</strong>
               </p>
             </div>
 
-            <div className="bg-stone-50 dark:bg-stone-800/60 p-4 rounded-2xl border border-stone-200 dark:border-stone-700 text-xs space-y-2 text-left">
+            <div className="bg-stone-50/70 dark:bg-[#162719] p-4 rounded-2xl border border-stone-200 dark:border-emerald-900/40 text-xs space-y-2 text-left">
               <div className="flex justify-between">
-                <span className="text-stone-500">Produce:</span>
+                <span className="text-stone-500 dark:text-stone-400">Produce:</span>
                 <strong className="text-stone-900 dark:text-stone-100">{submittedLot.crop} ({submittedLot.variety})</strong>
               </div>
               <div className="flex justify-between">
-                <span className="text-stone-500">Quantity:</span>
+                <span className="text-stone-500 dark:text-stone-400">Quantity:</span>
                 <strong className="text-stone-900 dark:text-stone-100">{submittedLot.qtyQuintals} Quintals ({submittedLot.qtyKg} kg)</strong>
               </div>
               <div className="flex justify-between">
-                <span className="text-stone-500">Reserve Floor:</span>
-                <strong className="text-emerald-700 dark:text-emerald-400 font-bold">₹{submittedLot.minGross.toLocaleString('en-IN')}</strong>
+                <span className="text-stone-500 dark:text-stone-400">Reserve Floor:</span>
+                <strong className="text-emerald-700 dark:text-[#D1BF4B] font-bold">₹{submittedLot.minGross.toLocaleString('en-IN')}</strong>
               </div>
               <div className="flex justify-between">
-                <span className="text-stone-500">eNWR Number:</span>
+                <span className="text-stone-500 dark:text-stone-400">eNWR Number:</span>
                 <strong className="font-mono text-stone-800 dark:text-stone-200">{submittedLot.enwrNumber}</strong>
               </div>
               <div className="flex justify-between">
-                <span className="text-stone-500">Logistics Mode:</span>
+                <span className="text-stone-500 dark:text-stone-400">Logistics Mode:</span>
                 <strong className="text-stone-800 dark:text-stone-200">{submittedLot.deliveryMode}</strong>
               </div>
             </div>
@@ -1167,14 +1167,14 @@ export default function AuctionListingPage() {
               <button
                 type="button"
                 onClick={() => navigate('/farmer/products')}
-                className="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 px-4 rounded-xl text-xs transition cursor-pointer"
+                className="w-full bg-[#15803D] hover:bg-[#11632f] text-white font-bold py-3 px-4 rounded-xl text-xs transition cursor-pointer"
               >
                 View in My Products
               </button>
               <button
                 type="button"
                 onClick={() => navigate('/farmer/dashboard')}
-                className="w-full bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 font-bold py-3 px-4 rounded-xl text-xs transition cursor-pointer"
+                className="w-full bg-stone-100 dark:bg-[#182b1c] hover:bg-stone-200 dark:hover:bg-[#1f3622] text-stone-800 dark:text-stone-200 font-bold py-3 px-4 rounded-xl text-xs transition cursor-pointer border border-stone-200 dark:border-emerald-800/40"
               >
                 Go to Dashboard
               </button>

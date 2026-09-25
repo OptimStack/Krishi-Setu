@@ -123,13 +123,13 @@ export default function PayoutsPage() {
               fetchPayouts(false);
               showToast(isMr ? 'खात्याची माहिती ताजी झाली' : 'Payout records refreshed');
             }}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 text-xs font-semibold shadow-xs transition-all cursor-pointer hover:-translate-y-0.5"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-stone-200 dark:border-emerald-800/80 bg-white dark:bg-[#162719] hover:bg-stone-100 dark:hover:bg-[#182b1c] text-stone-700 dark:text-stone-200 text-xs font-semibold shadow-xs transition-all cursor-pointer hover:-translate-y-0.5"
           >
             ↻ {isMr ? 'ताजे करा' : 'Refresh'}
           </button>
           <Link
             to="/farmer/dashboard"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-200 hover:bg-stone-200 dark:hover:bg-stone-700 text-xs font-semibold transition-all hover:-translate-y-0.5"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-stone-100 dark:bg-[#162719] text-stone-700 dark:text-stone-200 hover:bg-stone-200 dark:hover:bg-[#182b1c] border border-stone-200 dark:border-emerald-900/40 text-xs font-semibold transition-all hover:-translate-y-0.5"
           >
             ← {isMr ? 'डॅशबोर्ड' : 'Dashboard'}
           </Link>
@@ -137,9 +137,9 @@ export default function PayoutsPage() {
       </div>
 
       {/* Verified Bank Account & PFMS Verification Card */}
-      <div className="bg-gradient-to-r from-emerald-50/70 via-white to-amber-50/40 dark:from-emerald-950/30 dark:via-stone-900 dark:to-stone-900 rounded-2xl border border-emerald-200 dark:border-emerald-900/60 p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-gradient-to-r from-emerald-50/70 via-white to-amber-50/40 dark:from-[#132215]/95 dark:via-[#162719] dark:to-[#132215]/95 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-300">
         <div className="flex items-center gap-3.5">
-          <div className="w-12 h-12 rounded-2xl bg-white dark:bg-stone-800 border border-emerald-300 dark:border-emerald-800 flex items-center justify-center text-2xl shadow-xs shrink-0">
+          <div className="w-12 h-12 rounded-2xl bg-white dark:bg-[#162719] border border-emerald-300 dark:border-emerald-800 flex items-center justify-center text-2xl shadow-xs shrink-0">
             🏦
           </div>
           <div>
@@ -161,7 +161,7 @@ export default function PayoutsPage() {
           </div>
         </div>
 
-        <div className="text-xs text-stone-500 dark:text-stone-400 bg-white/80 dark:bg-stone-800/80 px-4 py-2 rounded-xl border border-stone-200 dark:border-stone-700 shrink-0">
+        <div className="text-xs text-stone-500 dark:text-stone-400 bg-white/80 dark:bg-[#162719] px-4 py-2 rounded-xl border border-stone-200 dark:border-emerald-900/40 shrink-0">
           <span className="block text-[11px] text-stone-400 font-semibold uppercase tracking-wider">Settlement Protocol</span>
           <strong className="text-stone-800 dark:text-stone-200 font-sans">RBI Nodal Escrow Auto-Release</strong>
         </div>
@@ -170,7 +170,7 @@ export default function PayoutsPage() {
       {/* Summary KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Settled Card */}
-        <div className="bg-white dark:bg-stone-900 p-5 rounded-2xl border border-emerald-500/30 dark:border-emerald-700/40 shadow-xs hover:-translate-y-0.5 transition-all">
+        <div className="bg-white/95 dark:bg-[#132215]/95 p-5 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] shadow-xs hover:-translate-y-0.5 transition-all duration-300">
           <div className="flex items-center justify-between text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider">
             <span>{isMr ? 'खात्यावर जमा रक्कम' : isHi ? 'प्राप्त शुद्ध राशि' : 'Settled Direct to Bank'}</span>
             <span className="text-emerald-600 text-base">✓</span>
@@ -184,7 +184,7 @@ export default function PayoutsPage() {
         </div>
 
         {/* Traded Volume */}
-        <div className="bg-white dark:bg-stone-900 p-5 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-xs hover:-translate-y-0.5 transition-all">
+        <div className="bg-white/95 dark:bg-[#132215]/95 p-5 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] shadow-xs hover:-translate-y-0.5 transition-all duration-300">
           <div className="flex items-center justify-between text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider">
             <span>{isMr ? 'एकूण विक्री केलेले प्रमाण' : isHi ? 'कुल व्यापारिक मात्रा' : 'Total Traded Volume'}</span>
             <span className="text-stone-400 text-base">⚖️</span>
@@ -198,7 +198,7 @@ export default function PayoutsPage() {
         </div>
 
         {/* In-Escrow Funds */}
-        <div className="bg-white dark:bg-stone-900 p-5 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-xs hover:-translate-y-0.5 transition-all">
+        <div className="bg-white/95 dark:bg-[#132215]/95 p-5 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] shadow-xs hover:-translate-y-0.5 transition-all duration-300">
           <div className="flex items-center justify-between text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider">
             <span>{isMr ? 'एस्क्रो खात्यात सुरक्षित' : isHi ? 'एस्क्रो में सुरक्षित' : 'Protected in Escrow'}</span>
             <span className="text-amber-500 text-base">🔒</span>
@@ -213,25 +213,25 @@ export default function PayoutsPage() {
       </div>
 
       {/* Escrow Settlement Flow Banner */}
-      <div className="bg-stone-50 dark:bg-stone-900/60 rounded-2xl border border-stone-200 dark:border-stone-800 p-4 sm:p-5">
+      <div className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] p-4 sm:p-5 shadow-xs transition-all duration-300">
         <div className="text-xs font-bold text-stone-500 dark:text-stone-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
           <span>⚡</span>
           <span>KrishiSetu 4-Step Guaranteed Settlement Cycle</span>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
-          <div className="p-3 bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700">
+          <div className="p-3 bg-stone-50/70 dark:bg-[#162719] rounded-xl border border-stone-200 dark:border-emerald-900/40">
             <span className="font-bold text-emerald-700 dark:text-emerald-400 block mb-0.5">1. Upfront Escrow</span>
             <span className="text-stone-600 dark:text-stone-400">Buyer locks 100% invoice amount in RBI nodal account before dispatch.</span>
           </div>
-          <div className="p-3 bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700">
+          <div className="p-3 bg-stone-50/70 dark:bg-[#162719] rounded-xl border border-stone-200 dark:border-emerald-900/40">
             <span className="font-bold text-emerald-700 dark:text-emerald-400 block mb-0.5">2. Digital Weighment</span>
             <span className="text-stone-600 dark:text-stone-400">Lot gross &amp; tare weights logged at FPO collection center with QR tag.</span>
           </div>
-          <div className="p-3 bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700">
+          <div className="p-3 bg-stone-50/70 dark:bg-[#162719] rounded-xl border border-stone-200 dark:border-emerald-900/40">
             <span className="font-bold text-emerald-700 dark:text-emerald-400 block mb-0.5">3. Buyer Delivery OTP</span>
             <span className="text-stone-600 dark:text-stone-400">Buyer confirms grade verification and gate receipt via cryptographic token.</span>
           </div>
-          <div className="p-3 bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700">
+          <div className="p-3 bg-stone-50/70 dark:bg-[#162719] rounded-xl border border-stone-200 dark:border-emerald-900/40">
             <span className="font-bold text-emerald-700 dark:text-emerald-400 block mb-0.5">4. Instant Payout</span>
             <span className="text-stone-600 dark:text-stone-400">Escrow smart contract triggers automatic direct-to-bank credit within seconds.</span>
           </div>
@@ -239,9 +239,9 @@ export default function PayoutsPage() {
       </div>
 
       {/* Payout Records Table Container */}
-      <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm overflow-hidden">
+      <div className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] shadow-xs overflow-hidden transition-all duration-300">
         {/* Filter & Search Bar */}
-        <div className="p-4 sm:p-5 border-b border-stone-200 dark:border-stone-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="p-4 sm:p-5 border-b border-stone-200 dark:border-emerald-900/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             {[
               { id: 'ALL', label: isMr ? 'सर्व व्यवहार' : 'All Trades' },
@@ -253,8 +253,8 @@ export default function PayoutsPage() {
                 onClick={() => setSelectedFilter(tab.id)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                   selectedFilter === tab.id
-                    ? 'bg-[#15803D] text-white shadow-xs'
-                    : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-700'
+                    ? 'bg-gradient-to-r from-[#255919] to-[#D1BF4B] text-white shadow-xs'
+                    : 'bg-stone-100 dark:bg-[#162719] text-stone-600 dark:text-stone-300 border border-stone-200 dark:border-emerald-900/40 hover:bg-stone-200 dark:hover:bg-[#182b1c]'
                 }`}
               >
                 {tab.label}
@@ -269,7 +269,7 @@ export default function PayoutsPage() {
               placeholder={isMr ? 'आयडी किंवा पिकाने शोधा...' : 'Search payout ID or crop...'}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-8 pr-3 py-1.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-xs text-stone-900 dark:text-stone-100 focus:outline-hidden"
+              className="w-full pl-8 pr-3 py-1.5 rounded-xl border border-stone-200 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-xs text-stone-900 dark:text-stone-100 focus:outline-hidden focus:border-[#D1BF4B]"
             />
           </div>
         </div>
@@ -292,7 +292,7 @@ export default function PayoutsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs sm:text-sm">
               <thead>
-                <tr className="border-b border-stone-200 dark:border-stone-800 text-stone-500 dark:text-stone-400 text-[11px] uppercase tracking-wider font-bold bg-stone-50/50 dark:bg-stone-800/40">
+                <tr className="border-b border-stone-200 dark:border-emerald-900/40 text-stone-500 dark:text-stone-400 text-[11px] uppercase tracking-wider font-bold bg-stone-50/70 dark:bg-[#162719]">
                   <th className="py-3 px-4">Payout ID</th>
                   <th className="py-3 px-4">Crop &amp; Quality</th>
                   <th className="py-3 px-4">Net Quantity</th>
@@ -303,7 +303,7 @@ export default function PayoutsPage() {
                   <th className="py-3 px-4 text-right">Receipt</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-stone-100 dark:divide-stone-800/60">
+              <tbody className="divide-y divide-stone-100 dark:divide-emerald-900/30">
                 {filteredPayouts.map((p) => {
                   const amt = getPayoutAmount(p);
                   const rate = getPayoutPrice(p);
@@ -312,7 +312,7 @@ export default function PayoutsPage() {
                   return (
                     <tr
                       key={p.id}
-                      className="hover:bg-stone-50/80 dark:hover:bg-stone-800/50 transition-colors"
+                      className="hover:bg-stone-50/80 dark:hover:bg-[#162719]/80 transition-colors"
                     >
                       <td className="py-3.5 px-4 font-mono font-bold text-stone-800 dark:text-stone-200 text-xs">
                         {p.id}
@@ -354,7 +354,7 @@ export default function PayoutsPage() {
                       <td className="py-3.5 px-4 text-right">
                         <button
                           onClick={() => setSelectedReceipt(p)}
-                          className="px-2.5 py-1 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-200 text-xs font-medium transition cursor-pointer hover:border-emerald-500"
+                          className="px-2.5 py-1 rounded-lg border border-stone-200 dark:border-emerald-800/60 bg-white dark:bg-[#182b1c] hover:bg-stone-100 dark:hover:bg-[#203a25] text-stone-700 dark:text-stone-200 text-xs font-medium transition cursor-pointer hover:border-emerald-500"
                         >
                           📄 Slip
                         </button>
@@ -371,16 +371,16 @@ export default function PayoutsPage() {
       {/* Modal: Double-Auction Settlement Slip */}
       {selectedReceipt && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-stone-900 rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-stone-200 dark:border-stone-800 relative">
+          <div className="bg-white dark:bg-[#132215] rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-stone-200 dark:border-[#D1BF4B]/30 border-t-4 border-t-[#255919] dark:border-t-[#D1BF4B] relative">
             <button
               onClick={() => setSelectedReceipt(null)}
-              className="absolute top-5 right-5 text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 text-lg p-1 rounded-full hover:bg-stone-100 dark:hover:bg-stone-800 cursor-pointer"
+              className="absolute top-5 right-5 text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 text-lg p-1 rounded-full hover:bg-stone-100 dark:hover:bg-[#162719] cursor-pointer"
             >
               ✕
             </button>
 
             {/* Slip Header */}
-            <div className="text-center border-b border-stone-200 dark:border-stone-800 pb-5">
+            <div className="text-center border-b border-stone-200 dark:border-emerald-900/40 pb-5">
               <span className="text-2xl mb-1 inline-block">🌱</span>
               <h3 className="text-xl font-black text-stone-900 dark:text-stone-100 tracking-tight">
                 KrishiSetu Double-Auction Settlement Voucher
@@ -392,15 +392,15 @@ export default function PayoutsPage() {
 
             {/* Slip Details Grid */}
             <div className="space-y-3 text-xs">
-              <div className="flex justify-between py-1 border-b border-stone-100 dark:border-stone-800">
+              <div className="flex justify-between py-1 border-b border-stone-100 dark:border-emerald-900/30">
                 <span className="text-stone-500">Beneficiary Farmer:</span>
                 <strong className="text-stone-900 dark:text-stone-100">Ramesh Patil (Baramati Cluster)</strong>
               </div>
-              <div className="flex justify-between py-1 border-b border-stone-100 dark:border-stone-800">
+              <div className="flex justify-between py-1 border-b border-stone-100 dark:border-emerald-900/30">
                 <span className="text-stone-500">Credited Bank Account:</span>
                 <strong className="font-mono text-stone-900 dark:text-stone-100">SBI •••• 4821 (IFSC: SBIN0001234)</strong>
               </div>
-              <div className="flex justify-between py-1 border-b border-stone-100 dark:border-stone-800">
+              <div className="flex justify-between py-1 border-b border-stone-100 dark:border-emerald-900/30">
                 <span className="text-stone-500">Produce Lot:</span>
                 <strong className="text-stone-900 dark:text-stone-100 capitalize">
                   {selectedReceipt.crop} ({selectedReceipt.quantity_kg} kg @ {formatCurrency(getPayoutPrice(selectedReceipt))}/kg)
@@ -408,7 +408,7 @@ export default function PayoutsPage() {
               </div>
 
               {/* Deductions Breakdown */}
-              <div className="bg-stone-50 dark:bg-stone-800/60 p-4 rounded-xl space-y-2 mt-2">
+              <div className="bg-stone-50/70 dark:bg-[#162719] border border-stone-200 dark:border-emerald-900/40 p-4 rounded-xl space-y-2 mt-2">
                 <div className="flex justify-between text-stone-600 dark:text-stone-300">
                   <span>Gross Auction Realization:</span>
                   <span className="font-bold text-stone-900 dark:text-stone-100">
@@ -423,7 +423,7 @@ export default function PayoutsPage() {
                   <span>FPO Shared Freight Contribution:</span>
                   <span>-₹{Math.round(parseFloat(selectedReceipt.quantity_kg || 1) * 0.45)}</span>
                 </div>
-                <div className="pt-2 border-t border-stone-200 dark:border-stone-700 flex justify-between font-black text-sm text-[#15803D] dark:text-[#D1BF4B]">
+                <div className="pt-2 border-t border-stone-200 dark:border-emerald-900/40 flex justify-between font-black text-sm text-[#15803D] dark:text-[#D1BF4B]">
                   <span>Net Credited to Farmer:</span>
                   <span>{formatCurrency(getPayoutAmount(selectedReceipt))}</span>
                 </div>
@@ -439,7 +439,7 @@ export default function PayoutsPage() {
                 onClick={() => {
                   window.print();
                 }}
-                className="bg-[#15803D] hover:bg-[#11632f] text-white text-xs font-bold px-4 py-2 rounded-xl transition cursor-pointer"
+                className="bg-gradient-to-r from-[#255919] to-[#D1BF4B] hover:opacity-95 text-white text-xs font-bold px-4 py-2 rounded-xl transition cursor-pointer"
               >
                 🖨️ Print Slip
               </button>

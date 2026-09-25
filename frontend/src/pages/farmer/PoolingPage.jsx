@@ -164,7 +164,7 @@ export default function PoolingPage() {
 
       {/* Lot Selection Bar */}
       {userLots.length > 0 ? (
-        <div className="bg-white dark:bg-stone-900 p-5 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="bg-white/95 dark:bg-[#132215]/95 p-5 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all duration-300">
           <div className="flex-1">
             <label className="block text-xs font-bold text-stone-500 dark:text-stone-400 uppercase tracking-wider mb-1.5">
               {isMr ? '१. तुमचा उपलब्ध लॉट निवडा:' : isHi ? '१. अपना उपलब्ध लॉट चुनें:' : '1. Select Your Produce Lot to Pool:'}
@@ -172,7 +172,7 @@ export default function PoolingPage() {
             <select
               value={selectedLotId}
               onChange={(e) => setSelectedLotId(e.target.value)}
-              className="w-full sm:w-96 text-sm font-semibold p-2.5 rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-hidden focus:ring-2 focus:ring-emerald-600"
+              className="w-full sm:w-96 text-sm font-semibold p-2.5 rounded-xl border border-stone-300 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 focus:outline-hidden focus:ring-2 focus:ring-[#255919] dark:focus:ring-[#D1BF4B]"
             >
               {userLots.map((lot) => (
                 <option key={lot._id} value={lot._id}>
@@ -182,7 +182,7 @@ export default function PoolingPage() {
             </select>
           </div>
           <div className="flex items-center gap-2 self-start sm:self-center">
-            <span className="bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 font-bold text-xs px-3.5 py-2 rounded-xl border border-emerald-300 dark:border-emerald-800 flex items-center gap-1.5">
+            <span className="bg-emerald-100 dark:bg-[#162719] text-emerald-800 dark:text-emerald-300 font-bold text-xs px-3.5 py-2 rounded-xl border border-emerald-300 dark:border-emerald-800 flex items-center gap-1.5">
               <span>🚚</span>
               <span>
                 {isMr ? 'सरासरी २८% वाहतूक बचत' : isHi ? 'औसत 28% ढुलाई बचत' : 'Up to 32% Freight Savings'}
@@ -191,7 +191,7 @@ export default function PoolingPage() {
           </div>
         </div>
       ) : (
-        <div className="bg-stone-50 dark:bg-stone-900/60 p-6 rounded-2xl border border-dashed border-stone-300 dark:border-stone-700 text-center">
+        <div className="bg-stone-50/70 dark:bg-[#162719] p-6 rounded-2xl border border-dashed border-stone-300 dark:border-emerald-800/60 text-center">
           <p className="text-sm font-medium text-stone-600 dark:text-stone-400">
             {isMr
               ? 'सध्या तुमच्याकडे पूलिंगसाठी कोणताही लॉट शिल्लक नाही. नवीन पीक नोंदवण्यासाठी "Start Selling" वर जा.'
@@ -226,10 +226,10 @@ export default function PoolingPage() {
           return (
             <div
               key={pool.id}
-              className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+              className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] shadow-xs overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-300"
             >
               {/* Progress Bar Header */}
-              <div className="h-2.5 w-full bg-stone-100 dark:bg-stone-800">
+              <div className="h-2.5 w-full bg-stone-100 dark:bg-[#182b1c]">
                 <div
                   className="h-full bg-gradient-to-r from-[#D1BF4B] to-[#255919] transition-all duration-500"
                   style={{ width: `${progressPct}%` }}
@@ -241,7 +241,7 @@ export default function PoolingPage() {
                   {/* Left Pool Details */}
                   <div className="flex-1 space-y-3">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-mono text-xs font-bold text-stone-600 dark:text-stone-400 bg-stone-100 dark:bg-stone-800 px-2.5 py-0.5 rounded-md">
+                      <span className="font-mono text-xs font-bold text-stone-600 dark:text-stone-300 bg-stone-100 dark:bg-[#162719] px-2.5 py-0.5 rounded-md border border-stone-200 dark:border-emerald-900/40">
                         {pool.id}
                       </span>
                       <span className="text-xs font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 px-2.5 py-0.5 rounded-md">
@@ -309,7 +309,7 @@ export default function PoolingPage() {
               </div>
 
               {/* Pool Footer with Action */}
-              <div className="bg-stone-50 dark:bg-stone-800/60 px-6 py-4 border-t border-stone-200 dark:border-stone-800 flex flex-col sm:flex-row justify-between items-center gap-3">
+              <div className="bg-stone-50/70 dark:bg-[#162719] px-6 py-4 border-t border-stone-200 dark:border-emerald-900/40 flex flex-col sm:flex-row justify-between items-center gap-3">
                 <div className="text-xs text-stone-600 dark:text-stone-300">
                   <span className="font-semibold text-stone-800 dark:text-stone-200">
                     {isMr ? 'खरेदीदाराचा हमी भाव:' : isHi ? 'संभावित खरीद मूल्य:' : 'Target Benchmark Rate:'}
@@ -338,7 +338,7 @@ export default function PoolingPage() {
 
       {/* Individual Settlement Calculation Preview for Selected Lot */}
       {selectedLot && (
-        <div className="bg-white/95 dark:bg-[#132215]/95 border-2 border-[#D1BF4B]/40 dark:border-[#D1BF4B]/30 rounded-2xl p-6 shadow-sm border-t-4 border-t-[#255919] dark:border-t-[#D1BF4B]">
+        <div className="bg-white/95 dark:bg-[#132215]/95 border-2 border-stone-200/90 dark:border-[#D1BF4B]/30 rounded-2xl p-6 shadow-xs border-t-4 border-t-[#255919] dark:border-t-[#D1BF4B] transition-all duration-300">
           <div className="flex items-center gap-2 mb-2">
             <span className="text-xl">💰</span>
             <h4 className="font-extrabold text-stone-900 dark:text-stone-100 text-base">
@@ -357,7 +357,7 @@ export default function PoolingPage() {
               : 'Full-truckload dispatch reduces your direct logistics overhead from standard ₹1.25/kg to ₹0.85/kg:'}
           </p>
 
-          <div className="bg-white dark:bg-stone-900 rounded-xl p-5 border border-emerald-200 dark:border-emerald-900/60 text-xs space-y-3">
+          <div className="bg-stone-50/70 dark:bg-[#162719] rounded-xl p-5 border border-stone-200 dark:border-emerald-900/60 text-xs space-y-3">
             <div className="flex justify-between items-center text-stone-600 dark:text-stone-400">
               <span>
                 {isMr ? 'एकूण उत्पन्न' : isHi ? 'सकल मूल्य' : 'Gross Commercial Value'} ({selectedLot.quantity_kg} kg @ ₹20.50/kg):
@@ -387,7 +387,7 @@ export default function PoolingPage() {
               </span>
             </div>
 
-            <div className="pt-3 border-t border-stone-200 dark:border-stone-800 flex justify-between items-center">
+            <div className="pt-3 border-t border-stone-200 dark:border-emerald-900/40 flex justify-between items-center">
               <span className="font-extrabold text-sm text-stone-900 dark:text-stone-100">
                 {isMr ? 'थेट बँक खात्यात मिळणारी रक्कम:' : isHi ? 'बैंक खाते में शुद्ध देय:' : 'Net In-Hand Escrow Payout:'}
               </span>

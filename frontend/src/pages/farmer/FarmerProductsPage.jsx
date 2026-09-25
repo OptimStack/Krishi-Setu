@@ -279,10 +279,10 @@ export default function FarmerProductsPage() {
             <div
               key={idx}
               onClick={() => setSelectedTab(kpi.tab)}
-              className={`p-3 rounded-xl border cursor-pointer transition-all duration-150 hover:-translate-y-0.5 ${
+              className={`p-3 rounded-xl border cursor-pointer transition-all duration-150 hover:-translate-y-0.5 border-t-2 ${
                 isSelected
-                  ? 'bg-emerald-50/90 dark:bg-emerald-950/50 border-[#255919] dark:border-[#D1BF4B] shadow-xs ring-1 ring-[#255919] dark:ring-[#D1BF4B]'
-                  : 'bg-white dark:bg-stone-900 border-stone-200 dark:border-stone-800 hover:border-stone-300 dark:hover:border-stone-700 hover:bg-stone-50/50'
+                  ? 'bg-emerald-50/90 dark:bg-[#162719] border-[#255919] dark:border-[#D1BF4B] border-t-[#255919] dark:border-t-[#D1BF4B] shadow-xs ring-1 ring-[#255919] dark:ring-[#D1BF4B]'
+                  : 'bg-white/95 dark:bg-[#132215]/95 border-stone-200/90 dark:border-[#D1BF4B]/20 border-t-[#255919] dark:border-t-[#D1BF4B] hover:border-stone-300 dark:hover:border-emerald-700/60 hover:bg-stone-50/50'
               }`}
             >
               <span className="text-[11px] font-medium text-stone-500 dark:text-stone-400 block truncate" title={kpi.label}>
@@ -297,7 +297,7 @@ export default function FarmerProductsPage() {
       </div>
 
       {/* 3. Filter Bar & Controls Container matching Screenshot 2 */}
-      <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-4 shadow-xs space-y-4">
+      <div className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] p-4 shadow-xs space-y-4 transition-all duration-300">
         {/* Top Filter Row: Search, Crop select, Sort & Grid/Table switch */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-3">
           {/* Search Input */}
@@ -308,7 +308,7 @@ export default function FarmerProductsPage() {
               placeholder="Search by ID, crop, variety, location..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-8 pr-3 h-9 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 text-xs focus:outline-hidden focus:ring-2 focus:ring-emerald-600"
+              className="w-full pl-8 pr-3 h-9 rounded-xl border border-stone-200 dark:border-emerald-800/60 bg-stone-50 dark:bg-[#182b1c] text-stone-900 dark:text-stone-100 text-xs focus:outline-hidden focus:ring-2 focus:ring-[#255919] dark:focus:ring-[#D1BF4B]"
             />
           </div>
 
@@ -318,7 +318,7 @@ export default function FarmerProductsPage() {
             <select
               value={selectedCrop}
               onChange={(e) => setSelectedCrop(e.target.value)}
-              className="text-xs h-9 rounded-xl border border-stone-200 dark:border-stone-700 px-3 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200 focus:outline-hidden focus:ring-2 focus:ring-emerald-600"
+              className="text-xs h-9 rounded-xl border border-stone-200 dark:border-emerald-800/60 px-3 bg-white dark:bg-[#182b1c] text-stone-700 dark:text-stone-200 focus:outline-hidden focus:ring-2 focus:ring-[#255919] dark:focus:ring-[#D1BF4B]"
             >
               <option value="ALL">All Crops ({distinctCrops.length})</option>
               {distinctCrops.map((c) => (
@@ -332,7 +332,7 @@ export default function FarmerProductsPage() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="text-xs h-9 rounded-xl border border-stone-200 dark:border-stone-700 px-3 bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200 focus:outline-hidden focus:ring-2 focus:ring-emerald-600"
+              className="text-xs h-9 rounded-xl border border-stone-200 dark:border-emerald-800/60 px-3 bg-white dark:bg-[#182b1c] text-stone-700 dark:text-stone-200 focus:outline-hidden focus:ring-2 focus:ring-[#255919] dark:focus:ring-[#D1BF4B]"
             >
               <option value="newest">Newest First</option>
               <option value="oldest">Oldest First</option>
@@ -341,13 +341,13 @@ export default function FarmerProductsPage() {
             </select>
 
             {/* Grid / Table Toggle */}
-            <div className="flex items-center bg-stone-100 dark:bg-stone-800 p-0.5 rounded-xl border border-stone-200 dark:border-stone-700">
+            <div className="flex items-center bg-stone-100 dark:bg-[#162719] p-0.5 rounded-xl border border-stone-200 dark:border-emerald-900/40">
               <button
                 type="button"
                 onClick={() => setViewMode('grid')}
                 className={`p-1.5 rounded-lg text-xs transition-colors cursor-pointer ${
                   viewMode === 'grid'
-                    ? 'bg-white dark:bg-stone-700 text-emerald-800 dark:text-emerald-300 shadow-2xs font-bold'
+                    ? 'bg-white dark:bg-[#182b1c] text-[#255919] dark:text-[#D1BF4B] shadow-2xs font-bold'
                     : 'text-stone-500 hover:text-stone-800 dark:hover:text-stone-200'
                 }`}
                 title="Grid Cards"
@@ -359,7 +359,7 @@ export default function FarmerProductsPage() {
                 onClick={() => setViewMode('table')}
                 className={`p-1.5 rounded-lg text-xs transition-colors cursor-pointer ${
                   viewMode === 'table'
-                    ? 'bg-white dark:bg-stone-700 text-emerald-800 dark:text-emerald-300 shadow-2xs font-bold'
+                    ? 'bg-white dark:bg-[#182b1c] text-[#255919] dark:text-[#D1BF4B] shadow-2xs font-bold'
                     : 'text-stone-500 hover:text-stone-800 dark:hover:text-stone-200'
                 }`}
                 title="Table View"
@@ -371,7 +371,7 @@ export default function FarmerProductsPage() {
         </div>
 
         {/* Status Tabs Bar matching Screenshot 2 */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs border-t border-stone-100 dark:border-stone-800 pt-3 scrollbar-none">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs border-t border-stone-100 dark:border-emerald-900/30 pt-3 scrollbar-none">
           {[
             { id: 'ALL', label: 'All Products' },
             { id: 'DRAFT', label: 'Drafts' },
@@ -392,8 +392,8 @@ export default function FarmerProductsPage() {
                 onClick={() => setSelectedTab(tab.id)}
                 className={`px-3 py-1.5 rounded-xl font-medium whitespace-nowrap transition-all cursor-pointer ${
                   active
-                    ? 'bg-[#255919] text-white font-semibold shadow-xs'
-                    : 'bg-stone-50 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700'
+                    ? 'bg-gradient-to-r from-[#255919] to-[#D1BF4B] text-white font-semibold shadow-xs'
+                    : 'bg-stone-50 dark:bg-[#162719] text-stone-600 dark:text-stone-300 border border-stone-200 dark:border-emerald-900/40 hover:bg-stone-100 dark:hover:bg-[#182b1c]'
                 }`}
               >
                 {tab.label}
@@ -405,8 +405,8 @@ export default function FarmerProductsPage() {
 
       {/* 4. Products Display (Grid View matching Screenshot 2) */}
       {filteredProducts.length === 0 ? (
-        <div className="bg-white dark:bg-stone-900 rounded-2xl border-2 border-dashed border-stone-300 dark:border-stone-800 p-12 text-center space-y-4">
-          <div className="mx-auto w-14 h-14 bg-emerald-50 dark:bg-emerald-950 rounded-2xl flex items-center justify-center text-emerald-700 dark:text-emerald-400 text-2xl">
+        <div className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl border-2 border-dashed border-stone-300 dark:border-emerald-900/40 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] p-12 text-center space-y-4">
+          <div className="mx-auto w-14 h-14 bg-emerald-50 dark:bg-[#162719] border border-emerald-200 dark:border-emerald-800/60 rounded-2xl flex items-center justify-center text-emerald-700 dark:text-emerald-400 text-2xl">
             📦
           </div>
           <div>
@@ -417,7 +417,7 @@ export default function FarmerProductsPage() {
           </div>
           <Link
             to="/farmer/grade"
-            className="inline-block bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs px-5 py-2.5 rounded-xl shadow-xs"
+            className="inline-block bg-gradient-to-r from-[#255919] to-[#D1BF4B] hover:opacity-95 text-white font-semibold text-xs px-5 py-2.5 rounded-xl shadow-xs"
           >
             + Grade &amp; Add New Crop
           </Link>
@@ -440,7 +440,7 @@ export default function FarmerProductsPage() {
             return (
               <div
                 key={lotId}
-                className="product-card bg-white dark:bg-stone-900 rounded-2xl overflow-hidden border border-stone-200 dark:border-stone-800 hover:border-[#255919] dark:hover:border-[#D1BF4B] hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between group"
+                className="product-card bg-white/95 dark:bg-[#132215]/95 rounded-2xl overflow-hidden border border-stone-200/90 dark:border-[#D1BF4B]/20 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group"
               >
                 <div>
                   {/* Top Image & Overlay Banner matching Screenshot 2 */}
@@ -458,8 +458,8 @@ export default function FarmerProductsPage() {
                     </div>
 
                     {/* AI Grade Badge */}
-                    <div className="absolute top-3 right-3 bg-white/95 dark:bg-stone-900/95 backdrop-blur-md text-stone-900 dark:text-stone-100 text-xs font-bold px-2.5 py-1 rounded-xl shadow-2xs flex items-center gap-1">
-                      <span className="text-emerald-600">✨</span>
+                    <div className="absolute top-3 right-3 bg-white/95 dark:bg-[#162719]/95 backdrop-blur-md text-stone-900 dark:text-stone-100 border border-stone-200/80 dark:border-emerald-900/50 text-xs font-bold px-2.5 py-1 rounded-xl shadow-2xs flex items-center gap-1">
+                      <span className="text-emerald-600 dark:text-emerald-400">✨</span>
                       {lot.grade || lot.aiGrade || 'Grade A'}
                     </div>
 
@@ -481,7 +481,7 @@ export default function FarmerProductsPage() {
                   {/* Card Body Details matching Screenshot 2 */}
                   <div className="p-4 space-y-3 text-xs">
                     {/* Volume and Target Price Card */}
-                    <div className="grid grid-cols-2 gap-2 bg-stone-50 dark:bg-stone-800/60 p-2.5 rounded-xl border border-stone-100 dark:border-stone-700/60">
+                    <div className="grid grid-cols-2 gap-2 bg-stone-50/70 dark:bg-[#162719] p-2.5 rounded-xl border border-stone-200/90 dark:border-emerald-900/40">
                       <div>
                         <span className="text-stone-400 text-[10px] block font-medium">Volume</span>
                         <strong className="text-stone-800 dark:text-stone-200 font-bold text-sm">
@@ -517,7 +517,7 @@ export default function FarmerProductsPage() {
                 </div>
 
                 {/* Card Footer Actions matching Screenshot 2 (NO POOL BUTTON) */}
-                <div className="p-3 bg-stone-50/80 dark:bg-stone-800/40 border-t border-stone-100 dark:border-stone-800 flex items-center justify-between gap-1.5">
+                <div className="p-3 bg-stone-50/70 dark:bg-[#162719] border-t border-stone-100 dark:border-emerald-900/40 flex items-center justify-between gap-1.5">
                   {/* Left: QR Pass Button */}
                   <button
                     type="button"
@@ -568,7 +568,7 @@ export default function FarmerProductsPage() {
                     {/* Full Product Detail Link matching Screenshot 1 */}
                     <Link
                       to={`/farmer/products/${lotId}`}
-                      className="bg-stone-900 dark:bg-stone-100 hover:bg-stone-800 dark:hover:bg-stone-200 text-white dark:text-stone-900 text-xs px-3 h-8 rounded-xl font-bold flex items-center gap-1 shadow-xs transition-colors cursor-pointer"
+                      className="bg-stone-900 dark:bg-[#182b1c] hover:bg-stone-800 dark:hover:bg-[#203a25] text-white dark:text-[#D1BF4B] border border-stone-800 dark:border-[#D1BF4B]/40 text-xs px-3 h-8 rounded-xl font-bold flex items-center gap-1 shadow-xs transition-colors cursor-pointer"
                     >
                       <span>👁️</span> View
                     </Link>
@@ -580,9 +580,9 @@ export default function FarmerProductsPage() {
         </div>
       ) : (
         /* Table View Mode */
-        <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 overflow-x-auto shadow-xs">
+        <div className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] overflow-x-auto shadow-xs">
           <table className="w-full text-xs text-left">
-            <thead className="bg-stone-50 dark:bg-stone-800/60 border-b border-stone-200 dark:border-stone-800 text-stone-500 uppercase tracking-wider font-semibold">
+            <thead className="bg-stone-50/70 dark:bg-[#162719] border-b border-stone-200 dark:border-emerald-900/40 text-stone-500 uppercase tracking-wider font-semibold">
               <tr>
                 <th className="p-3.5">Product</th>
                 <th className="p-3.5">ID</th>
@@ -594,17 +594,17 @@ export default function FarmerProductsPage() {
                 <th className="p-3.5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-stone-100 dark:divide-stone-800">
+            <tbody className="divide-y divide-stone-100 dark:divide-emerald-900/30">
               {filteredProducts.map((lot) => {
                 const lotId = lot.id || lot._id;
                 const coverImg = lot.coverImageUrl || lot.images?.[0] || '/demo/tomato-top.jpg';
                 return (
-                  <tr key={lotId} className="hover:bg-stone-50/70 dark:hover:bg-stone-800/40 transition-colors">
+                  <tr key={lotId} className="hover:bg-stone-50/70 dark:hover:bg-[#162719]/80 transition-colors">
                     <td className="p-3.5 flex items-center gap-3">
                       <img
                         src={coverImg}
                         alt={lot.crop}
-                        className="w-10 h-10 rounded-xl object-cover border border-stone-200 dark:border-stone-700 shrink-0"
+                        className="w-10 h-10 rounded-xl object-cover border border-stone-200 dark:border-emerald-900/40 shrink-0"
                       />
                       <div>
                         <strong className="text-stone-900 dark:text-stone-100 text-xs block">{lot.crop}</strong>
@@ -646,20 +646,20 @@ export default function FarmerProductsPage() {
       {/* QR Dispatch Pass Modal */}
       {qrModalTarget && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-stone-900 rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border border-stone-200 dark:border-stone-800 animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between border-b border-stone-100 dark:border-stone-800 pb-3">
+          <div className="bg-white dark:bg-[#132215] rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border border-stone-200 dark:border-[#D1BF4B]/30 border-t-4 border-t-[#255919] dark:border-t-[#D1BF4B] animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between border-b border-stone-100 dark:border-emerald-900/30 pb-3">
               <h3 className="font-black text-base text-stone-900 dark:text-stone-50 flex items-center gap-2">
                 <span>📱</span> Digital Dispatch Pass
               </h3>
               <button
                 onClick={() => setQrModalTarget(null)}
-                className="text-stone-400 hover:text-stone-600 text-lg font-bold p-1 cursor-pointer"
+                className="text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 text-lg font-bold p-1 cursor-pointer"
               >
                 ✕
               </button>
             </div>
 
-            <div className="bg-stone-50 dark:bg-stone-800/60 p-4 rounded-2xl text-center space-y-3 border border-stone-200 dark:border-stone-700">
+            <div className="bg-stone-50/70 dark:bg-[#162719] p-4 rounded-2xl text-center space-y-3 border border-stone-200 dark:border-emerald-900/40">
               <div className="w-44 h-44 bg-white p-3 rounded-2xl mx-auto border border-stone-300 shadow-inner flex items-center justify-center">
                 <img
                   src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(
@@ -686,7 +686,7 @@ export default function FarmerProductsPage() {
 
             <button
               onClick={() => setQrModalTarget(null)}
-              className="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 rounded-xl text-xs transition-colors cursor-pointer"
+              className="w-full bg-gradient-to-r from-[#255919] to-[#D1BF4B] hover:opacity-95 text-white font-bold py-2.5 rounded-xl text-xs transition-colors cursor-pointer"
             >
               Close Pass
             </button>
@@ -697,7 +697,7 @@ export default function FarmerProductsPage() {
       {/* Delete Draft Modal */}
       {deleteTarget && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-stone-900 rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border border-stone-200 dark:border-stone-800 animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-white dark:bg-[#132215] rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border border-stone-200 dark:border-[#D1BF4B]/30 border-t-4 border-t-rose-600 animate-in fade-in zoom-in-95 duration-200">
             <h3 className="font-bold text-base text-rose-600 flex items-center gap-2">
               <span>⚠️</span> Delete Draft Product?
             </h3>
@@ -707,7 +707,7 @@ export default function FarmerProductsPage() {
             <div className="flex gap-2 pt-2">
               <button
                 onClick={() => setDeleteTarget(null)}
-                className="flex-1 bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 text-xs font-semibold py-2.5 rounded-xl hover:bg-stone-200 cursor-pointer"
+                className="flex-1 bg-stone-100 dark:bg-[#182b1c] text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-emerald-800/40 text-xs font-semibold py-2.5 rounded-xl hover:bg-stone-200 dark:hover:bg-[#203a25] cursor-pointer"
               >
                 Cancel
               </button>
@@ -725,7 +725,7 @@ export default function FarmerProductsPage() {
       {/* Withdraw Modal */}
       {withdrawTarget && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-stone-900 rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border border-stone-200 dark:border-stone-800 animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-white dark:bg-[#132215] rounded-3xl max-w-sm w-full p-6 space-y-4 shadow-2xl border border-stone-200 dark:border-[#D1BF4B]/30 border-t-4 border-t-amber-600 animate-in fade-in zoom-in-95 duration-200">
             <h3 className="font-bold text-base text-amber-600 flex items-center gap-2">
               <span>🛑</span> Withdraw from Marketplace?
             </h3>
@@ -735,7 +735,7 @@ export default function FarmerProductsPage() {
             <div className="flex gap-2 pt-2">
               <button
                 onClick={() => setWithdrawTarget(null)}
-                className="flex-1 bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 text-xs font-semibold py-2.5 rounded-xl hover:bg-stone-200 cursor-pointer"
+                className="flex-1 bg-stone-100 dark:bg-[#182b1c] text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-emerald-800/40 text-xs font-semibold py-2.5 rounded-xl hover:bg-stone-200 dark:hover:bg-[#203a25] cursor-pointer"
               >
                 Cancel
               </button>

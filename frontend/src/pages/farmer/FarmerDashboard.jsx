@@ -305,8 +305,8 @@ export default function FarmerDashboard() {
                 {t('offline_banner_title', 'You are offline. Crop drafts and pool requests are safely queued in your local browser and will sync automatically when back online.')}
               </p>
 
-              <div className="bg-white/70 dark:bg-black/30 p-3 rounded-xl border border-amber-300/60 dark:border-amber-700/40">
-                <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider bg-amber-200 text-amber-900 dark:bg-amber-900 dark:text-amber-200 mb-1">
+              <div className="bg-white/70 dark:bg-[#162719] p-3 rounded-xl border border-amber-300/60 dark:border-amber-700/40">
+                <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider bg-amber-200 text-amber-900 dark:bg-amber-900/60 dark:text-amber-200 mb-1">
                   {t('offline_mode_badge', 'Offline Mode')}
                 </span>
                 <p className="text-xs text-stone-700 dark:text-stone-300 leading-normal">
@@ -395,7 +395,7 @@ export default function FarmerDashboard() {
             {Math.round(activePool.current_quantity_kg || 0)}{' '}
             <span className="text-sm font-medium text-stone-500">/ {activePool.target_quantity_kg || 1200} kg</span>
           </p>
-          <div className="w-full bg-stone-100 dark:bg-stone-800 rounded-full h-1.5 mt-2.5 overflow-hidden">
+          <div className="w-full bg-stone-100 dark:bg-[#182b1c] rounded-full h-1.5 mt-2.5 overflow-hidden">
             <div
               className="bg-gradient-to-r from-[#255919] to-[#D1BF4B] h-1.5 rounded-full transition-all duration-500"
               style={{
@@ -506,13 +506,13 @@ export default function FarmerDashboard() {
               </p>
             </div>
           </div>
-          <span className="text-xs font-semibold text-stone-700 dark:text-stone-300 bg-stone-100 dark:bg-stone-800/80 px-3 py-1 rounded-full border border-stone-200 dark:border-stone-700 shrink-0">
+          <span className="text-xs font-semibold text-stone-700 dark:text-emerald-200 bg-stone-100 dark:bg-[#162719] px-3 py-1 rounded-full border border-stone-200 dark:border-emerald-900/60 shrink-0">
             {buyerBids.length} Active Offer{buyerBids.length === 1 ? '' : 's'}
           </span>
         </div>
 
         {buyerBids.length === 0 ? (
-          <div className="p-5 bg-stone-50 dark:bg-[#101b12] rounded-xl border border-dashed border-stone-200 dark:border-stone-700/60 text-center">
+          <div className="p-5 bg-stone-50 dark:bg-[#162719] rounded-xl border border-dashed border-stone-200 dark:border-emerald-900/50 text-center">
             <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">
               No buyer offers at the moment. When buyers submit purchase offers matching your crops, they will appear here.
             </p>
@@ -616,7 +616,7 @@ export default function FarmerDashboard() {
             </div>
 
             {/* Filter Tabs */}
-            <div className="flex flex-wrap items-center gap-1.5 mb-4 bg-stone-100/80 dark:bg-stone-800/60 p-1 rounded-xl text-xs font-medium border border-stone-200/80 dark:border-stone-700/60 w-fit">
+            <div className="flex flex-wrap items-center gap-1.5 mb-4 bg-stone-100/80 dark:bg-[#162719] p-1 rounded-xl text-xs font-medium border border-stone-200/80 dark:border-emerald-900/50 w-fit">
               {['all', 'open', 'pooled', 'matched', 'settled'].map((st) => {
                 const count = st === 'all'
                   ? (listings.length > 0 ? listings.length : harvestProduceLots.length)
@@ -628,13 +628,13 @@ export default function FarmerDashboard() {
                     onClick={() => setFilterStatus(st)}
                     className={`px-3 py-1 rounded-lg capitalize transition-all cursor-pointer flex items-center gap-1.5 ${
                       filterStatus === st
-                        ? 'bg-gradient-to-r from-[#255919] to-[#3a6e29] text-white shadow-xs font-bold'
+                        ? 'bg-gradient-to-r from-[#255919] to-[#D1BF4B] text-white shadow-xs font-bold'
                         : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
                     }`}
                   >
                     <span>{st}</span>
                     <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                      filterStatus === st ? 'bg-white/20 text-white' : 'bg-stone-200 dark:bg-stone-700 text-stone-600 dark:text-stone-300'
+                      filterStatus === st ? 'bg-white/20 text-white' : 'bg-stone-200 dark:bg-[#182b1c] text-stone-600 dark:text-stone-300'
                     }`}>
                       {count}
                     </span>
@@ -744,7 +744,7 @@ export default function FarmerDashboard() {
                               ? 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300'
                               : rawStatus === 'settled'
                               ? 'bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300'
-                              : 'bg-stone-200 text-stone-700 dark:bg-stone-800 dark:text-stone-300'
+                              : 'bg-stone-200 text-stone-700 dark:bg-[#182b1c] dark:text-stone-300'
                           }`}
                         >
                           {rawStatus}

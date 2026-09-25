@@ -47,7 +47,7 @@ export default function SubmitAskPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <div className="flex items-center justify-between pb-2 border-b border-stone-200 dark:border-stone-800">
+      <div className="flex items-center justify-between pb-2 border-b border-stone-200 dark:border-emerald-900/30">
         <div>
           <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">List Your Produce / पीक नोंदणी</h1>
           <p className="text-stone-600 dark:text-stone-400 text-sm mt-0.5">
@@ -56,16 +56,16 @@ export default function SubmitAskPage() {
         </div>
         <Link
           to="/farmer/dashboard"
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800/80 text-stone-700 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-700 text-xs font-semibold shadow-xs transition"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-stone-200 dark:border-emerald-800/80 bg-white dark:bg-[#162719] text-stone-700 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-[#182b1c] text-xs font-semibold shadow-xs transition"
         >
           ← Back to Dashboard
         </Link>
       </div>
 
-      <div className="bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-950/40 dark:to-green-950/40 p-4 rounded-xl border border-green-200 dark:border-emerald-800/50 shadow-sm flex items-start gap-3">
+      <div className="bg-gradient-to-r from-emerald-50 to-green-50 dark:from-[#132215]/95 dark:to-[#162719] p-4 rounded-xl border border-green-200 dark:border-[#D1BF4B]/30 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] shadow-sm flex items-start gap-3">
         <span className="text-2xl">🌱</span>
         <div className="text-sm">
-          <h3 className="font-semibold text-green-900 dark:text-[#D3D67A]">How the Krishi-Setu Marketplace Works</h3>
+          <h3 className="font-semibold text-green-900 dark:text-[#D1BF4B]">How the Krishi-Setu Marketplace Works</h3>
           <p className="text-green-800 dark:text-stone-300 mt-1 leading-relaxed text-xs">
             1. <strong>List Produce:</strong> Tell us your crop, quantity, and minimum acceptable reserve price.<br />
             2. <strong>AI Quality Grading:</strong> Your uploaded photo is assessed for immediate computer vision quality grading.<br />

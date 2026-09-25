@@ -49,7 +49,7 @@ export default function ProductDetailPage() {
   if (!product) {
     return (
       <div className="max-w-4xl mx-auto py-16 px-4 text-center space-y-4">
-        <div className="w-16 h-16 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-500 flex items-center justify-center mx-auto text-2xl">
+        <div className="w-16 h-16 rounded-full bg-stone-100 dark:bg-[#162719] text-stone-500 border border-stone-200 dark:border-emerald-900/40 flex items-center justify-center mx-auto text-2xl">
           ⚠️
         </div>
         <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100">
@@ -60,7 +60,7 @@ export default function ProductDetailPage() {
         </p>
         <Link
           to="/farmer/products"
-          className="inline-block bg-emerald-700 text-white font-semibold text-xs px-5 py-2.5 rounded-xl shadow-xs hover:bg-emerald-800 transition-colors"
+          className="inline-block bg-gradient-to-r from-[#255919] to-[#D1BF4B] text-white font-semibold text-xs px-5 py-2.5 rounded-xl shadow-xs transition-opacity hover:opacity-95"
         >
           ← Return to My Products
         </Link>
@@ -121,7 +121,7 @@ export default function ProductDetailPage() {
     <div ref={pageRef} className="max-w-6xl mx-auto space-y-6 pb-20 font-sans">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-20 right-6 z-50 bg-stone-900 text-white text-xs px-4 py-3 rounded-xl shadow-2xl border border-stone-700 flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
+        <div className="fixed top-20 right-6 z-50 bg-[#132215] text-white text-xs px-4 py-3 rounded-xl shadow-2xl border border-[#D1BF4B]/30 flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
           <span>🔔</span>
           <span>{toastMessage}</span>
         </div>
@@ -148,7 +148,7 @@ export default function ProductDetailPage() {
             <button
               onClick={handleWithdraw}
               disabled={actionLoading}
-              className="bg-white dark:bg-stone-800 border border-amber-300 dark:border-amber-700 hover:bg-amber-50 dark:hover:bg-amber-950/40 text-amber-800 dark:text-amber-300 font-semibold text-xs px-4 py-2 rounded-xl transition-all shadow-xs cursor-pointer"
+              className="bg-white dark:bg-[#162719] border border-amber-300 dark:border-amber-700 hover:bg-amber-50 dark:hover:bg-[#182b1c] text-amber-800 dark:text-amber-300 font-semibold text-xs px-4 py-2 rounded-xl transition-all shadow-xs cursor-pointer"
             >
               Withdraw from Marketplace
             </button>
@@ -156,7 +156,7 @@ export default function ProductDetailPage() {
             <button
               onClick={handlePublish}
               disabled={actionLoading}
-              className="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs px-4 py-2 rounded-xl transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
+              className="bg-gradient-to-r from-[#255919] to-[#D1BF4B] hover:opacity-95 text-white font-semibold text-xs px-4 py-2 rounded-xl transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
             >
               <span>🌐</span> Publish to Marketplace
             </button>
@@ -169,7 +169,7 @@ export default function ProductDetailPage() {
         {/* Left Column: Photo Gallery (7 cols) */}
         <div className="lg:col-span-7 space-y-3">
           {/* Main Inspection Viewfinder */}
-          <div className="relative aspect-video rounded-2xl overflow-hidden bg-stone-950 border border-stone-200 dark:border-stone-800 shadow-sm">
+          <div className="relative aspect-video rounded-2xl overflow-hidden bg-stone-950 border border-stone-200/90 dark:border-[#D1BF4B]/20 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] shadow-xs">
             <img
               src={images[selectedPhotoIndex] || '/demo/tomato-top.jpg'}
               alt="Inspected crop produce"
@@ -193,7 +193,7 @@ export default function ProductDetailPage() {
                   {angles[selectedPhotoIndex] || 'High-Resolution Inspection Angle'}
                 </span>
               </div>
-              <span className="bg-emerald-600 text-white text-[11px] font-bold px-2.5 py-1 rounded-lg shrink-0 shadow-xs">
+              <span className="bg-[#255919] text-white text-[11px] font-bold px-2.5 py-1 rounded-lg shrink-0 shadow-xs">
                 AI Vision Verified
               </span>
             </div>
@@ -208,8 +208,8 @@ export default function ProductDetailPage() {
                 onClick={() => setSelectedPhotoIndex(idx)}
                 className={`aspect-square rounded-xl overflow-hidden border-2 transition-all relative cursor-pointer ${
                   selectedPhotoIndex === idx
-                    ? 'border-emerald-600 ring-2 ring-emerald-500/40 shadow-xs'
-                    : 'border-stone-200 dark:border-stone-800 hover:border-stone-400 opacity-70 hover:opacity-100'
+                    ? 'border-[#255919] dark:border-[#D1BF4B] ring-2 ring-[#255919]/40 shadow-xs'
+                    : 'border-stone-200 dark:border-emerald-900/40 hover:border-[#D1BF4B] opacity-70 hover:opacity-100'
                 }`}
               >
                 <img
@@ -224,18 +224,18 @@ export default function ProductDetailPage() {
 
         {/* Right Column: Lot Identity & Specs (5 cols) */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm rounded-2xl p-5 space-y-4">
+          <div className="bg-white/95 dark:bg-[#132215]/95 border border-stone-200/90 dark:border-[#D1BF4B]/20 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] shadow-xs rounded-2xl p-5 space-y-4 transition-all duration-300">
             {/* ID & Status Pill */}
             <div className="flex items-center justify-between">
-              <span className="font-mono text-xs text-stone-600 dark:text-stone-300 bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 px-2.5 py-0.5 rounded-lg font-semibold">
+              <span className="font-mono text-xs text-stone-600 dark:text-stone-300 bg-stone-100 dark:bg-[#162719] border border-stone-200 dark:border-emerald-900/40 px-2.5 py-0.5 rounded-lg font-semibold">
                 {product.id || product._id}
               </span>
               {isPublished ? (
-                <span className="bg-emerald-600 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-2xs">
+                <span className="bg-[#255919] text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-2xs">
                   <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" /> Live on Marketplace
                 </span>
               ) : isDraft ? (
-                <span className="bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 text-[11px] font-semibold px-2.5 py-0.5 rounded-full border border-stone-300 dark:border-stone-700">
+                <span className="bg-stone-100 dark:bg-[#162719] text-stone-600 dark:text-stone-300 text-[11px] font-semibold px-2.5 py-0.5 rounded-full border border-stone-300 dark:border-emerald-800/60">
                   Draft
                 </span>
               ) : (
@@ -256,7 +256,7 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Volume & Price Card */}
-            <div className="bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/80 rounded-xl p-3.5 grid grid-cols-2 gap-3">
+            <div className="bg-stone-50/70 dark:bg-[#162719] border border-stone-200/90 dark:border-emerald-900/40 rounded-xl p-3.5 grid grid-cols-2 gap-3">
               <div>
                 <span className="text-stone-500 dark:text-stone-400 text-xs block font-medium">
                   Volume
@@ -281,10 +281,10 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Specifications List */}
-            <div className="space-y-2.5 text-xs text-stone-600 dark:text-stone-300 divide-y divide-stone-100 dark:divide-stone-800">
+            <div className="space-y-2.5 text-xs text-stone-600 dark:text-stone-300 divide-y divide-stone-100 dark:divide-emerald-900/30">
               <div className="flex items-center justify-between pt-1">
                 <span>AI Quality Classification:</span>
-                <strong className="bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-bold px-2 py-0.5 rounded-md">
+                <strong className="bg-emerald-100 dark:bg-[#162719] text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 font-bold px-2 py-0.5 rounded-md">
                   {product.grade || product.aiGrade || 'Grade A'}
                 </strong>
               </div>
@@ -296,7 +296,7 @@ export default function ProductDetailPage() {
               </div>
               <div className="flex items-center justify-between pt-2">
                 <span>FPO Verification:</span>
-                <span className="text-teal-700 dark:text-teal-400 font-semibold flex items-center gap-1">
+                <span className="text-emerald-700 dark:text-emerald-400 font-semibold flex items-center gap-1">
                   <span>🛡️</span>
                   <span>{product.verifiedGrade ? `Verified (${product.verifiedGrade})` : 'Pending Verification'}</span>
                 </span>
@@ -322,7 +322,7 @@ export default function ProductDetailPage() {
             </div>
 
             {/* Collection Pass Code Preview */}
-            <div className="bg-stone-50 dark:bg-stone-800/60 border border-stone-200 dark:border-stone-700 rounded-xl p-3 flex items-center gap-3">
+            <div className="bg-stone-50/70 dark:bg-[#162719] border border-stone-200/90 dark:border-emerald-900/40 rounded-xl p-3 flex items-center gap-3">
               <span className="text-2xl">📱</span>
               <div>
                 <div className="font-bold text-xs text-stone-800 dark:text-stone-200">
@@ -338,9 +338,9 @@ export default function ProductDetailPage() {
       </div>
 
       {/* Bottom Card: AI Vision & Quality Inspection Telemetry */}
-      <div className="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl shadow-sm overflow-hidden">
+      <div className="bg-white/95 dark:bg-[#132215]/95 border border-stone-200/90 dark:border-[#D1BF4B]/20 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] rounded-2xl shadow-xs overflow-hidden transition-all duration-300">
         {/* Header */}
-        <div className="bg-stone-50 dark:bg-stone-800/60 border-b border-stone-200 dark:border-stone-800 py-3.5 px-6 flex items-center gap-2">
+        <div className="bg-stone-50/70 dark:bg-[#162719] border-b border-stone-200 dark:border-emerald-900/40 py-3.5 px-6 flex items-center gap-2">
           <span className="text-emerald-700 dark:text-emerald-400 text-base">✨</span>
           <h3 className="text-sm font-bold text-stone-900 dark:text-stone-100">
             AI Vision &amp; Quality Inspection Telemetry
@@ -350,7 +350,7 @@ export default function ProductDetailPage() {
         <div className="p-6 space-y-6">
           {/* 4 Top Telemetry Metric Boxes */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-xs">
-            <div className="p-3 bg-stone-50 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700">
+            <div className="p-3 bg-stone-50/70 dark:bg-[#162719] rounded-xl border border-stone-200 dark:border-emerald-900/40">
               <span className="text-stone-400 text-[10px] block font-medium">
                 Laplacian Variance (Sharpness)
               </span>
@@ -362,7 +362,7 @@ export default function ProductDetailPage() {
               </span>
             </div>
 
-            <div className="p-3 bg-stone-50 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700">
+            <div className="p-3 bg-stone-50/70 dark:bg-[#162719] rounded-xl border border-stone-200 dark:border-emerald-900/40">
               <span className="text-stone-400 text-[10px] block font-medium">
                 Illumination Exposure
               </span>
@@ -374,7 +374,7 @@ export default function ProductDetailPage() {
               </span>
             </div>
 
-            <div className="p-3 bg-stone-50 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700">
+            <div className="p-3 bg-stone-50/70 dark:bg-[#162719] rounded-xl border border-stone-200 dark:border-emerald-900/40">
               <span className="text-stone-400 text-[10px] block font-medium">
                 Lot Framing Occupancy
               </span>
@@ -386,7 +386,7 @@ export default function ProductDetailPage() {
               </span>
             </div>
 
-            <div className="p-3 bg-stone-50 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700">
+            <div className="p-3 bg-stone-50/70 dark:bg-[#162719] rounded-xl border border-stone-200 dark:border-emerald-900/40">
               <span className="text-stone-400 text-[10px] block font-medium">
                 Inference Integrity
               </span>
@@ -401,7 +401,7 @@ export default function ProductDetailPage() {
 
           {/* 4 Quality Parameters Boxes */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            <div className="p-3.5 bg-stone-50 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700 space-y-1">
+            <div className="p-3.5 bg-stone-50/70 dark:bg-[#162719] rounded-xl border border-stone-200 dark:border-emerald-900/40 space-y-1">
               <span className="text-stone-400 text-[10px] block font-medium">
                 Caliber &amp; Size Uniformity
               </span>
@@ -410,7 +410,7 @@ export default function ProductDetailPage() {
               </strong>
             </div>
 
-            <div className="p-3.5 bg-stone-50 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700 space-y-1">
+            <div className="p-3.5 bg-stone-50/70 dark:bg-[#162719] rounded-xl border border-stone-200 dark:border-emerald-900/40 space-y-1">
               <span className="text-stone-400 text-[10px] block font-medium">
                 Surface Defect Ratio
               </span>
@@ -419,7 +419,7 @@ export default function ProductDetailPage() {
               </strong>
             </div>
 
-            <div className="p-3.5 bg-stone-50 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700 space-y-1">
+            <div className="p-3.5 bg-stone-50/70 dark:bg-[#162719] rounded-xl border border-stone-200 dark:border-emerald-900/40 space-y-1">
               <span className="text-stone-400 text-[10px] block font-medium">
                 Ripeness &amp; Texture Index
               </span>
@@ -428,7 +428,7 @@ export default function ProductDetailPage() {
               </strong>
             </div>
 
-            <div className="p-3.5 bg-stone-50 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700 space-y-1">
+            <div className="p-3.5 bg-stone-50/70 dark:bg-[#162719] rounded-xl border border-stone-200 dark:border-emerald-900/40 space-y-1">
               <span className="text-stone-400 text-[10px] block font-medium">
                 Color Uniformity Score
               </span>
@@ -439,7 +439,7 @@ export default function ProductDetailPage() {
           </div>
 
           {/* Mandatory AI Visual Estimate Disclaimer Callout */}
-          <div className="bg-amber-50/90 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/80 p-4 rounded-xl flex items-start gap-3 text-xs text-amber-900 dark:text-amber-200 leading-relaxed shadow-xs">
+          <div className="bg-amber-50/90 dark:bg-[#182b1c] border border-amber-200 dark:border-amber-800/80 p-4 rounded-xl flex items-start gap-3 text-xs text-amber-900 dark:text-amber-200 leading-relaxed shadow-xs">
             <span className="text-amber-600 dark:text-amber-400 text-base shrink-0 mt-0.5">⚠️</span>
             <div>
               <strong className="font-bold block mb-0.5 text-amber-950 dark:text-amber-100">

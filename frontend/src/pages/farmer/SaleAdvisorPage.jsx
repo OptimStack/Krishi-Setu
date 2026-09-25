@@ -133,7 +133,7 @@ export default function SaleAdvisorPage() {
           <span className="text-xs text-stone-500 dark:text-stone-400 font-medium">
             {isMr ? 'जोखीम क्षमता:' : isHi ? 'जोखिम भूख:' : 'Risk Appetite:'}
           </span>
-          <div className="inline-flex p-1 bg-stone-100 dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700">
+          <div className="inline-flex p-1 bg-stone-100 dark:bg-[#162719] rounded-xl border border-stone-200 dark:border-emerald-900/40">
             {[
               { id: 'conservative', labelEn: 'Conservative', labelMr: 'कमी जोखीम', labelHi: 'सुरक्षित' },
               { id: 'balanced', labelEn: 'Balanced', labelMr: 'संतुलित', labelHi: 'संतुलित' },
@@ -146,7 +146,7 @@ export default function SaleAdvisorPage() {
                   onClick={() => setRiskPreference(opt.id)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150 cursor-pointer ${
                     isActive
-                      ? 'bg-white dark:bg-stone-900 text-[#14532D] dark:text-[#D1BF4B] shadow-xs'
+                      ? 'bg-white dark:bg-[#182b1c] text-[#255919] dark:text-[#D1BF4B] shadow-xs'
                       : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
                   }`}
                 >
@@ -159,7 +159,7 @@ export default function SaleAdvisorPage() {
       </div>
 
       {/* 14-Day Price Trajectory (Quantile Band) Card */}
-      <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm p-6 space-y-4">
+      <div className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs hover:shadow-md border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] p-6 space-y-4 transition-all duration-300">
         {/* Card Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
@@ -289,10 +289,10 @@ export default function SaleAdvisorPage() {
 
           {/* Interactive Hover Tooltip */}
           {hoveredPoint && (
-            <div className="absolute top-4 right-6 bg-stone-900/95 text-white backdrop-blur-md px-4 py-2.5 rounded-xl shadow-xl text-xs space-y-1 pointer-events-none border border-stone-700 z-10">
-              <div className="font-bold text-emerald-400 flex items-center justify-between gap-3">
+            <div className="absolute top-4 right-6 bg-[#132215]/95 text-white backdrop-blur-md px-4 py-2.5 rounded-xl shadow-xl text-xs space-y-1 pointer-events-none border border-[#D1BF4B]/40 z-10">
+              <div className="font-bold text-[#D1BF4B] flex items-center justify-between gap-3">
                 <span>{hoveredPoint.label} ({hoveredPoint.date})</span>
-                {hoveredPoint.isToday && <span className="bg-amber-500 text-stone-900 text-[10px] px-1.5 py-0.2 rounded font-black">TODAY</span>}
+                {hoveredPoint.isToday && <span className="bg-[#D1BF4B] text-[#132215] text-[10px] px-1.5 py-0.2 rounded font-black">TODAY</span>}
               </div>
               <div className="text-stone-200">
                 {isMr ? 'अपेक्षित भाव:' : isHi ? 'अनुमानित भाव:' : 'Expected Rate:'}{' '}
@@ -325,9 +325,9 @@ export default function SaleAdvisorPage() {
       {/* Two Recommendation Cards Side-by-Side */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Left Card: Wait 3 to 5 Days (Recommended) */}
-        <div className="relative bg-white dark:bg-stone-900 rounded-2xl border-2 border-emerald-500/80 dark:border-emerald-600 p-6 shadow-sm flex flex-col justify-between">
+        <div className="relative bg-white/95 dark:bg-[#132215]/95 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/30 p-6 shadow-xs hover:shadow-md border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] transition-all duration-300 flex flex-col justify-between">
           {/* Top-Right Badge: RECOMMENDED OUTLOOK */}
-          <div className="absolute top-4 right-4 bg-[#059669] text-white text-[10px] sm:text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1 shadow-xs">
+          <div className="absolute top-4 right-4 bg-gradient-to-r from-[#255919] to-[#3f702b] text-white text-[10px] sm:text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1 shadow-xs border border-[#D1BF4B]/40">
             <span>✨</span>
             <span>{isMr ? 'शिफारस केलेले आउटलुक' : isHi ? 'अनुशंसित दृष्टिकोण' : 'RECOMMENDED OUTLOOK'}</span>
           </div>
@@ -336,7 +336,7 @@ export default function SaleAdvisorPage() {
             {/* Title & Subtitle */}
             <div className="pr-32">
               <div className="flex items-center gap-2">
-                <span className="text-xl text-emerald-700 dark:text-emerald-400">📅</span>
+                <span className="text-xl text-[#255919] dark:text-[#D1BF4B]">📅</span>
                 <h3 className="text-xl font-bold text-stone-900 dark:text-stone-100">
                   {isMr ? '३ ते ५ दिवस थांबा' : isHi ? '3 से 5 दिन प्रतीक्षा करें' : 'Wait 3 to 5 Days'}
                 </h3>
@@ -358,20 +358,20 @@ export default function SaleAdvisorPage() {
                 </span>
                 <span className="text-sm font-normal text-stone-500 dark:text-stone-400">/qtl</span>
               </div>
-              <p className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mt-1">
+              <p className="text-xs font-semibold text-[#255919] dark:text-[#D1BF4B] mt-1">
                 {recWaitUpside} {isMr ? "आजच्या दरापेक्षा अंदाजित नफा" : isHi ? "आज के भाव से अनुमानित बढ़त" : "estimated upside against today's spot rate"}
               </p>
             </div>
 
             {/* Key Decision Metrics */}
-            <div className="pt-2 border-t border-stone-100 dark:border-stone-800 space-y-2 text-xs">
+            <div className="pt-2 border-t border-stone-100 dark:border-emerald-900/40 space-y-2 text-xs">
               <div className="flex justify-between items-center text-stone-600 dark:text-stone-400">
                 <span>{isMr ? 'घसरण जोखीम (P10):' : isHi ? 'न्यूनतम जोखिम (P10):' : 'Downside Risk (P10):'}</span>
                 <span className="font-bold text-stone-900 dark:text-stone-100">{recWaitDownside}</span>
               </div>
               <div className="flex justify-between items-center text-stone-600 dark:text-stone-400">
                 <span>{isMr ? 'विश्वास पातळी:' : isHi ? 'सटीकता स्तर:' : 'Confidence Level:'}</span>
-                <span className="font-bold text-emerald-700 dark:text-emerald-400">
+                <span className="font-bold text-[#255919] dark:text-[#D1BF4B]">
                   74% {isMr ? 'मध्यम-उच्च' : isHi ? 'मध्यम-उच्च' : 'Medium-High'}
                 </span>
               </div>
@@ -388,7 +388,7 @@ export default function SaleAdvisorPage() {
           <div className="pt-6">
             <Link
               to="/farmer/pooling"
-              className="w-full text-center bg-[#1B5E20] hover:bg-[#144818] text-white font-bold py-3.5 px-4 rounded-xl text-xs sm:text-sm transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full text-center bg-gradient-to-r from-[#255919] to-[#D1BF4B] hover:opacity-95 text-white font-bold py-3.5 px-4 rounded-xl text-xs sm:text-sm transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer border border-[#D1BF4B]/40"
             >
               <span>{isMr ? 'प्रादेशिक एकत्रीकरण पूलमध्ये पूर्व-नोंदणी करा' : isHi ? 'क्षेत्रीय एकत्रीकरण पूल में प्री-बुक करें' : 'Pre-Book in Regional Aggregation Pool'}</span>
             </Link>
@@ -396,12 +396,12 @@ export default function SaleAdvisorPage() {
         </div>
 
         {/* Right Card: Sell Now (Today) */}
-        <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 p-6 shadow-sm flex flex-col justify-between">
+        <div className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs hover:shadow-md border-t-2 border-t-[#D1BF4B] p-6 transition-all duration-300 flex flex-col justify-between">
           <div className="space-y-4">
             {/* Title & Subtitle */}
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xl text-stone-700 dark:text-stone-300">📈</span>
+                <span className="text-xl text-[#255919] dark:text-[#D1BF4B]">📈</span>
                 <h3 className="text-xl font-bold text-stone-900 dark:text-stone-100">
                   {isMr ? 'आत्ताच विक्री करा (आज)' : isHi ? 'अभी बेचें (आज)' : 'Sell Now (Today)'}
                 </h3>
@@ -429,14 +429,14 @@ export default function SaleAdvisorPage() {
             </div>
 
             {/* Key Decision Metrics */}
-            <div className="pt-2 border-t border-stone-100 dark:border-stone-800 space-y-2 text-xs">
+            <div className="pt-2 border-t border-stone-100 dark:border-emerald-900/40 space-y-2 text-xs">
               <div className="flex justify-between items-center text-stone-600 dark:text-stone-400">
                 <span>{isMr ? 'घसरण जोखीम (P10):' : isHi ? 'न्यूनतम जोखिम (P10):' : 'Downside Risk (P10):'}</span>
                 <span className="font-bold text-stone-900 dark:text-stone-100">₹1,800/qtl</span>
               </div>
               <div className="flex justify-between items-center text-stone-600 dark:text-stone-400">
                 <span>{isMr ? 'खराब होण्याचा धोका:' : isHi ? 'खराब होने का जोखिम:' : 'Perishability Exposure:'}</span>
-                <span className="font-bold text-emerald-700 dark:text-emerald-400">
+                <span className="font-bold text-[#255919] dark:text-[#D1BF4B]">
                   0% ({isMr ? 'साठवणुकीचे नुकसान शून्य' : isHi ? 'शून्य होल्डिंग नुकसान' : 'Zero holding loss'})
                 </span>
               </div>
@@ -453,7 +453,7 @@ export default function SaleAdvisorPage() {
           <div className="pt-6">
             <Link
               to="/farmer/market"
-              className="w-full text-center border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800/80 hover:bg-stone-50 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 font-semibold py-3.5 px-4 rounded-xl text-xs sm:text-sm transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full text-center border border-stone-300 dark:border-[#D1BF4B]/40 bg-stone-50 dark:bg-[#162719] hover:bg-stone-100 dark:hover:bg-[#1c3321] text-stone-800 dark:text-stone-200 font-semibold py-3.5 px-4 rounded-xl text-xs sm:text-sm transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer"
             >
               <span>{isMr ? 'थेट बाजार समित्यांची तुलना करा' : isHi ? 'हाजिर मंडियों की तुलना करें' : 'Compare Spot Mandis'}</span>
             </Link>
@@ -462,7 +462,7 @@ export default function SaleAdvisorPage() {
       </div>
 
       {/* Important Perishability Constraint Banner */}
-      <div className="bg-[#FFFBEB] dark:bg-amber-950/25 border border-amber-300/90 dark:border-amber-800/80 rounded-2xl p-4 sm:p-5 flex items-start gap-3.5 text-xs shadow-xs">
+      <div className="bg-amber-50/90 dark:bg-[#201809]/95 border-2 border-amber-400/80 dark:border-amber-600/50 rounded-2xl p-4 sm:p-5 flex items-start gap-3.5 text-xs shadow-xs border-t-2 border-t-amber-500">
         <span className="text-xl sm:text-2xl shrink-0 mt-0.5">⚠️</span>
         <div className="space-y-1">
           <p className="font-bold text-amber-900 dark:text-amber-300 text-xs sm:text-sm">
@@ -483,13 +483,13 @@ export default function SaleAdvisorPage() {
       </div>
 
       {/* Accordion: Why this recommendation? (Explainable AI Factors) */}
-      <div className="bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl overflow-hidden shadow-xs">
+      <div className="bg-white/95 dark:bg-[#132215]/95 border border-stone-200/90 dark:border-[#D1BF4B]/20 rounded-2xl overflow-hidden shadow-xs hover:shadow-md border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] transition-all duration-300">
         <button
           onClick={() => setIsAccordionOpen((prev) => !prev)}
-          className="w-full text-left p-4.5 flex items-center justify-between text-xs sm:text-sm font-semibold text-stone-800 dark:text-stone-200 hover:bg-stone-50 dark:hover:bg-stone-800/50 transition cursor-pointer"
+          className="w-full text-left p-4.5 flex items-center justify-between text-xs sm:text-sm font-semibold text-stone-800 dark:text-stone-200 hover:bg-stone-50 dark:hover:bg-[#162719] transition cursor-pointer"
         >
           <span className="flex items-center gap-2">
-            <span className="text-emerald-700 dark:text-emerald-400 text-base">ℹ️</span>
+            <span className="text-[#255919] dark:text-[#D1BF4B] text-base">ℹ️</span>
             <span>
               {isMr
                 ? 'ही शिफारस का दिली आहे? (स्पष्टीकरणात्मक एआय घटक)'
@@ -504,7 +504,7 @@ export default function SaleAdvisorPage() {
         </button>
 
         {isAccordionOpen && (
-          <div className="p-5 border-t border-stone-100 dark:border-stone-800 bg-stone-50/50 dark:bg-stone-900/50 text-xs text-stone-600 dark:text-stone-400 space-y-3 leading-relaxed">
+          <div className="p-5 border-t border-stone-100 dark:border-emerald-900/40 bg-stone-50/50 dark:bg-[#162719] text-xs text-stone-600 dark:text-stone-400 space-y-3 leading-relaxed">
             <p className="font-medium text-stone-700 dark:text-stone-300">
               {isMr
                 ? 'एआय निर्णय प्रणाली दररोज ४ प्रमुख बाजार घटकांचे विश्लेषण करते:'
@@ -513,7 +513,7 @@ export default function SaleAdvisorPage() {
                 : 'The algorithmic forecasting engine synthesizes four primary market vectors daily:'}
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
-              <div className="p-3 bg-white dark:bg-stone-800/80 rounded-xl border border-stone-200/80 dark:border-stone-700/80">
+              <div className="p-3 bg-white dark:bg-[#182b1c] rounded-xl border border-stone-200/80 dark:border-emerald-900/40">
                 <span className="font-bold text-stone-900 dark:text-stone-100 block mb-0.5">
                   1. {isMr ? 'आवक प्रमाण (Agmarknet व MSAMB)' : 'APMC Arrival Volumes (Agmarknet & MSAMB)'}
                 </span>
@@ -523,7 +523,7 @@ export default function SaleAdvisorPage() {
                     : 'Regional mandi arrivals dipped 12% across primary nodes, tightening short-term wholesale clearing.'}
                 </span>
               </div>
-              <div className="p-3 bg-white dark:bg-stone-800/80 rounded-xl border border-stone-200/80 dark:border-stone-700/80">
+              <div className="p-3 bg-white dark:bg-[#182b1c] rounded-xl border border-stone-200/80 dark:border-emerald-900/40">
                 <span className="font-bold text-stone-900 dark:text-stone-100 block mb-0.5">
                   2. {isMr ? 'खरेदीदार थेट मागणी' : 'Institutional Buyer Demand Index'}
                 </span>
@@ -533,7 +533,7 @@ export default function SaleAdvisorPage() {
                     : 'Wholesale buyers and retail chains have submitted purchase orders at a +₹110/qtl premium over spot.'}
                 </span>
               </div>
-              <div className="p-3 bg-white dark:bg-stone-800/80 rounded-xl border border-stone-200/80 dark:border-stone-700/80">
+              <div className="p-3 bg-white dark:bg-[#182b1c] rounded-xl border border-stone-200/80 dark:border-emerald-900/40">
                 <span className="font-bold text-stone-900 dark:text-stone-100 block mb-0.5">
                   3. {isMr ? 'हवामान व टिकवण क्षमता' : 'Perishability & Temperature Curve'}
                 </span>
@@ -543,7 +543,7 @@ export default function SaleAdvisorPage() {
                     : 'At 28°C ambient, Breaker stage tomatoes sustain 3-5 days holding with under 2.0% quality penalty.'}
                 </span>
               </div>
-              <div className="p-3 bg-white dark:bg-stone-800/80 rounded-xl border border-stone-200/80 dark:border-stone-700/80">
+              <div className="p-3 bg-white dark:bg-[#182b1c] rounded-xl border border-stone-200/80 dark:border-emerald-900/40">
                 <span className="font-bold text-stone-900 dark:text-stone-100 block mb-0.5">
                   4. {isMr ? 'वाहतूक खर्च बचत (FPO Pooling)' : 'Regional Freight Efficiency'}
                 </span>
