@@ -1,10 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useOffline } from '../../context/OfflineContext';
+import { useAuth } from '../../context/AuthContext';
 
 export default function KrishiSetuAIAssistant({ isOpen, setIsOpen }) {
+  const { user } = useAuth();
   const { lang, setLang, t } = useLanguage();
   const { isOnline, lastSavedLocation } = useOffline();
+
+  if (!user) return null;
 
   const [messages, setMessages] = useState(() => {
     return [

@@ -75,7 +75,7 @@ function App() {
 
       {/* Main Layout Area */}
       <div className={`relative z-10 flex flex-col min-h-screen transition-all ${isFarmer ? 'lg:pl-64' : ''}`}>
-        <Navbar onToggleSidebar={() => setSidebarOpen((prev) => !prev)} />
+        {user && <Navbar onToggleSidebar={() => setSidebarOpen((prev) => !prev)} />}
 
         <main className="flex-grow container mx-auto px-4 sm:px-6 py-6 md:py-8">
           <Routes>
@@ -113,11 +113,13 @@ function App() {
         </main>
       </div>
 
-      {/* AI Assistant Widget (Voice, Multilingual, Floating launcher matching screenshot) */}
-      <KrishiSetuAIAssistant
-        isOpen={aiAssistantOpen}
-        setIsOpen={setAiAssistantOpen}
-      />
+      {/* AI Assistant Widget (Voice, Multilingual, Floating launcher) - Only rendered when user is logged in */}
+      {user && (
+        <KrishiSetuAIAssistant
+          isOpen={aiAssistantOpen}
+          setIsOpen={setAiAssistantOpen}
+        />
+      )}
     </div>
   );
 }
