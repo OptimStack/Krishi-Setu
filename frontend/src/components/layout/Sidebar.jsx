@@ -15,6 +15,60 @@ export default function Sidebar({ isOpen, setIsOpen }) {
   };
 
   const isBuyer = user?.role === 'buyer';
+  const isFpo = user?.role === 'fpo';
+
+  const fpoNavItems = [
+    {
+      to: '/fpo/dashboard',
+      alias: ['/fpo'],
+      label: t('fpo_nav_dashboard', 'Dashboard'),
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+        </svg>
+      ),
+    },
+    {
+      to: '/fpo/verify',
+      alias: ['/fpo/verification'],
+      label: t('fpo_nav_verify', 'Verify Lots'),
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+        </svg>
+      ),
+    },
+    {
+      to: '/fpo/pools',
+      alias: ['/fpo/pool-management'],
+      label: t('fpo_nav_pools', 'Pool Management'),
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+      ),
+    },
+    {
+      to: '/fpo/logistics',
+      alias: ['/fpo/transport'],
+      label: t('fpo_nav_logistics', 'Logistics'),
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+        </svg>
+      ),
+    },
+    {
+      to: '/fpo/buyers',
+      alias: ['/fpo/directory'],
+      label: t('fpo_nav_buyers', 'Buyers'),
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+        </svg>
+      ),
+    },
+  ];
 
   const farmerNavItems = [
     {
@@ -145,7 +199,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
     },
   ];
 
-  const activeNavItems = isBuyer ? buyerNavItems : farmerNavItems;
+  const activeNavItems = isFpo ? fpoNavItems : (isBuyer ? buyerNavItems : farmerNavItems);
 
   return (
     <>
@@ -228,14 +282,14 @@ export default function Sidebar({ isOpen, setIsOpen }) {
         <div className="p-4 border-t border-stone-100 dark:border-emerald-900/30 space-y-3">
           <div className="flex items-center gap-3 p-2 bg-stone-50 dark:bg-[#111e13] rounded-xl border border-stone-200/80 dark:border-emerald-900/40">
             <div className="w-9 h-9 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 font-extrabold flex items-center justify-center text-sm border border-emerald-300 dark:border-emerald-700 shrink-0">
-              {isBuyer ? (user?.name ? user.name[0].toUpperCase() : 'F') : (user?.name ? user.name[0].toUpperCase() : 'R')}
+              {isFpo ? 'S' : (isBuyer ? (user?.name ? user.name[0].toUpperCase() : 'F') : (user?.name ? user.name[0].toUpperCase() : 'R'))}
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-xs font-bold text-stone-900 dark:text-stone-100 truncate">
-                {isBuyer ? (user?.name || 'FreshMart Foods Pvt. Ltd.') : (user?.name || 'Ramesh Patil')}
+                {isFpo ? (user?.name || 'Saksham FPO') : (isBuyer ? (user?.name || 'FreshMart Foods Pvt. Ltd.') : (user?.name || 'Ramesh Patil'))}
               </p>
               <p className="text-[11px] text-stone-500 dark:text-stone-400 capitalize">
-                {user?.role || (isBuyer ? 'Buyer' : 'Farmer')}
+                {isFpo ? 'Fpo' : (user?.role || (isBuyer ? 'Buyer' : 'Farmer'))}
               </p>
             </div>
           </div>

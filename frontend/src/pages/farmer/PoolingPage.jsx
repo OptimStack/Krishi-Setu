@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import { mockService } from '../../api/mockService';
+import { getStoredPools } from '../../api/fpoData';
 
 export default function PoolingPage() {
   const { lang, t } = useLanguage();
@@ -19,6 +20,9 @@ export default function PoolingPage() {
   // Load active pools & farmer lots
   useEffect(() => {
     loadData();
+    const handlePoolsUpdated = () => loadData();
+    window.addEventListener('krishisetu_fpo_pools_updated', handlePoolsUpdated);
+    return () => window.removeEventListener('krishisetu_fpo_pools_updated', handlePoolsUpdated);
   }, [user]);
 
   const loadData = () => {
@@ -27,54 +31,43 @@ export default function PoolingPage() {
       const batches = mockService.getBatches();
       const listings = mockService.getListings();
 
-      // Combine active pools
-      const poolList = [
-        {
-          id: activePool.id || 'batch_fpo_pune',
-          name: activePool.name || 'Pune FPO Hub — Pune Gultekdi Market',
-          crop: activePool.crop || 'Tomato',
-          variety: activePool.variety || 'Abhinav Hybrid',
-          allowedGrades: ['Grade A', 'Grade B'],
-          currentKg: activePool.current_quantity_kg || 750,
-          targetKg: activePool.target_quantity_kg || 1200,
-          pricePerQtl: Math.round((activePool.price_per_kg || 16.55) * 100),
-          collectionHub: 'Baramati Cluster Hub',
-          destinationMandi: 'Pune Gultekdi Market',
-          farmersCount: activePool.farmers_count || 4,
-          freightSavingsPct: 28.5,
-          closingInHours: 4,
-        },
-        {
-          id: 'batch_202',
-          name: 'Nashik District Cluster — Vashi Navi Mumbai',
-          crop: 'Onion',
-          variety: 'Nashik Red',
-          allowedGrades: ['Grade A'],
-          currentKg: 650,
-          targetKg: 1000,
-          pricePerQtl: 2450,
-          collectionHub: 'Lasalgaon Collection Point',
-          destinationMandi: 'Vashi APMC Navi Mumbai',
-          farmersCount: 3,
-          freightSavingsPct: 32.0,
-          closingInHours: 6,
-        },
-        {
-          id: 'batch_201',
-          name: 'Solapur Soybean Coalition — Solapur Central',
-          crop: 'Soybean',
-          variety: 'JS-335',
-          allowedGrades: ['Grade A', 'Grade B'],
-          currentKg: 1100,
-          targetKg: 1500,
-          pricePerQtl: 4400,
-          collectionHub: 'Baramati / Solapur Junction',
-          destinationMandi: 'Solapur APMC',
-          farmersCount: 2,
-          freightSavingsPct: 25.0,
-          closingInHours: 12,
-        },
-      ];
+      const storedFpoPools = getStoredPools();
+      let poolList = [];
+      if (storedFpoPools && storedFpoPools.length > 0) {
+        poolList = storedFpoPools.map((p) => ({
+          id: p.id,
+          name: `${p.collectionHub} → ${p.destinationMandi}`,
+          crop: p.crop,
+          variety: p.variety,
+          allowedGrades: p.allowedGrades || ['Grade A', 'Grade B'],
+          currentKg: p.currentKg,
+          targetKg: p.targetKg,
+          pricePerQtl: p.pricePerQtl,
+          collectionHub: p.collectionHub,
+          destinationMandi: p.destinationMandi,
+          farmersCount: (p.contributions || []).length || 3,
+          freightSavingsPct: p.sharedFreightSavingsPct || 28.5,
+          closingInHours: 8,
+        }));
+      } else {
+        poolList = [
+          {
+            id: activePool.id || 'batch_fpo_pune',
+            name: activePool.name || 'Pune FPO Hub — Pune Gultekdi Market',
+            crop: activePool.crop || 'Tomato',
+            variety: activePool.variety || 'Abhinav Hybrid',
+            allowedGrades: ['Grade A', 'Grade B'],
+            currentKg: activePool.current_quantity_kg || 750,
+            targetKg: activePool.target_quantity_kg || 1200,
+            pricePerQtl: Math.round((activePool.price_per_kg || 16.55) * 100),
+            collectionHub: 'Baramati Cluster Hub',
+            destinationMandi: 'Pune Gultekdi Market',
+            farmersCount: activePool.farmers_count || 4,
+            freightSavingsPct: 28.5,
+            closingInHours: 4,
+          },
+        ];
+      }
       setPools(poolList);
 
       // Filter farmer lots available for pooling

@@ -344,7 +344,12 @@ export default function GradeCropPage() {
       formData.append('state', 'Maharashtra');
       formData.append('storage_type', 'Farm Cold/Dry Storage');
       formData.append('packaging', packagingType);
-      formData.append('status', isDraft ? 'draft' : 'open');
+      const isFpoSubmit = actionType === 'SUBMIT_FPO';
+      formData.append('status', isDraft ? 'draft' : (isFpoSubmit ? 'submitted' : 'open'));
+      if (isFpoSubmit) {
+        formData.append('productStatus', 'AWAITING_FPO_VERIFICATION');
+        formData.append('location_name', collectionHub || 'Baramati FPO Hub #1 (Pune)');
+      }
 
       if (photos.top && typeof photos.top !== 'string') {
         formData.append('photo', photos.top);

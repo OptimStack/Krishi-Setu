@@ -79,6 +79,16 @@ const getInitialState = () => ({
       phone: '9000000000',
       location: { address: 'Operations Center, Pune', geo: [73.8567, 18.5204] },
       kyc_verified: true,
+    },
+    {
+      id: 'usr_fpo_1',
+      role: 'fpo',
+      name: 'Saksham FPO',
+      fpoName: 'Baramati Krushi Producer Company Ltd.',
+      contactPerson: 'Vikas Kadam',
+      phone: '9422088990',
+      location: { address: 'Baramati, Pune, Maharashtra', geo: [74.5772, 18.1517] },
+      kyc_verified: true,
     }
   ],
   listings: [
@@ -807,10 +817,14 @@ export async function executeMockRequest(method, url, data, params) {
 
     // If user not found in seed, create provisional user for demo
     if (!user) {
+      const isFpo = phone === '9422088990' || (data?.role === 'fpo');
+      const isAdmin = phone === '9000000000';
+      const isBuyer = phone.endsWith('0') && !isAdmin && !isFpo;
       user = {
         id: `usr_${Date.now()}`,
-        role: phone === '9000000000' ? 'admin' : (phone.endsWith('0') ? 'buyer' : 'farmer'),
-        name: `Demo User (${phone})`,
+        role: isFpo ? 'fpo' : (isAdmin ? 'admin' : (isBuyer ? 'buyer' : 'farmer')),
+        name: isFpo ? 'Saksham FPO' : `Demo User (${phone})`,
+        fpoName: isFpo ? 'Baramati Krushi Producer Company Ltd.' : undefined,
         phone: phone,
         kyc_verified: true,
       };
@@ -915,12 +929,19 @@ export async function executeMockRequest(method, url, data, params) {
         ask_price_per_kg: askPrice,
         min_acceptable_price_per_kg: minPrice,
         quality_grade: listingData.quality_grade || 'A',
+        grade: listingData.quality_grade || 'Grade A',
         confidence_score: 0.94,
+        confidenceScore: 94,
         needs_human_review: false,
-        status: 'open',
-        location: authUser?.location || { address: 'Nashik, Maharashtra' },
+        status: listingData.status || 'open',
+        productStatus: listingData.productStatus || (listingData.status === 'submitted' ? 'AWAITING_FPO_VERIFICATION' : 'PUBLISHED'),
+        locationName: listingData.location_name || 'Baramati FPO Hub #1',
+        location: authUser?.location || { address: 'Baramati, Pune, Maharashtra' },
         created_at: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
       };
+      newListing.id = newListing._id;
+      newListing.quantityKg = qty;
 
       // Prevent rapid double-clicks (within 2 seconds with same crop & quantity)
       const isDuplicate = state.listings.some(

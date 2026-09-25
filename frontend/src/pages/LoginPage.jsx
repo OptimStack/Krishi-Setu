@@ -30,7 +30,8 @@ export default function LoginPage({ onReplayIntro }) {
 
     if (result.success) {
       if (result.role === 'farmer') navigate('/farmer/dashboard');
-      else if (result.role === 'buyer') navigate('/buyer/dashboard');
+      else if (result.role === 'buyer') navigate('/buyer/marketplace');
+      else if (result.role === 'fpo') navigate('/fpo/dashboard');
       else if (result.role === 'admin') navigate('/admin/auctions');
       else navigate('/');
     } else {
@@ -111,25 +112,32 @@ export default function LoginPage({ onReplayIntro }) {
             <p className="text-xs font-semibold text-stone-500 dark:text-stone-400 mb-2 text-center">
               Quick Click-to-Fill Demo Accounts:
             </p>
-            <div className="grid grid-cols-3 gap-1.5 text-xs text-center">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-xs text-center">
               <button
                 type="button"
                 onClick={() => autofillDemo('9876543210', 'farmer')}
-                className="py-1 px-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/80 text-emerald-800 dark:text-emerald-300 font-semibold cursor-pointer transition"
+                className="py-1.5 px-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/80 text-emerald-800 dark:text-emerald-300 font-semibold cursor-pointer transition text-xs"
               >
                 Farmer
               </button>
               <button
                 type="button"
                 onClick={() => autofillDemo('9876543220', 'buyer')}
-                className="py-1 px-2 rounded-lg bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/80 text-blue-800 dark:text-blue-300 font-semibold cursor-pointer transition"
+                className="py-1.5 px-2 rounded-lg bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/80 text-blue-800 dark:text-blue-300 font-semibold cursor-pointer transition text-xs"
               >
                 Buyer
               </button>
               <button
                 type="button"
+                onClick={() => autofillDemo('9422088990', 'fpo')}
+                className="py-1.5 px-2 rounded-lg bg-teal-50 dark:bg-teal-950/60 border border-teal-300 dark:border-teal-800 hover:bg-teal-100 dark:hover:bg-teal-900/80 text-teal-800 dark:text-teal-300 font-bold cursor-pointer transition text-xs shadow-xs"
+              >
+                FPO (Saksham)
+              </button>
+              <button
+                type="button"
                 onClick={() => autofillDemo('9000000000', 'admin')}
-                className="py-1 px-2 rounded-lg bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 hover:bg-amber-100 dark:hover:bg-amber-900/80 text-amber-800 dark:text-amber-300 font-semibold cursor-pointer transition"
+                className="py-1.5 px-2 rounded-lg bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 hover:bg-amber-100 dark:hover:bg-amber-900/80 text-amber-800 dark:text-amber-300 font-semibold cursor-pointer transition text-xs"
               >
                 Admin
               </button>

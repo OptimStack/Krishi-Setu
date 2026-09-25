@@ -82,6 +82,13 @@ export const translations = {
     buyer_nav_delivery: 'Delivery Acceptance',
     buyer_nav_trades: 'Trades & Settlements',
 
+    // FPO Navigation
+    fpo_nav_dashboard: 'Dashboard',
+    fpo_nav_verify: 'Verify Lots',
+    fpo_nav_pools: 'Pool Management',
+    fpo_nav_logistics: 'Logistics',
+    fpo_nav_buyers: 'Buyers',
+
     // Buyer Marketplace
     b2b_marketplace_title: 'B2B Wholesale Agri Marketplace',
     b2b_marketplace_subtitle: 'Procure FPO-verified, escrow-protected aggregated consignments. Connected directly to farms.',
@@ -239,6 +246,13 @@ export const translations = {
     buyer_nav_delivery: 'डिलिव्हरी स्वीकृती (Delivery)',
     buyer_nav_trades: 'व्यवहार व सेटलमेंट (Trades)',
 
+    // FPO Navigation (Marathi)
+    fpo_nav_dashboard: 'डॅशबोर्ड',
+    fpo_nav_verify: 'लॉट पडताळणी',
+    fpo_nav_pools: 'पूल व्यवस्थापन',
+    fpo_nav_logistics: 'लॉजिस्टिक्स',
+    fpo_nav_buyers: 'खरेदीदार',
+
     // Buyer Marketplace (Marathi)
     b2b_marketplace_title: 'बी2बी घाऊक कृषी बाजार',
     b2b_marketplace_subtitle: 'एफपीओ-सत्यापित, एस्क्रो-संरक्षित एकत्रित कन्साइनमेंट. थेट शेतांशी जोडलेले.',
@@ -395,6 +409,13 @@ export const translations = {
     buyer_nav_offers: 'मेरे ऑफर्स (My Offers)',
     buyer_nav_delivery: 'वितरण स्वीकृति (Delivery)',
     buyer_nav_trades: 'व्यापार व निपटान (Trades)',
+
+    // FPO Navigation (Hindi)
+    fpo_nav_dashboard: 'डैशबोर्ड',
+    fpo_nav_verify: 'लॉट सत्यापन',
+    fpo_nav_pools: 'पूल प्रबंधन',
+    fpo_nav_logistics: 'लॉजिस्टिक्स',
+    fpo_nav_buyers: 'खरीदार',
 
     // Buyer Marketplace (Hindi)
     b2b_marketplace_title: 'बी2बी थोक कृषि मंडी',

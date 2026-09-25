@@ -26,6 +26,11 @@ import BrowseBatchesPage from './pages/buyer/BrowseBatchesPage';
 import SubmitBidPage from './pages/buyer/SubmitBidPage';
 import AuctionMonitorPage from './pages/admin/AuctionMonitorPage';
 import GradingReviewQueuePage from './pages/admin/GradingReviewQueuePage';
+import FPODashboard from './pages/fpo/FPODashboard';
+import FPOVerifyPage from './pages/fpo/FPOVerifyPage';
+import FPOPoolsPage from './pages/fpo/FPOPoolsPage';
+import FPOLogisticsPage from './pages/fpo/FPOLogisticsPage';
+import FPOBuyersPage from './pages/fpo/FPOBuyersPage';
 import IntroAnimation from './components/ui/IntroAnimation';
 import KrishiSetuAIAssistant from './components/widgets/KrishiSetuAIAssistant';
 import { useAuth } from './context/AuthContext';
@@ -55,7 +60,8 @@ function App() {
 
   const isFarmer = user?.role === 'farmer';
   const isBuyer = user?.role === 'buyer';
-  const hasSidebar = isFarmer || isBuyer;
+  const isFpo = user?.role === 'fpo';
+  const hasSidebar = isFarmer || isBuyer || isFpo;
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-[#F5F8F4] via-[#EBF3EA] to-[#DFEDE1] dark:from-[#071309] dark:via-[#0E1F12] dark:to-[#142617] flex flex-col font-sans text-stone-900 dark:text-stone-100 transition-colors duration-500">
@@ -118,6 +124,15 @@ function App() {
               <Route path="browse" element={<BrowseBatchesPage />} />
               <Route path="bid/:batchId" element={<SubmitBidPage />} />
               <Route path="submit-bid" element={<SubmitBidPage />} />
+            </Route>
+
+            <Route path="/fpo/*" element={<ProtectedRoute allowedRoles={['fpo']} />}>
+              <Route path="" element={<FPODashboard />} />
+              <Route path="dashboard" element={<FPODashboard />} />
+              <Route path="verify" element={<FPOVerifyPage />} />
+              <Route path="pools" element={<FPOPoolsPage />} />
+              <Route path="logistics" element={<FPOLogisticsPage />} />
+              <Route path="buyers" element={<FPOBuyersPage />} />
             </Route>
 
             <Route path="/admin/*" element={<ProtectedRoute allowedRoles={['admin']} />}>

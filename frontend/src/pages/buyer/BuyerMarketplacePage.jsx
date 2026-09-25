@@ -91,6 +91,8 @@ export default function BuyerMarketplacePage() {
     window.addEventListener('krishisetu_buyer_pool_reserved', handleReserved);
     window.addEventListener('krishisetu_listing_created', handleProduceSync);
     window.addEventListener('krishisetu_product_updated', handleProduceSync);
+    window.addEventListener('krishisetu_lot_verified', handleProduceSync);
+    window.addEventListener('krishisetu_fpo_pools_updated', handleProduceSync);
     window.addEventListener('storage', handleProduceSync);
 
     // Light poll to capture any background farmer listings
@@ -100,6 +102,8 @@ export default function BuyerMarketplacePage() {
       window.removeEventListener('krishisetu_buyer_pool_reserved', handleReserved);
       window.removeEventListener('krishisetu_listing_created', handleProduceSync);
       window.removeEventListener('krishisetu_product_updated', handleProduceSync);
+      window.removeEventListener('krishisetu_lot_verified', handleProduceSync);
+      window.removeEventListener('krishisetu_fpo_pools_updated', handleProduceSync);
       window.removeEventListener('storage', handleProduceSync);
       clearInterval(pollTimer);
     };
