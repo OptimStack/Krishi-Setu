@@ -182,10 +182,10 @@ export default function BuyerTradesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">
-            Auction Trades &amp; Settlements
+            {t('trades_title', 'Auction Trades & Settlements')}
           </h1>
           <p className="text-stone-500 dark:text-stone-400 text-sm mt-1">
-            Double-auction cleared contracts, nodal escrow locks, clearing vouchers, and instant bank UTR settlement.
+            {t('trades_subtitle', 'Double-auction cleared contracts, nodal escrow locks, clearing vouchers, and instant bank UTR settlement.')}
           </p>
         </div>
 
@@ -194,7 +194,7 @@ export default function BuyerTradesPage() {
           className="bg-stone-100 dark:bg-[#142617] hover:bg-stone-200 dark:hover:bg-[#1b341f] text-stone-700 dark:text-stone-300 px-3.5 py-2 rounded-xl text-xs font-bold border border-stone-200 dark:border-emerald-900/50 flex items-center gap-1.5 transition cursor-pointer self-start sm:self-auto"
         >
           <span>↻</span>
-          <span>Refresh Ledger</span>
+          <span>{lang === 'mr' ? 'ताजे करा' : lang === 'hi' ? 'रिफ्रेश करें' : 'Refresh Ledger'}</span>
         </button>
       </div>
 
@@ -202,17 +202,19 @@ export default function BuyerTradesPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
         <div className="bg-white dark:bg-[#132215] border border-stone-200 dark:border-emerald-900/40 rounded-2xl p-4 shadow-xs">
           <div className="text-[11px] font-bold text-stone-400 dark:text-stone-400 uppercase tracking-wider">
-            Total Trades
+            {lang === 'mr' ? 'एकूण व्यवहार' : lang === 'hi' ? 'कुल सौदे' : 'Total Trades'}
           </div>
           <div className="text-2xl font-black text-stone-900 dark:text-stone-100 mt-1">
             {trades.length}
           </div>
-          <div className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">Cleared contracts</div>
+          <div className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+            {lang === 'mr' ? 'क्लिअर झालेले सौदे' : lang === 'hi' ? 'क्लीयर सौदे' : 'Cleared contracts'}
+          </div>
         </div>
 
         <div className="bg-white dark:bg-[#132215] border border-stone-200 dark:border-emerald-900/40 rounded-2xl p-4 shadow-xs">
           <div className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
-            Cleared Volume
+            {t('cleared_volume', 'Cleared Volume')}
           </div>
           <div className="text-2xl font-black text-[#255919] dark:text-[#D1BF4B] mt-1">
             {(totalClearedKg / 100).toFixed(1)} <span className="text-xs font-semibold">Qtl</span>
@@ -224,24 +226,26 @@ export default function BuyerTradesPage() {
 
         <div className="bg-white dark:bg-[#132215] border border-stone-200 dark:border-emerald-900/40 rounded-2xl p-4 shadow-xs">
           <div className="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
-            Total Settled
+            {t('total_settled', 'Total Settled')}
           </div>
           <div className="text-2xl font-black text-blue-700 dark:text-blue-400 mt-1">
             ₹{totalSettledAmount.toLocaleString()}
           </div>
           <div className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
-            {settledTrades.length} settled vouchers
+            {settledTrades.length} {lang === 'mr' ? 'पावत्या सेटल झाल्या' : lang === 'hi' ? 'वाउचर संपन्न' : 'settled vouchers'}
           </div>
         </div>
 
         <div className="bg-white dark:bg-[#132215] border border-stone-200 dark:border-emerald-900/40 rounded-2xl p-4 shadow-xs">
           <div className="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
-            Pending Escrow
+            {t('pending_escrow', 'Pending Escrow')}
           </div>
           <div className="text-2xl font-black text-amber-600 dark:text-amber-400 mt-1">
             {pendingTrades.length}
           </div>
-          <div className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">Awaiting checkout</div>
+          <div className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+            {lang === 'mr' ? 'पेमेंट प्रतीक्षेत' : lang === 'hi' ? 'भुगतान प्रतीक्षारत' : 'Awaiting checkout'}
+          </div>
         </div>
       </div>
 
@@ -251,20 +255,24 @@ export default function BuyerTradesPage() {
           <div className="flex items-center gap-2">
             <span className="text-lg">⚖️</span>
             <h3 className="font-extrabold text-sm text-stone-900 dark:text-stone-100">
-              Automated Double-Auction Equilibrium Engine
+              {lang === 'mr' ? 'स्वयंचलित डबल-ऑक्शन समतोल इंजिन' : lang === 'hi' ? 'स्वचालित डबल-नीलामी संतुलन इंजन' : 'Automated Double-Auction Equilibrium Engine'}
             </h3>
             <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#255919]/10 dark:bg-[#D1BF4B]/20 text-[#255919] dark:text-[#D1BF4B] border border-[#255919]/20 dark:border-[#D1BF4B]/30">
               Clearing v2.4
             </span>
           </div>
           <p className="text-xs text-stone-500 dark:text-stone-400 max-w-2xl leading-relaxed">
-            Buyer purchase ceiling prices and farmer supply floor prices are algorithmically matched at uniform market clearing equilibrium rates. Payouts are protected via zero-risk nodal escrow.
+            {lang === 'mr'
+              ? 'खरेदीदाराचे कमाल खरेदी दर आणि शेतकऱ्यांचे किमान दर अल्गोरिदमद्वारे बाजार समतोल दरावर जुळवले जातात.'
+              : lang === 'hi'
+              ? 'खरीदार की अधिकतम खरीद दर और किसान की न्यूनतम आपूर्ति दर एल्गोरिदम द्वारा बाज़ार संतुलन दर पर मिलाई जाती है।'
+              : 'Buyer purchase ceiling prices and farmer supply floor prices are algorithmically matched at uniform market clearing equilibrium rates. Payouts are protected via zero-risk nodal escrow.'}
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
           <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400">
-            Engine Live &amp; Matching
+            {lang === 'mr' ? 'इंजिन सक्रिय' : lang === 'hi' ? 'इंजन लाइव' : 'Engine Live & Matching'}
           </span>
         </div>
       </div>
@@ -274,7 +282,7 @@ export default function BuyerTradesPage() {
         <div className="p-4 sm:p-5 border-b border-stone-100 dark:border-emerald-900/30 flex items-center justify-between">
           <h2 className="font-extrabold text-base text-stone-900 dark:text-stone-100 flex items-center gap-2">
             <span>🤝</span>
-            <span>Auction Clearing Ledger &amp; Vouchers</span>
+            <span>{t('clearing_ledger', 'Auction Clearing Ledger & Vouchers')}</span>
           </h2>
           <span className="text-xs text-stone-400 font-mono">
             {trades.length} records
@@ -289,10 +297,10 @@ export default function BuyerTradesPage() {
           <div className="p-12 text-center text-stone-500 dark:text-stone-400 space-y-2">
             <span className="text-3xl block">⚖️</span>
             <p className="font-bold text-sm text-stone-700 dark:text-stone-300">
-              No auction trades executed yet.
+              {lang === 'mr' ? 'कोणतेही लिलाव व्यवहार झालेले नाहीत.' : lang === 'hi' ? 'कोई नीलामी सौदा अभी नहीं हुआ है।' : 'No auction trades executed yet.'}
             </p>
             <p className="text-xs text-stone-400">
-              When the matching engine clears your bids against farmer lots, trade records will appear here.
+              {lang === 'mr' ? 'इंजिनने सौदे जुळवल्यानंतर ते येथे दिसतील.' : lang === 'hi' ? 'इंजन द्वारा सौदे मिलने पर वे यहां दिखाई देंगे।' : 'When the matching engine clears your bids against farmer lots, trade records will appear here.'}
             </p>
           </div>
         ) : (
@@ -300,13 +308,13 @@ export default function BuyerTradesPage() {
             <table className="w-full text-left text-xs sm:text-sm">
               <thead className="bg-stone-50 dark:bg-[#182b1c] border-b border-stone-200 dark:border-emerald-900/40 text-stone-500 dark:text-stone-400 text-xs uppercase tracking-wider font-bold">
                 <tr>
-                  <th className="py-3.5 px-4">Trade Ref</th>
-                  <th className="py-3.5 px-4">Crop &amp; Variety</th>
-                  <th className="py-3.5 px-4">Quantity</th>
-                  <th className="py-3.5 px-4">Clearing Rate</th>
-                  <th className="py-3.5 px-4">Total Amount</th>
-                  <th className="py-3.5 px-4">Escrow Status</th>
-                  <th className="py-3.5 px-4 text-right">Settlement Action</th>
+                  <th className="py-3.5 px-4">{lang === 'mr' ? 'व्यवहार संदर्भ' : lang === 'hi' ? 'सौदा संदर्भ' : 'Trade Ref'}</th>
+                  <th className="py-3.5 px-4">{lang === 'mr' ? 'पीक व वाण' : lang === 'hi' ? 'फसल व किस्म' : 'Crop & Variety'}</th>
+                  <th className="py-3.5 px-4">{lang === 'mr' ? 'प्रमाण' : lang === 'hi' ? 'मात्रा' : 'Quantity'}</th>
+                  <th className="py-3.5 px-4">{lang === 'mr' ? 'क्लिअरिंग दर' : lang === 'hi' ? 'क्लीयरिंग दर' : 'Clearing Rate'}</th>
+                  <th className="py-3.5 px-4">{lang === 'mr' ? 'एकूण रक्कम' : lang === 'hi' ? 'कुल राशि' : 'Total Amount'}</th>
+                  <th className="py-3.5 px-4">{lang === 'mr' ? 'एस्क्रो स्थिती' : lang === 'hi' ? 'एस्क्रो स्थिति' : 'Escrow Status'}</th>
+                  <th className="py-3.5 px-4 text-right">{lang === 'mr' ? 'कृती' : lang === 'hi' ? 'कार्रवाई' : 'Settlement Action'}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-stone-100 dark:divide-emerald-900/20">
@@ -357,16 +365,14 @@ export default function BuyerTradesPage() {
                             onClick={() => handleStartPayment(trade)}
                             className="bg-[#255919] hover:bg-[#1b4313] text-white font-extrabold text-xs px-3.5 py-2 rounded-xl shadow-xs transition cursor-pointer disabled:opacity-50"
                           >
-                            {actionLoading === tradeId ? 'Opening...' : '💳 Pay & Settle'}
+                            {actionLoading === tradeId ? 'Opening...' : `💳 ${t('pay_and_settle', 'Pay & Settle')}`}
                           </button>
                         )}
                         {isSettled && (
-                          <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 rounded-md border border-emerald-300 dark:border-emerald-800">
-                            <span>✓</span> Settled
+                          <span className="text-emerald-700 dark:text-emerald-400 font-extrabold text-xs inline-flex items-center gap-1">
+                            <span>✓</span>
+                            <span>{t('settled_badge', 'Settled ✓')}</span>
                           </span>
-                        )}
-                        {!isPending && !isSettled && (
-                          <span className="text-xs text-stone-400 capitalize">{trade.status}</span>
                         )}
                       </td>
                     </tr>

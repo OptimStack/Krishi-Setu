@@ -382,11 +382,34 @@ export const DEFAULT_RFQS = [
     variety: "Abhinav (Hybrid)",
     gradeRequired: "Grade A",
     quantityQuintal: 10,
+    total_quantity_needed_kg: 1000,
+    fulfilled_quantity_kg: 720,
+    min_supply_per_farmer_kg: 100,
     maxPricePerQtl: 2150,
     deliveryHub: "FreshMart Hadapsar Central Warehouse, Pune",
     status: "Matched with Pool",
     createdAt: "2026-09-07",
     validTill: "2026-09-10",
+    fulfillments: [
+      {
+        farmer_name: "Ramesh Patil",
+        farmer_phone: "+91 98221 44510",
+        village: "Baramati, Pune",
+        quantity_kg: 420,
+        mandi_price: 21.5,
+        total_payout: 9030,
+        fulfilled_at: "2026-09-08",
+      },
+      {
+        farmer_name: "Suresh Deshmukh",
+        farmer_phone: "+91 94220 89123",
+        village: "Indapur, Pune",
+        quantity_kg: 300,
+        mandi_price: 21.5,
+        total_payout: 6450,
+        fulfilled_at: "2026-09-09",
+      },
+    ],
   },
   {
     id: "RFQ-2026-079",
@@ -394,11 +417,25 @@ export const DEFAULT_RFQS = [
     variety: "Desi/Local",
     gradeRequired: "Grade A or B",
     quantityQuintal: 15,
+    total_quantity_needed_kg: 1500,
+    fulfilled_quantity_kg: 450,
+    min_supply_per_farmer_kg: 100,
     maxPricePerQtl: 1950,
     deliveryHub: "FreshMart Hadapsar Central Warehouse, Pune",
     status: "Active RFQ",
     createdAt: "2026-09-08",
     validTill: "2026-09-12",
+    fulfillments: [
+      {
+        farmer_name: "Dnyaneshwar Shinde",
+        farmer_phone: "+91 98902 77412",
+        village: "Narayangaon, Junnar",
+        quantity_kg: 450,
+        mandi_price: 19.5,
+        total_payout: 8775,
+        fulfilled_at: "2026-09-08",
+      },
+    ],
   },
   {
     id: "RFQ-2026-074",
@@ -406,11 +443,34 @@ export const DEFAULT_RFQS = [
     variety: "Nashik Red Garva",
     gradeRequired: "Grade A",
     quantityQuintal: 40,
+    total_quantity_needed_kg: 4000,
+    fulfilled_quantity_kg: 4000,
+    min_supply_per_farmer_kg: 200,
     maxPricePerQtl: 2400,
     deliveryHub: "FreshMart Vashi Cold Storage Hub, Mumbai",
     status: "Active RFQ",
     createdAt: "2026-09-09",
     validTill: "2026-09-15",
+    fulfillments: [
+      {
+        farmer_name: "Balasaheb Kadam",
+        farmer_phone: "+91 94222 31094",
+        village: "Lasalgaon, Nashik",
+        quantity_kg: 2500,
+        mandi_price: 24.0,
+        total_payout: 60000,
+        fulfilled_at: "2026-09-10",
+      },
+      {
+        farmer_name: "Nitin Jagtap",
+        farmer_phone: "+91 98231 66890",
+        village: "Pimpalgaon Baswant, Nashik",
+        quantity_kg: 1500,
+        mandi_price: 24.0,
+        total_payout: 36000,
+        fulfilled_at: "2026-09-11",
+      },
+    ],
   },
 ];
 
@@ -420,13 +480,65 @@ const STORAGE_KEYS = {
   CUSTOM_DIRECT_ORDERS: "krishisetu_buyer_direct_orders",
 };
 
+export const DEFAULT_ACTIVE_DELIVERIES = [
+  {
+    id: "POOL-PBN-COT-09",
+    reservationId: "RES-849201",
+    crop: "Cotton",
+    variety: "Long Staple White Gold",
+    target_kg: 5000,
+    current_kg: 3400,
+    price_per_qtl: 7750,
+    allowedGrades: ["Grade A", "Grade B"],
+    status: "Dispatched",
+    destination_mandi: "Nagpur Cotton Yard & Kalamna APMC",
+    collection_hub: "Parbhani & Gangakhed Hub",
+    shared_freight_savings_pct: 33.0,
+    fpoName: "Parbhani Agro FPO Cooperative",
+    transporter: {
+      name: "Vidarbha Agri Express Logistics",
+      vehicleNumber: "MH-22-AT-9012",
+      contact: "+91 94221 88401",
+    },
+    reservedAt: "2026-09-24T10:30:00.000Z",
+  },
+  {
+    id: "POOL-PUN-TOM-01",
+    reservationId: "RES-849202",
+    crop: "Tomato",
+    variety: "Abhinav (Hybrid)",
+    target_kg: 1000,
+    current_kg: 750,
+    price_per_qtl: 2150,
+    allowedGrades: ["Grade A"],
+    status: "Reserved",
+    destination_mandi: "Hadapsar Central Warehouse, Pune",
+    collection_hub: "Baramati FPC Hub #1",
+    shared_freight_savings_pct: 28.5,
+    fpoName: "Saksham Baramati Krushi PC",
+    transporter: {
+      name: "Sahyadri Cold Chain Logistics",
+      vehicleNumber: "MH-12-RN-5821",
+      contact: "+91 98220 12345",
+    },
+    reservedAt: "2026-09-25T08:15:00.000Z",
+  }
+];
+
 export function getStoredReservedPools() {
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.RESERVED_POOLS);
-    if (!raw) return [];
-    return JSON.parse(raw);
+    if (!raw) {
+      localStorage.setItem(STORAGE_KEYS.RESERVED_POOLS, JSON.stringify(DEFAULT_ACTIVE_DELIVERIES));
+      return DEFAULT_ACTIVE_DELIVERIES;
+    }
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      return DEFAULT_ACTIVE_DELIVERIES;
+    }
+    return parsed;
   } catch {
-    return [];
+    return DEFAULT_ACTIVE_DELIVERIES;
   }
 }
 

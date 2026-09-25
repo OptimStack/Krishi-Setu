@@ -215,19 +215,17 @@ export default function BuyerMarketplacePage() {
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">
-            {lang === 'mr' ? 'बी2बी घाऊक कृषी बाजार' : lang === 'hi' ? 'बी2बी थोक कृषि मंडी' : 'B2B Wholesale Agri Marketplace'}
+            {t('b2b_marketplace_title', 'B2B Wholesale Agri Marketplace')}
           </h1>
           <p className="text-stone-500 dark:text-stone-400 text-sm mt-1">
-            {lang === 'mr'
-              ? 'एफपीओ-सत्यापित, एस्क्रो-संरक्षित एकत्रित कन्साइनमेंट. थेट शेतांशी जोडलेले.'
-              : 'Procure FPO-verified, escrow-protected aggregated consignments. Connected directly to farms.'}
+            {t('b2b_marketplace_subtitle', 'Procure FPO-verified, escrow-protected aggregated consignments. Connected directly to farms.')}
           </p>
         </div>
 
         {/* RBI-Compliant Escrow Badge */}
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 text-emerald-800 dark:text-emerald-300 text-xs font-bold w-fit shadow-xs">
           <span>🛡️</span>
-          <span>{lang === 'mr' ? 'RBI-अनुपालित एस्क्रो' : 'RBI-Compliant Escrow'}</span>
+          <span>{t('rbi_compliant_escrow', 'RBI-Compliant Escrow')}</span>
         </div>
       </div>
 
@@ -243,7 +241,7 @@ export default function BuyerMarketplacePage() {
               {totalPoolsCount}
             </div>
             <div className="text-xs text-stone-500 dark:text-stone-400 font-medium">
-              {lang === 'mr' ? 'उपलब्ध पूल' : 'Available Pools'}
+              {t('available_pools', 'Available Pools')}
             </div>
           </div>
         </div>
@@ -258,7 +256,7 @@ export default function BuyerMarketplacePage() {
               {totalStockMT} MT
             </div>
             <div className="text-xs text-stone-500 dark:text-stone-400 font-medium">
-              {lang === 'mr' ? 'एकूण माल' : 'Total Stock'}
+              {t('total_stock', 'Total Stock')}
             </div>
           </div>
         </div>
@@ -273,7 +271,7 @@ export default function BuyerMarketplacePage() {
               ₹{totalValueK}K
             </div>
             <div className="text-xs text-stone-500 dark:text-stone-400 font-medium">
-              {lang === 'mr' ? 'एकूण मूल्य' : 'Total Market Value'}
+              {t('total_market_value', 'Total Market Value')}
             </div>
           </div>
         </div>
@@ -288,7 +286,7 @@ export default function BuyerMarketplacePage() {
               2
             </div>
             <div className="text-xs text-stone-500 dark:text-stone-400 font-medium">
-              {lang === 'mr' ? 'नोंदणीकृत खरेदीदार' : 'Registered Buyers'}
+              {t('registered_buyers', 'Registered Buyers')}
             </div>
           </div>
         </div>
@@ -307,7 +305,7 @@ export default function BuyerMarketplacePage() {
         >
           <span>📦</span>
           <span>
-            {lang === 'mr' ? 'थेट शेतकरी लॉट्स' : 'Direct Farmer Lots'} ({filteredFarmerLots.length})
+            {t('direct_farmer_lots', 'Direct Farmer Lots')} ({filteredFarmerLots.length})
           </span>
         </button>
 
@@ -322,7 +320,7 @@ export default function BuyerMarketplacePage() {
         >
           <span>👥</span>
           <span>
-            {lang === 'mr' ? 'एकत्रित एफपीओ पूल' : 'Aggregated FPO Pools'} ({filteredPools.length})
+            {t('aggregated_fpo_pools', 'Aggregated FPO Pools')} ({filteredPools.length})
           </span>
         </button>
       </div>
@@ -330,7 +328,7 @@ export default function BuyerMarketplacePage() {
       {/* Filter Row */}
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-xs text-stone-500 dark:text-stone-400 font-bold flex items-center gap-1">
-          <span>⚙️</span> {lang === 'mr' ? 'फिल्टर:' : 'Filter:'}
+          <span>⚙️</span> {t('filter_label', 'Filter:')}
         </span>
 
         <div className="flex flex-wrap gap-1.5">
@@ -354,7 +352,7 @@ export default function BuyerMarketplacePage() {
             onClick={() => setCropFilter('All')}
             className="flex items-center gap-1 text-xs text-red-600 dark:text-red-400 font-bold hover:underline ml-2 cursor-pointer"
           >
-            ✕ {lang === 'mr' ? 'साफ करा' : 'Clear'}
+            ✕ {t('clear_filter', 'Clear')}
           </button>
         )}
       </div>
@@ -366,10 +364,10 @@ export default function BuyerMarketplacePage() {
             <div className="col-span-full p-12 text-center border border-dashed border-stone-300 dark:border-emerald-900/50 rounded-2xl bg-stone-50 dark:bg-[#132215]">
               <div className="text-4xl mb-3">🌾</div>
               <p className="text-base font-bold text-stone-700 dark:text-stone-200">
-                No individual farmer lots match this filter.
+                {lang === 'mr' ? 'कोणतेही शेतकरी लॉट्स सापडले नाहीत.' : lang === 'hi' ? 'कोई किसान लॉट उपलब्ध नहीं है।' : 'No individual farmer lots match this filter.'}
               </p>
               <p className="text-xs text-stone-400 dark:text-stone-400 mt-1">
-                New farm harvests are currently undergoing AI computer vision and FPO gate verification.
+                {lang === 'mr' ? 'नवीन काढणी लॉट एआय व एफपीओ तपासणी प्रक्रियेत आहेत.' : lang === 'hi' ? 'नई फसलें एआई और एफपीओ सत्यापन प्रक्रिया में हैं।' : 'New farm harvests are currently undergoing AI computer vision and FPO gate verification.'}
               </p>
             </div>
           ) : (
@@ -396,7 +394,7 @@ export default function BuyerMarketplacePage() {
                       {/* Top Left: FPO Inspected badge */}
                       <div className="absolute top-2.5 left-2.5">
                         <span className="bg-emerald-600 text-white text-[11px] font-bold px-2.5 py-1 rounded-md flex items-center gap-1 shadow-md">
-                          <span>🛡️</span> FPO Inspected
+                          <span>🛡️</span> {t('fpo_inspected', 'FPO Inspected')}
                         </span>
                       </div>
 
@@ -425,7 +423,7 @@ export default function BuyerMarketplacePage() {
                       <div className="flex justify-between items-end pb-2.5 border-b border-stone-100 dark:border-emerald-900/30">
                         <div>
                           <span className="text-[10px] text-stone-400 dark:text-stone-400 block font-semibold uppercase tracking-wider">
-                            Available Volume
+                            {t('available_volume', 'Available Volume')}
                           </span>
                           <strong className="text-lg font-black text-stone-900 dark:text-stone-100">
                             {lot.quantity} {lot.unit}
@@ -433,7 +431,7 @@ export default function BuyerMarketplacePage() {
                         </div>
                         <div className="text-right">
                           <span className="text-[10px] text-stone-400 dark:text-stone-400 block font-semibold uppercase tracking-wider">
-                            Asking Rate
+                            {t('asking_rate', 'Asking Rate')}
                           </span>
                           <strong className="text-lg font-black text-[#255919] dark:text-[#D1BF4B]">
                             ₹{lot.askingPrice}
@@ -447,19 +445,19 @@ export default function BuyerMarketplacePage() {
                       {/* Producer and quality meta */}
                       <div className="text-xs space-y-1.5 pt-0.5">
                         <div className="flex justify-between text-stone-600 dark:text-stone-400">
-                          <span>Producer:</span>
+                          <span>{t('producer_label', 'Producer:')}</span>
                           <span className="font-bold text-stone-800 dark:text-stone-200">
                             {lot.producer}
                           </span>
                         </div>
                         <div className="flex justify-between text-stone-600 dark:text-stone-400">
-                          <span>AI Quality Score:</span>
+                          <span>{t('ai_quality_score', 'AI Quality Score:')}</span>
                           <span className="font-black text-emerald-700 dark:text-emerald-400">
                             {lot.confidenceScore}% (High)
                           </span>
                         </div>
                         <div className="flex justify-between text-stone-600 dark:text-stone-400">
-                          <span>Lot ID:</span>
+                          <span>{t('lot_id', 'Lot ID:')}</span>
                           <span className="font-mono text-stone-500 dark:text-stone-400 font-semibold text-[11px]">
                             {lot.id}
                           </span>
@@ -476,7 +474,7 @@ export default function BuyerMarketplacePage() {
                       className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-stone-300 dark:border-emerald-800 text-stone-700 dark:text-stone-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 hover:text-emerald-800 dark:hover:text-emerald-300 font-bold text-xs transition cursor-pointer"
                     >
                       <span>👁️</span>
-                      <span>View Product Details</span>
+                      <span>{t('view_product_details', 'View Product Details')}</span>
                     </button>
                   </div>
                 </div>
@@ -510,7 +508,7 @@ export default function BuyerMarketplacePage() {
                     {/* Top Left: FPO Certified */}
                     <div className="absolute top-2.5 left-3">
                       <span className="bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-xs flex items-center gap-1 border border-white/25">
-                        <span>🛡️</span> FPO Certified
+                        <span>🛡️</span> {t('fpo_certified', 'FPO Certified')}
                       </span>
                     </div>
 
@@ -518,7 +516,7 @@ export default function BuyerMarketplacePage() {
                     {isReserved && (
                       <div className="absolute top-2.5 right-3">
                         <span className="bg-amber-500 text-white font-extrabold text-[10px] px-2.5 py-0.5 rounded-md shadow-xs">
-                          Reserved
+                          {t('already_reserved', 'Reserved')}
                         </span>
                       </div>
                     )}
@@ -546,19 +544,19 @@ export default function BuyerMarketplacePage() {
                     <div className="flex justify-between items-end pb-2.5 border-b border-stone-100 dark:border-emerald-900/30">
                       <div>
                         <div className="text-[10px] text-stone-400 dark:text-stone-400 font-semibold uppercase tracking-wider mb-0.5">
-                          Available Volume
+                          {t('available_volume', 'Available Volume')}
                         </div>
                         <div className="font-black text-stone-900 dark:text-stone-100 text-lg leading-tight">
                           {pool.current_kg} kg
                         </div>
                         <div className="text-[10px] text-stone-400 dark:text-stone-400">
-                          Target: {pool.target_kg} kg
+                          {lang === 'mr' ? 'ध्येय:' : lang === 'hi' ? 'लक्ष्य:' : 'Target:'} {pool.target_kg} kg
                         </div>
                       </div>
 
                       <div className="text-right">
                         <div className="text-[10px] text-stone-400 dark:text-stone-400 font-semibold uppercase tracking-wider mb-0.5">
-                          Asking Rate
+                          {t('asking_rate', 'Asking Rate')}
                         </div>
                         <div className="font-black text-[#255919] dark:text-[#D1BF4B] text-xl leading-tight">
                           ₹{pool.price_per_qtl}
@@ -572,7 +570,7 @@ export default function BuyerMarketplacePage() {
                     {/* Pool Fill Progress */}
                     <div>
                       <div className="flex justify-between text-[11px] text-stone-500 dark:text-stone-400 font-semibold mb-1">
-                        <span>Pool Fill Progress</span>
+                        <span>{t('pool_fill_progress', 'Pool Fill Progress')}</span>
                         <span>{fillPct}%</span>
                       </div>
                       <div className="w-full bg-stone-100 dark:bg-[#1a2d1d] rounded-full h-2 overflow-hidden">
@@ -602,14 +600,14 @@ export default function BuyerMarketplacePage() {
                         ))}
                       </div>
                       <span className="text-emerald-700 dark:text-emerald-400 font-extrabold text-[11px]">
-                        {pool.shared_freight_savings_pct}% Freight Saved
+                        {pool.shared_freight_savings_pct}% {t('freight_saved', 'Freight Saved')}
                       </span>
                     </div>
 
                     {/* Total Value */}
                     <div className="flex items-center justify-between pt-1 border-t border-stone-100 dark:border-emerald-900/30 text-xs">
                       <span className="text-stone-500 dark:text-stone-400 font-medium">
-                        Est. Total Value:
+                        {t('est_total_value', 'Est. Total Value:')}
                       </span>
                       <span className="font-black text-stone-900 dark:text-stone-100 text-sm">
                         ₹{totalVal.toLocaleString()}
@@ -638,8 +636,8 @@ export default function BuyerMarketplacePage() {
                     <span>🛡️</span>
                     <span>
                       {isReserved
-                        ? 'Already Reserved'
-                        : `Reserve Pool (₹${totalVal.toLocaleString()})`}
+                        ? t('already_reserved', 'Already Reserved')
+                        : `${t('reserve_pool', 'Reserve Pool')} (₹${totalVal.toLocaleString()})`}
                     </span>
                   </button>
                 </div>
@@ -657,7 +655,7 @@ export default function BuyerMarketplacePage() {
               <div className="flex items-center gap-2">
                 <span className="text-xl">🛡️</span>
                 <h3 className="font-black text-lg text-stone-900 dark:text-stone-100">
-                  Authorize Nodal Escrow Hold
+                  {t('auth_escrow_title', 'Authorize Nodal Escrow Hold')}
                 </h3>
               </div>
               <button
@@ -670,26 +668,29 @@ export default function BuyerMarketplacePage() {
 
             <div className="space-y-3 text-xs">
               <p className="text-stone-600 dark:text-stone-300">
-                You are reserving <strong>{selectedPool.crop}</strong> ({selectedPool.variety}) from{' '}
-                <strong>{selectedPool.fpoName || selectedPool.collection_hub}</strong>.
+                {lang === 'mr'
+                  ? `तुम्ही ${selectedPool.fpoName || selectedPool.collection_hub} कडून ${selectedPool.crop} (${selectedPool.variety}) आरक्षित करत आहात.`
+                  : lang === 'hi'
+                  ? `आप ${selectedPool.fpoName || selectedPool.collection_hub} से ${selectedPool.crop} (${selectedPool.variety}) आरक्षित कर रहे हैं।`
+                  : `You are reserving ${selectedPool.crop} (${selectedPool.variety}) from ${selectedPool.fpoName || selectedPool.collection_hub}.`}
               </p>
 
               <div className="p-3.5 bg-stone-50 dark:bg-[#182b1c] rounded-xl border border-stone-200 dark:border-emerald-800/40 space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-stone-500 dark:text-stone-400">Total Volume:</span>
+                  <span className="text-stone-500 dark:text-stone-400">{t('available_volume', 'Total Volume')}:</span>
                   <span className="font-bold text-stone-800 dark:text-stone-200">
                     {selectedPool.current_kg} kg
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-stone-500 dark:text-stone-400">Agreed Pool Rate:</span>
+                  <span className="text-stone-500 dark:text-stone-400">{t('asking_rate', 'Agreed Pool Rate')}:</span>
                   <span className="font-bold text-stone-800 dark:text-stone-200">
                     ₹{selectedPool.price_per_qtl} / quintal
                   </span>
                 </div>
                 <div className="flex justify-between border-t border-stone-200 dark:border-emerald-800/40 pt-2 text-sm">
                   <span className="font-extrabold text-stone-900 dark:text-stone-100">
-                    Total Escrow Hold:
+                    {t('est_total_value', 'Total Escrow Hold:')}
                   </span>
                   <span className="font-black text-[#255919] dark:text-[#D1BF4B]">
                     ₹{Math.round((selectedPool.current_kg / 100) * selectedPool.price_per_qtl).toLocaleString()}
@@ -699,10 +700,14 @@ export default function BuyerMarketplacePage() {
 
               <div className="p-3 bg-purple-50 dark:bg-purple-950/40 rounded-xl border border-purple-200 dark:border-purple-800/40 text-purple-900 dark:text-purple-300 space-y-1">
                 <div className="font-bold flex items-center gap-1.5">
-                  <span>🔒</span> Zero-Advance Escrow Protection
+                  <span>🔒</span> {t('zero_advance_protection', 'Zero-Advance Escrow Protection')}
                 </div>
                 <p className="text-[11px] leading-relaxed">
-                  Funds remain securely placed inside an RBI-compliant bank escrow account. Zero money is released until you physically inspect crates against the electronic weigh-slip at delivery.
+                  {lang === 'mr'
+                    ? 'रक्कम RBI-अनुपालित बँक एस्क्रो खात्यात सुरक्षित ठेवली जाते. आपण डिलिव्हरीच्या वेळी इलेक्ट्रॉनिक वजन पावतीनुसार मालाची प्रत्यक्ष तपासणी करेपर्यंत कोणतेही पैसे सोडले जात नाहीत.'
+                    : lang === 'hi'
+                    ? 'धनराशि आरबीआई-अनुरूप बैंक एस्क्रो खाते में सुरक्षित रखी जाती है। डिलीवरी पर इलेक्ट्रॉनिक वजन पर्ची के अनुसार माल की जांच करने से पहले कोई भी भुगतान जारी नहीं किया जाता।'
+                    : 'Funds remain securely placed inside an RBI-compliant bank escrow account. Zero money is released until you physically inspect crates against the electronic weigh-slip at delivery.'}
                 </p>
               </div>
             </div>
@@ -713,7 +718,7 @@ export default function BuyerMarketplacePage() {
                 onClick={() => setIsAuthOpen(false)}
                 className="w-1/2 py-2.5 px-4 rounded-xl border border-stone-300 dark:border-emerald-800 text-stone-700 dark:text-stone-300 font-bold text-xs hover:bg-stone-100 dark:hover:bg-emerald-950/30 transition cursor-pointer"
               >
-                Cancel
+                {t('cancel', 'Cancel')}
               </button>
               <button
                 type="button"
@@ -721,7 +726,7 @@ export default function BuyerMarketplacePage() {
                 onClick={handleConfirmReservation}
                 className="w-1/2 py-2.5 px-4 rounded-xl bg-[#255919] hover:bg-[#1b4313] text-white font-black text-xs shadow-md transition cursor-pointer flex items-center justify-center gap-1.5"
               >
-                {authProcessing ? 'Authorizing...' : 'Confirm & Reserve'}
+                {authProcessing ? (lang === 'mr' ? 'अधिकृत करत आहे...' : lang === 'hi' ? 'अधिकृत किया जा रहा है...' : 'Authorizing...') : t('confirm_reserve', 'Confirm & Reserve')}
               </button>
             </div>
           </div>
@@ -755,7 +760,7 @@ export default function BuyerMarketplacePage() {
                 className="w-full h-full object-cover"
               />
               <div className="absolute top-3 left-3 bg-emerald-600 text-white font-bold text-xs px-2.5 py-1 rounded-md flex items-center gap-1 shadow-md">
-                <span>🛡️</span> FPO Inspected & Certified
+                <span>🛡️</span> {t('fpo_inspected', 'FPO Inspected & Certified')}
               </div>
               <div className="absolute top-3 right-3 bg-white/95 dark:bg-[#0c170e]/90 text-stone-900 dark:text-stone-100 font-black text-xs px-3 py-1 rounded-lg">
                 {inspectedLot.grade}
@@ -765,25 +770,25 @@ export default function BuyerMarketplacePage() {
             {/* Specifications Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
               <div className="p-3 bg-stone-50 dark:bg-[#182b1c] rounded-xl border border-stone-200 dark:border-emerald-800/40">
-                <span className="text-stone-400 block mb-0.5">Available Volume</span>
+                <span className="text-stone-400 block mb-0.5">{t('available_volume', 'Available Volume')}</span>
                 <strong className="text-stone-900 dark:text-stone-100 text-sm">
                   {inspectedLot.quantity} {inspectedLot.unit}
                 </strong>
               </div>
               <div className="p-3 bg-stone-50 dark:bg-[#182b1c] rounded-xl border border-stone-200 dark:border-emerald-800/40">
-                <span className="text-stone-400 block mb-0.5">Asking Price</span>
+                <span className="text-stone-400 block mb-0.5">{t('asking_rate', 'Asking Price')}</span>
                 <strong className="text-emerald-700 dark:text-emerald-400 text-sm">
                   ₹{inspectedLot.askingPrice} / {inspectedLot.unit}
                 </strong>
               </div>
               <div className="p-3 bg-stone-50 dark:bg-[#182b1c] rounded-xl border border-stone-200 dark:border-emerald-800/40">
-                <span className="text-stone-400 block mb-0.5">AI Quality Score</span>
+                <span className="text-stone-400 block mb-0.5">{t('ai_quality_score', 'AI Quality Score')}</span>
                 <strong className="text-emerald-700 dark:text-emerald-400 text-sm">
                   {inspectedLot.confidenceScore}% (High)
                 </strong>
               </div>
               <div className="p-3 bg-stone-50 dark:bg-[#182b1c] rounded-xl border border-stone-200 dark:border-emerald-800/40">
-                <span className="text-stone-400 block mb-0.5">Harvest Date</span>
+                <span className="text-stone-400 block mb-0.5">{lang === 'mr' ? 'काढणी दिनांक' : lang === 'hi' ? 'कटाई दिनांक' : 'Harvest Date'}</span>
                 <strong className="text-stone-900 dark:text-stone-100 text-sm">
                   {inspectedLot.harvestDate}
                 </strong>
@@ -794,7 +799,7 @@ export default function BuyerMarketplacePage() {
             <div className="space-y-2 text-xs">
               <div className="p-3.5 bg-stone-50 dark:bg-[#182b1c] rounded-xl border border-stone-200 dark:border-emerald-800/40 space-y-1">
                 <div className="font-bold text-stone-800 dark:text-stone-200">
-                  📍 Origin & Collection Point: {inspectedLot.locationName}
+                  📍 {lang === 'mr' ? 'उगम व संकलन केंद्र:' : lang === 'hi' ? 'उत्पत्ति व संकलन केंद्र:' : 'Origin & Collection Point:'} {inspectedLot.locationName}
                 </div>
                 <p className="text-stone-600 dark:text-stone-300">
                   {inspectedLot.description}
@@ -820,7 +825,7 @@ export default function BuyerMarketplacePage() {
                 onClick={() => setInspectedLot(null)}
                 className="w-1/2 py-2.5 px-4 rounded-xl border border-stone-300 dark:border-emerald-800 text-stone-700 dark:text-stone-300 font-bold text-xs hover:bg-stone-100 dark:hover:bg-emerald-950/30 transition cursor-pointer"
               >
-                Close
+                {t('cancel', 'Close')}
               </button>
               <button
                 type="button"
@@ -828,7 +833,7 @@ export default function BuyerMarketplacePage() {
                 onClick={() => handleConfirmDirectLot(inspectedLot)}
                 className="w-1/2 py-2.5 px-4 rounded-xl bg-[#255919] hover:bg-[#1b4313] text-white font-black text-xs shadow-md transition cursor-pointer flex items-center justify-center gap-1.5"
               >
-                {directReserveProcessing ? 'Reserving...' : `Procure via Escrow (₹${(inspectedLot.quantity * inspectedLot.askingPrice).toLocaleString()})`}
+                {directReserveProcessing ? (lang === 'mr' ? 'आरक्षित करत आहे...' : lang === 'hi' ? 'आरक्षित किया जा रहा है...' : 'Reserving...') : `${lang === 'mr' ? 'एस्क्रोने खरेदी करा' : lang === 'hi' ? 'एस्क्रो से खरीदें' : 'Procure via Escrow'} (₹${(inspectedLot.quantity * inspectedLot.askingPrice).toLocaleString()})`}
               </button>
             </div>
           </div>

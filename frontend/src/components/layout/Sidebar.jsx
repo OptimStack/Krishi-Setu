@@ -106,7 +106,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
     {
       to: '/buyer/marketplace',
       alias: ['/buyer/dashboard', '/buyer'],
-      label: 'Marketplace',
+      label: t('buyer_nav_marketplace', 'Marketplace'),
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -116,7 +116,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
     {
       to: '/buyer/offers',
       alias: ['/buyer/orders'],
-      label: 'My Offers',
+      label: t('buyer_nav_offers', 'My Offers'),
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
@@ -126,7 +126,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
     {
       to: '/buyer/delivery',
       alias: ['/buyer/acceptance'],
-      label: 'Delivery Acceptance',
+      label: t('buyer_nav_delivery', 'Delivery Acceptance'),
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
@@ -136,7 +136,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
     {
       to: '/buyer/trades',
       alias: ['/buyer/settlements'],
-      label: 'Trades & Settlements',
+      label: t('buyer_nav_trades', 'Trades & Settlements'),
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
@@ -197,7 +197,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
             <nav className="space-y-1">
               {activeNavItems.map((item) => {
                 const isExact = location.pathname === item.to;
-                const isAliased = item.alias && item.alias.some((a) => location.pathname === a || location.pathname.startsWith(a));
+                const isAliased = Boolean(item.alias && item.alias.includes(location.pathname));
                 const isActive = isExact || isAliased;
 
                 return (
