@@ -226,12 +226,12 @@ export default function PoolingPage() {
           return (
             <div
               key={pool.id}
-              className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm overflow-hidden hover:shadow-md transition-shadow"
+              className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
             >
               {/* Progress Bar Header */}
               <div className="h-2.5 w-full bg-stone-100 dark:bg-stone-800">
                 <div
-                  className="h-full bg-gradient-to-r from-emerald-600 to-emerald-500 transition-all duration-500"
+                  className="h-full bg-gradient-to-r from-[#D1BF4B] to-[#255919] transition-all duration-500"
                   style={{ width: `${progressPct}%` }}
                 />
               </div>
@@ -322,7 +322,7 @@ export default function PoolingPage() {
                 <button
                   onClick={() => handleJoinPool(pool)}
                   disabled={!selectedLot || isFull}
-                  className="w-full sm:w-auto bg-gradient-to-r from-[#255919] to-[#D1BF4B] hover:opacity-95 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold px-6 py-2.5 rounded-xl text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+                  className="w-full sm:w-auto bg-gradient-to-r from-[#255919] to-[#D1BF4B] hover:opacity-95 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold px-6 py-2.5 rounded-xl text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-95"
                 >
                   <span>➕</span>
                   <span>

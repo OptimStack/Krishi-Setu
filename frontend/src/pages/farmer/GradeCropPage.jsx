@@ -409,7 +409,7 @@ export default function GradeCropPage() {
         </div>
         <div className="w-full bg-stone-100 dark:bg-stone-800 rounded-full h-2 overflow-hidden">
           <div
-            className="bg-emerald-700 h-2 rounded-full transition-all duration-500"
+            className="bg-gradient-to-r from-[#D1BF4B] to-[#255919] h-2 rounded-full transition-all duration-500"
             style={{ width: `${step === 1 ? 33 : step === 2 ? 66 : 100}%` }}
           />
         </div>
@@ -452,9 +452,9 @@ export default function GradeCropPage() {
                   key={c.id}
                   type="button"
                   onClick={() => handleSelectCrop(c)}
-                  className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                  className={`p-3.5 rounded-xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between hover:-translate-y-0.5 ${
                     isSelected
-                      ? 'border-emerald-600 bg-emerald-50/70 dark:bg-emerald-950/50 shadow-xs'
+                      ? 'border-[#255919] dark:border-[#D1BF4B] bg-emerald-50/70 dark:bg-emerald-950/50 shadow-xs ring-1 ring-[#255919]'
                       : 'border-stone-200 dark:border-stone-800 bg-stone-50/40 dark:bg-stone-800/40 hover:bg-stone-100 dark:hover:bg-stone-800'
                   }`}
                 >
@@ -575,7 +575,7 @@ export default function GradeCropPage() {
             <button
               type="button"
               onClick={() => setStep(2)}
-              className="bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-xl transition shadow-md flex items-center gap-2 cursor-pointer"
+              className="bg-gradient-to-r from-[#255919] to-[#386b24] hover:opacity-95 text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-xl transition shadow-md flex items-center gap-2 cursor-pointer hover:-translate-y-0.5"
             >
               <span>{isMr ? 'पुढे: फोटो जोडा' : isHi ? 'आगे: फोटो अपलोड करें' : 'Next: Upload Multi-Angle Photos'}</span>
               <span>→</span>
@@ -940,7 +940,7 @@ export default function GradeCropPage() {
                 type="button"
                 disabled={saveLoading}
                 onClick={() => handleSaveProduct('DRAFT')}
-                className="w-full bg-white dark:bg-stone-700 hover:bg-stone-100 dark:hover:bg-stone-600 text-stone-800 dark:text-stone-200 font-bold py-3 px-4 rounded-xl text-xs sm:text-sm border border-stone-300 dark:border-stone-600 transition shadow-xs flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full bg-white dark:bg-stone-700 hover:bg-stone-100 dark:hover:bg-stone-600 text-stone-800 dark:text-stone-200 font-bold py-3 px-4 rounded-xl text-xs sm:text-sm border border-stone-300 dark:border-stone-600 transition shadow-xs flex items-center justify-center gap-2 cursor-pointer hover:-translate-y-0.5"
               >
                 <span>💾</span>
                 <span>{isMr ? 'मसुदा म्हणून जतन करा' : isHi ? 'ड्राफ्ट के रूप में सहेजें' : 'Save as Draft Product'}</span>
@@ -950,7 +950,7 @@ export default function GradeCropPage() {
                 type="button"
                 disabled={saveLoading}
                 onClick={() => handleSaveProduct('SUBMIT_FPO')}
-                className="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 px-4 rounded-xl text-xs sm:text-sm transition shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full bg-gradient-to-r from-[#255919] to-[#386b24] hover:opacity-95 text-white font-bold py-3 px-4 rounded-xl text-xs sm:text-sm transition shadow-md flex items-center justify-center gap-2 cursor-pointer hover:-translate-y-0.5"
               >
                 <span>🚀</span>
                 <span>{isMr ? 'FPO पडताळणी व पूलिंगसाठी पाठवा' : isHi ? 'FPO सत्यापन एवं पूलिंग हेतु जमा करें' : 'Submit for FPO Verification & Pooling'}</span>

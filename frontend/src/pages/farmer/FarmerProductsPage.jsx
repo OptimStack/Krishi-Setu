@@ -255,7 +255,7 @@ export default function FarmerProductsPage() {
 
         <Link
           to="/farmer/grade"
-          className="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs sm:text-sm px-5 py-2.5 rounded-xl shadow-xs flex items-center gap-2 transition-all shrink-0 cursor-pointer"
+          className="bg-gradient-to-r from-[#255919] to-[#386b24] hover:opacity-95 hover:-translate-y-0.5 text-white font-semibold text-xs sm:text-sm px-5 py-2.5 rounded-xl shadow-xs flex items-center gap-2 transition-all shrink-0 cursor-pointer"
         >
           <span>➕</span> Add New Product
         </Link>
@@ -279,9 +279,9 @@ export default function FarmerProductsPage() {
             <div
               key={idx}
               onClick={() => setSelectedTab(kpi.tab)}
-              className={`p-3 rounded-xl border cursor-pointer transition-all ${
+              className={`p-3 rounded-xl border cursor-pointer transition-all duration-150 hover:-translate-y-0.5 ${
                 isSelected
-                  ? 'bg-emerald-50/90 dark:bg-emerald-950/50 border-emerald-500 shadow-xs ring-1 ring-emerald-500'
+                  ? 'bg-emerald-50/90 dark:bg-emerald-950/50 border-[#255919] dark:border-[#D1BF4B] shadow-xs ring-1 ring-[#255919] dark:ring-[#D1BF4B]'
                   : 'bg-white dark:bg-stone-900 border-stone-200 dark:border-stone-800 hover:border-stone-300 dark:hover:border-stone-700 hover:bg-stone-50/50'
               }`}
             >
@@ -392,7 +392,7 @@ export default function FarmerProductsPage() {
                 onClick={() => setSelectedTab(tab.id)}
                 className={`px-3 py-1.5 rounded-xl font-medium whitespace-nowrap transition-all cursor-pointer ${
                   active
-                    ? 'bg-emerald-700 text-white font-semibold shadow-xs'
+                    ? 'bg-[#255919] text-white font-semibold shadow-xs'
                     : 'bg-stone-50 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700'
                 }`}
               >
@@ -440,7 +440,7 @@ export default function FarmerProductsPage() {
             return (
               <div
                 key={lotId}
-                className="product-card bg-white dark:bg-stone-900 rounded-2xl overflow-hidden border border-stone-200 dark:border-stone-800 hover:border-emerald-500 hover:shadow-md transition-all flex flex-col justify-between group"
+                className="product-card bg-white dark:bg-stone-900 rounded-2xl overflow-hidden border border-stone-200 dark:border-stone-800 hover:border-[#255919] dark:hover:border-[#D1BF4B] hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between group"
               >
                 <div>
                   {/* Top Image & Overlay Banner matching Screenshot 2 */}

@@ -364,7 +364,7 @@ export default function MarketPricesPage() {
               onClick={() => setSelectedCrop(crop)}
               className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all shrink-0 cursor-pointer ${
                 isActive
-                  ? 'bg-emerald-700 text-white shadow-xs scale-105'
+                  ? 'bg-gradient-to-r from-[#255919] to-[#386b24] text-white shadow-xs scale-105'
                   : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
               }`}
             >
@@ -421,7 +421,7 @@ export default function MarketPricesPage() {
                 onClick={() => setSearchRadiusKm(r)}
                 className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                   isSelected
-                    ? 'bg-emerald-700 text-white shadow-xs scale-105'
+                    ? 'bg-gradient-to-r from-[#255919] to-[#386b24] text-white shadow-xs scale-105'
                     : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
                 }`}
               >
@@ -456,7 +456,7 @@ export default function MarketPricesPage() {
         <div className="p-4 pb-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-100 dark:border-stone-800">
           <div>
             <h3 className="text-sm font-bold text-stone-900 dark:text-stone-100 flex items-center gap-1.5">
-              <span className="text-emerald-700">📍</span> Live Mandi Discovery Radar &amp; Radius Circle
+              <span className="text-[#255919]">📍</span> Live Mandi Discovery Radar &amp; Radius Circle
             </h3>
             <p className="text-xs text-stone-500 dark:text-stone-400">
               Showing APMC markets within {searchRadiusKm} km radius circle of {farmerCoords.label}. Click any pin to inspect rates.
@@ -475,14 +475,14 @@ export default function MarketPricesPage() {
           <div className="absolute top-3 left-3 z-10 flex items-center gap-1.5 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-xl border border-stone-600 text-white text-xs">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span className="font-semibold">Live Satellite Agri Grid</span>
-            <span className="bg-emerald-600 text-[10px] font-bold px-1.5 py-0.2 rounded ml-1">SATELLITE</span>
+            <span className="bg-[#255919] text-[10px] font-bold px-1.5 py-0.2 rounded ml-1">SATELLITE</span>
           </div>
 
           <div className="absolute top-3 right-3 z-10 flex items-center bg-black/60 backdrop-blur-md rounded-xl p-0.5 border border-stone-600 text-xs text-white">
             <button
               onClick={() => setMapTileStyle('satellite')}
               className={`px-2 py-1 rounded-lg transition-colors cursor-pointer ${
-                mapTileStyle === 'satellite' ? 'bg-emerald-700 text-white font-bold' : 'text-stone-300 hover:text-white'
+                mapTileStyle === 'satellite' ? 'bg-[#255919] text-white font-bold' : 'text-stone-300 hover:text-white'
               }`}
             >
               Satellite
@@ -490,7 +490,7 @@ export default function MarketPricesPage() {
             <button
               onClick={() => setMapTileStyle('streets')}
               className={`px-2 py-1 rounded-lg transition-colors cursor-pointer ${
-                mapTileStyle === 'streets' ? 'bg-emerald-700 text-white font-bold' : 'text-stone-300 hover:text-white'
+                mapTileStyle === 'streets' ? 'bg-[#255919] text-white font-bold' : 'text-stone-300 hover:text-white'
               }`}
             >
               Streets
@@ -498,7 +498,7 @@ export default function MarketPricesPage() {
             <button
               onClick={() => setMapTileStyle('terrain')}
               className={`px-2 py-1 rounded-lg transition-colors cursor-pointer ${
-                mapTileStyle === 'terrain' ? 'bg-emerald-700 text-white font-bold' : 'text-stone-300 hover:text-white'
+                mapTileStyle === 'terrain' ? 'bg-[#255919] text-white font-bold' : 'text-stone-300 hover:text-white'
               }`}
             >
               Terrain
