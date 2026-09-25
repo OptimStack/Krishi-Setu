@@ -124,10 +124,10 @@ export default function FPOVerifyPage() {
       {/* Header matching Screenshot 2 */}
       <div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">
-          Physical Lot Verification &amp; Weigh-Slip
+          {t('fpo_verify_page_title', 'Physical Lot Verification & Weigh-Slip')}
         </h1>
         <p className="text-stone-600 dark:text-stone-400 text-xs sm:text-sm mt-1">
-          Review farmer-submitted AI estimates, enter certified weigh-bridge readings, and authorize pooling eligibility.
+          {t('fpo_verify_page_sub', 'Review farmer-submitted AI estimates, enter certified weigh-bridge readings, and authorize pooling eligibility.')}
         </p>
       </div>
 
@@ -135,10 +135,10 @@ export default function FPOVerifyPage() {
       <div className="bg-white dark:bg-[#132215] rounded-2xl border border-stone-200 dark:border-emerald-900/40 shadow-xs overflow-hidden">
         <div className="p-4 sm:p-5 border-b border-stone-100 dark:border-emerald-900/30">
           <h2 className="text-sm font-black text-stone-900 dark:text-stone-100">
-            Lots Awaiting Physical Verification
+            {t('fpo_awaiting_table_title', 'Lots Awaiting Physical Verification')}
           </h2>
           <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
-            Baramati FPO Hub #1 incoming queue
+            {t('fpo_hub_queue_sub', 'Baramati FPO Hub #1 incoming queue')}
           </p>
         </div>
 
@@ -147,12 +147,12 @@ export default function FPOVerifyPage() {
             <table className="w-full text-left border-collapse text-xs">
               <thead>
                 <tr className="border-b border-stone-200 dark:border-emerald-900/40 text-[11px] font-extrabold text-stone-400 uppercase tracking-wider bg-stone-50/50 dark:bg-emerald-950/20">
-                  <th className="py-3 px-4">Farmer</th>
-                  <th className="py-3 px-4">Crop &amp; Variety</th>
-                  <th className="py-3 px-4">Declared Weight</th>
-                  <th className="py-3 px-4">AI Visual Grade</th>
-                  <th className="py-3 px-4">Submission Date</th>
-                  <th className="py-3 px-4 text-right">Actions</th>
+                  <th className="py-3 px-4">{t('fpo_col_farmer', 'Farmer')}</th>
+                  <th className="py-3 px-4">{t('fpo_col_crop', 'Crop & Variety')}</th>
+                  <th className="py-3 px-4">{isMr ? 'नोंदवलेले वजन' : isHi ? 'घोषित वजन' : 'Declared Weight'}</th>
+                  <th className="py-3 px-4">{isMr ? 'एआय गुणवत्ता प्रत' : isHi ? 'एआई गुणवत्ता ग्रेड' : 'AI Visual Grade'}</th>
+                  <th className="py-3 px-4">{isMr ? 'सादर दिनांक' : isHi ? 'प्रस्तुत तिथि' : 'Submission Date'}</th>
+                  <th className="py-3 px-4 text-right">{t('fpo_col_action', 'Actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-stone-100 dark:divide-emerald-900/30">
@@ -193,7 +193,7 @@ export default function FPOVerifyPage() {
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-[11px] shadow-xs transition cursor-pointer"
                         >
                           <span>👁️</span>
-                          <span>Inspect &amp; Weigh</span>
+                          <span>{t('fpo_inspect_weigh_btn', 'Inspect & Weigh')}</span>
                         </button>
                       </td>
                     </tr>
@@ -203,7 +203,7 @@ export default function FPOVerifyPage() {
             </table>
           ) : (
             <div className="text-center p-8 text-stone-500 text-xs sm:text-sm">
-              No lots pending physical verification at Baramati Hub.
+              {isMr ? 'बारामती केंद्रावर कोणतीही लॉट्स प्रलंबित नाहीत.' : isHi ? 'बारामती केंद्र पर कोई लॉट लंबित नहीं है।' : 'No lots pending physical verification at Baramati Hub.'}
             </div>
           )}
         </div>
@@ -214,10 +214,10 @@ export default function FPOVerifyPage() {
         <span className="text-xl shrink-0">⚠️</span>
         <div className="space-y-1">
           <h4 className="font-black text-amber-950 dark:text-amber-100">
-            Dual-Grade Accountability Rule:
+            {isMr ? 'दुहेरी-प्रतवारी जबाबदारी नियम:' : isHi ? 'दोहरी-ग्रेड जवाबदेही नियम:' : 'Dual-Grade Accountability Rule:'}
           </h4>
           <p className="text-amber-800 dark:text-amber-300 leading-relaxed">
-            The FPO manager has full authority to override the AI visual grade if physical crate inspection reveals moisture or undersized fruit. Both the original AI estimate and the verified FPO grade are permanently preserved in the hash-chained audit log.
+            {t('fpo_dual_grade_rule', 'The FPO manager has full authority to override the AI visual grade if physical crate inspection reveals moisture or undersized fruit. Both the original AI estimate and the verified FPO grade are permanently preserved in the hash-chained audit log.')}
           </p>
         </div>
       </div>
@@ -233,10 +233,14 @@ export default function FPOVerifyPage() {
               <div>
                 <h3 className="text-base font-black text-stone-900 dark:text-stone-100 flex items-center gap-2">
                   <span>⚖️</span>
-                  <span>Physical Weigh-Slip &amp; Grade Verification</span>
+                  <span>{t('fpo_modal_inspect_title', 'Physical Weigh-Slip & Grade Verification')}</span>
                 </h3>
                 <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
-                  Confirming arrival for Lot <strong>{selectedLot.id || selectedLot._id}</strong> from <strong>{selectedLot.farmerName || selectedLot.farmer_name || 'Ramesh Patil'}</strong>.
+                  {isMr
+                    ? `लॉट #${selectedLot.id || selectedLot._id} (${selectedLot.farmerName || selectedLot.farmer_name || 'Ramesh Patil'}) चे आगमन प्रमाणित करत आहे.`
+                    : isHi
+                    ? `लॉट #${selectedLot.id || selectedLot._id} (${selectedLot.farmerName || selectedLot.farmer_name || 'Ramesh Patil'}) का आगमन प्रमाणित किया जा रहा है।`
+                    : `Confirming arrival for Lot ${selectedLot.id || selectedLot._id} from ${selectedLot.farmerName || selectedLot.farmer_name || 'Ramesh Patil'}.`}
                 </p>
               </div>
               <button
@@ -250,22 +254,26 @@ export default function FPOVerifyPage() {
             <div className="space-y-4 text-xs">
               <div className="grid grid-cols-2 gap-3 bg-stone-50 dark:bg-[#182b1c] p-3 rounded-xl border border-stone-200 dark:border-emerald-900/40">
                 <div>
-                  <span className="text-[10px] text-stone-400 uppercase tracking-wider block">Crop &amp; Variety</span>
+                  <span className="text-[10px] text-stone-400 uppercase tracking-wider block">
+                    {t('fpo_col_crop', 'Crop & Variety')}
+                  </span>
                   <strong className="text-stone-900 dark:text-stone-100 text-xs">
                     {selectedLot.crop} ({selectedLot.variety})
                   </strong>
                 </div>
                 <div>
-                  <span className="text-[10px] text-stone-400 uppercase tracking-wider block">AI Visual Estimate</span>
+                  <span className="text-[10px] text-stone-400 uppercase tracking-wider block">
+                    {isMr ? 'एआय व्हिज्युअल अंदाज' : isHi ? 'एआई विजुअल अनुमान' : 'AI Visual Estimate'}
+                  </span>
                   <strong className="text-emerald-700 dark:text-[#D1BF4B] text-xs">
-                    {selectedLot.grade || selectedLot.quality_grade || 'Grade A'} (91% confidence)
+                    {selectedLot.grade || selectedLot.quality_grade || 'Grade A'} (91% {isMr ? 'अचूकता' : isHi ? 'सटीकता' : 'confidence'})
                   </strong>
                 </div>
               </div>
 
               <div className="space-y-1">
                 <label className="text-xs font-bold text-stone-700 dark:text-stone-300">
-                  Certified Physical Weigh-Bridge Reading (kg)
+                  {t('fpo_modal_certified_weight', 'Certified Physical Weigh-Bridge Reading (kg)')}
                 </label>
                 <div className="flex items-center gap-2">
                   <input
@@ -281,28 +289,28 @@ export default function FPOVerifyPage() {
 
               <div className="space-y-1">
                 <label className="text-xs font-bold text-stone-700 dark:text-stone-300">
-                  Final Verified Grade
+                  {t('fpo_modal_physical_grade', 'Final Verified Grade')}
                 </label>
                 <select
                   value={verifyGrade}
                   onChange={(e) => setVerifyGrade(e.target.value)}
                   className="w-full px-3 py-2 text-xs rounded-xl bg-stone-50 dark:bg-[#182b1c] border border-stone-300 dark:border-emerald-800 text-stone-900 dark:text-stone-100 font-bold focus:outline-[#255919]"
                 >
-                  <option value="Grade A">Grade A (Premium Retail Table)</option>
-                  <option value="Grade B">Grade B (Standard Commercial)</option>
-                  <option value="Grade C">Grade C (Processing / Puree)</option>
+                  <option value="Grade A">{t('fpo_modal_grade_a', 'Grade A (Premium Retail Table)')}</option>
+                  <option value="Grade B">{t('fpo_modal_grade_b', 'Grade B (Standard Commercial)')}</option>
+                  <option value="Grade C">{t('fpo_modal_grade_c', 'Grade C (Processing / Puree)')}</option>
                 </select>
               </div>
 
               <div className="space-y-1">
                 <label className="text-xs font-bold text-stone-700 dark:text-stone-300">
-                  Verification &amp; Quality Notes (Audit Log)
+                  {t('fpo_modal_inspector_notes', 'Verification & Quality Notes (Audit Log)')}
                 </label>
                 <input
                   type="text"
                   value={fpoNotes}
                   onChange={(e) => setFpoNotes(e.target.value)}
-                  placeholder="Enter notes on crate uniformity or tare deductions..."
+                  placeholder={isMr ? 'क्रेटांची गुणवत्ता किंवा निव्वळ घट नोंदवा...' : isHi ? 'क्रेट की गुणवत्ता या शुद्ध वजन कटौती दर्ज करें...' : 'Enter notes on crate uniformity or tare deductions...'}
                   className="w-full px-3 py-2 text-xs rounded-xl bg-stone-50 dark:bg-[#182b1c] border border-stone-300 dark:border-emerald-800 text-stone-900 dark:text-stone-100 focus:outline-[#255919]"
                 />
               </div>
@@ -314,7 +322,7 @@ export default function FPOVerifyPage() {
                 onClick={handleReject}
                 className="py-2.5 px-4 rounded-xl border border-red-300 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 font-bold text-xs transition cursor-pointer"
               >
-                ✕ Return for Re-sorting
+                {isMr ? '✕ फेर-वर्गवारीसाठी परत पाठवा' : isHi ? '✕ पुनः-वर्गीकरण के लिए लौटाएं' : '✕ Return for Re-sorting'}
               </button>
               <button
                 type="button"
@@ -322,7 +330,7 @@ export default function FPOVerifyPage() {
                 className="py-2.5 px-5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs shadow-md transition cursor-pointer flex items-center gap-1.5"
               >
                 <span>✓</span>
-                <span>Approve Weigh-Slip &amp; Verify</span>
+                <span>{isMr ? 'वजन पावती मंजूर करा व सत्यापित करा' : isHi ? 'वजन पर्ची स्वीकृत करें व सत्यापित करें' : 'Approve Weigh-Slip & Verify'}</span>
               </button>
             </div>
           </div>

@@ -135,10 +135,10 @@ export default function FPOPoolsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">
-            FPO Pool Management
+            {t('fpo_pools_page_title', 'FPO Pool Management')}
           </h1>
           <p className="text-stone-600 dark:text-stone-400 text-xs sm:text-sm mt-1">
-            Consolidate verified farmer lots into bulk commercial dispatches to reduce freight and access wholesale buyer pricing.
+            {t('fpo_pools_page_sub', 'Consolidate verified farmer lots into bulk commercial dispatches to reduce freight and access wholesale buyer pricing.')}
           </p>
         </div>
 
@@ -147,7 +147,7 @@ export default function FPOPoolsPage() {
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs shadow-md transition cursor-pointer self-start sm:self-auto shrink-0"
         >
           <span>+</span>
-          <span>Create New Batch Pool</span>
+          <span>{t('fpo_create_pool_btn', 'Create New Batch Pool')}</span>
         </button>
       </div>
 
@@ -188,7 +188,7 @@ export default function FPOPoolsPage() {
                       </span>
                       {pool.buyerName && (
                         <span className="px-2 py-0.5 rounded text-[10px] font-extrabold bg-blue-50 text-blue-800 border border-blue-200">
-                          Reserved by: {pool.buyerName}
+                          {isMr ? `खरेदीदाराने आरक्षित केले: ${pool.buyerName}` : isHi ? `खरीदार द्वारा आरक्षित: ${pool.buyerName}` : `Reserved by: ${pool.buyerName}`}
                         </span>
                       )}
                     </div>
@@ -199,28 +199,30 @@ export default function FPOPoolsPage() {
                         <span>{pool.collectionHub} → {pool.destinationMandi}</span>
                       </h3>
                       <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
-                        Transporter: <strong>{pool.transporter?.name || 'MahaKisan Logistics'}</strong> ({pool.transporter?.vehicleNumber || 'MH-12-RN-5821'})
+                        {isMr ? 'वाहतूकदार' : isHi ? 'ट्रांसपोर्टर' : 'Transporter'}: <strong>{pool.transporter?.name || 'MahaKisan Logistics'}</strong> ({pool.transporter?.vehicleNumber || 'MH-12-RN-5821'})
                       </p>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-3 text-xs text-stone-600 dark:text-stone-400 pt-1">
                       <span className="px-2 py-0.5 rounded-md font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800">
-                        📉 {pool.sharedFreightSavingsPct}% Shared Freight Savings
+                        📉 {pool.sharedFreightSavingsPct}% {t('fpo_shared_freight_saved', 'Shared Freight Savings')}
                       </span>
-                      <span>👥 {(pool.contributions || []).length || 1} Farmer Lots Included</span>
-                      <span>⏰ Cutoff: {cutoffTime}</span>
+                      <span>👥 {(pool.contributions || []).length || 1} {isMr ? 'शेतकरी लॉट्स सहभागी' : isHi ? 'किसान लॉट्स शामिल' : 'Farmer Lots Included'}</span>
+                      <span>⏰ {isMr ? 'मुदत' : isHi ? 'समय' : 'Cutoff'}: {cutoffTime}</span>
                     </div>
                   </div>
 
                   {/* Right Column: Capacity, Target Price & Actions */}
                   <div className="lg:text-right flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-stone-100 dark:border-emerald-900/30 pt-3 lg:pt-0 lg:pl-6 shrink-0 min-w-[220px]">
                     <div>
-                      <span className="text-[11px] text-stone-400 font-semibold block">Capacity Utilization</span>
+                      <span className="text-[11px] text-stone-400 font-semibold block">
+                        {isMr ? 'वाहन क्षमता वापर' : isHi ? 'वाहन क्षमता उपयोग' : 'Capacity Utilization'}
+                      </span>
                       <div className="text-2xl sm:text-3xl font-black text-stone-900 dark:text-stone-100">
                         {pool.currentKg} <span className="text-sm font-normal text-stone-400">/ {pool.targetKg} kg</span>
                       </div>
                       <div className="text-xs text-stone-500 dark:text-stone-400 mt-1">
-                        Target Price: <strong className="text-emerald-700 dark:text-[#D1BF4B] text-sm font-black">₹{pool.pricePerQtl}/qtl</strong>
+                        {isMr ? 'लक्ष्य भाव' : isHi ? 'अपेक्षित दर' : 'Target Price'}: <strong className="text-emerald-700 dark:text-[#D1BF4B] text-sm font-black">₹{pool.pricePerQtl}/qtl</strong>
                       </div>
                     </div>
 
@@ -230,14 +232,14 @@ export default function FPOPoolsPage() {
                         className="w-full py-1.5 px-3 rounded-xl border border-stone-300 dark:border-emerald-800 text-stone-700 dark:text-stone-200 font-bold text-xs hover:bg-stone-50 dark:hover:bg-emerald-950/30 text-center transition cursor-pointer flex items-center justify-center gap-1.5"
                       >
                         <span>🚚</span>
-                        <span>Optimize Route</span>
+                        <span>{t('fpo_optimize_route_btn', 'Optimize Route')}</span>
                       </Link>
                       {pool.status === 'Open' && (
                         <button
                           onClick={() => handleLockPool(pool.id)}
                           className="py-1.5 px-4 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs shadow-xs transition cursor-pointer shrink-0"
                         >
-                          Lock Pool
+                          {t('fpo_lock_pool_btn', 'Lock Pool')}
                         </button>
                       )}
                     </div>
@@ -248,7 +250,7 @@ export default function FPOPoolsPage() {
                 {pool.contributions && pool.contributions.length > 0 && (
                   <div className="mt-4 pt-3 border-t border-stone-100 dark:border-emerald-900/30">
                     <span className="text-[10px] font-black text-stone-400 uppercase tracking-wider block mb-2">
-                      FARMER CONTRIBUTIONS IN THIS POOL
+                      {isMr ? 'या पूलमधील सहभागी शेतकरी' : isHi ? 'इस पूल में योगदानकर्ता किसान' : 'FARMER CONTRIBUTIONS IN THIS POOL'}
                     </span>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 text-xs">
                       {pool.contributions.map((c, idx) => (
@@ -284,10 +286,10 @@ export default function FPOPoolsPage() {
             <div className="flex items-start justify-between pb-3 border-b border-stone-100 dark:border-emerald-900/30">
               <div>
                 <h3 className="text-base font-black text-stone-900 dark:text-stone-100">
-                  Launch New FPO Batch Pool
+                  {t('fpo_modal_create_pool_title', 'Launch New FPO Batch Pool')}
                 </h3>
                 <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
-                  Set capacity target, destination mandi, asking price, and collection cutoff.
+                  {isMr ? 'लक्ष्य क्षमता, गंतव्य बाजार, अपेक्षित दर आणि संकलन वेळ निश्चित करा.' : isHi ? 'लक्ष्य क्षमता, गंतव्य मंडी, अपेक्षित दर और संग्रह समय तय करें।' : 'Set capacity target, destination mandi, asking price, and collection cutoff.'}
                 </p>
               </div>
               <button
@@ -301,25 +303,29 @@ export default function FPOPoolsPage() {
             <form onSubmit={handleCreatePool} className="space-y-3.5 text-xs">
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-stone-700 dark:text-stone-300">Crop</label>
+                  <label className="text-xs font-bold text-stone-700 dark:text-stone-300">
+                    {t('fpo_modal_crop_name', 'Crop')}
+                  </label>
                   <select
                     value={formData.crop}
                     onChange={(e) => setFormData({ ...formData, crop: e.target.value })}
                     className="w-full px-3 py-2 text-xs rounded-xl bg-stone-50 dark:bg-[#182b1c] border border-stone-300 dark:border-emerald-800 text-stone-900 dark:text-stone-100 font-semibold focus:outline-[#255919]"
                   >
-                    <option value="Tomato">Tomato</option>
-                    <option value="Onion">Onion</option>
-                    <option value="Cotton">Cotton</option>
-                    <option value="Soyabean">Soyabean</option>
-                    <option value="Grapes">Grapes</option>
-                    <option value="Pomegranate">Pomegranate</option>
-                    <option value="Turmeric">Turmeric</option>
-                    <option value="Banana">Banana</option>
+                    <option value="Tomato">{isMr ? 'टोमॅटो (Tomato)' : isHi ? 'टमाटर (Tomato)' : 'Tomato'}</option>
+                    <option value="Onion">{isMr ? 'कांदा (Onion)' : isHi ? 'प्याज (Onion)' : 'Onion'}</option>
+                    <option value="Cotton">{isMr ? 'कापूस (Cotton)' : isHi ? 'कपास (Cotton)' : 'Cotton'}</option>
+                    <option value="Soyabean">{isMr ? 'सोयाबीन (Soyabean)' : isHi ? 'सोयाबीन (Soyabean)' : 'Soyabean'}</option>
+                    <option value="Grapes">{isMr ? 'द्राक्षे (Grapes)' : isHi ? 'अंगूर (Grapes)' : 'Grapes'}</option>
+                    <option value="Pomegranate">{isMr ? 'डाळिंब (Pomegranate)' : isHi ? 'अनार (Pomegranate)' : 'Pomegranate'}</option>
+                    <option value="Turmeric">{isMr ? 'हळद (Turmeric)' : isHi ? 'हल्दी (Turmeric)' : 'Turmeric'}</option>
+                    <option value="Banana">{isMr ? 'केळी (Banana)' : isHi ? 'केला (Banana)' : 'Banana'}</option>
                   </select>
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-stone-700 dark:text-stone-300">Target Variety</label>
+                  <label className="text-xs font-bold text-stone-700 dark:text-stone-300">
+                    {t('fpo_modal_variety', 'Target Variety')}
+                  </label>
                   <input
                     type="text"
                     value={formData.variety}
@@ -333,7 +339,9 @@ export default function FPOPoolsPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-stone-700 dark:text-stone-300">Target Capacity (kg)</label>
+                  <label className="text-xs font-bold text-stone-700 dark:text-stone-300">
+                    {t('fpo_modal_target_weight_kg', 'Target Capacity (kg)')}
+                  </label>
                   <input
                     type="number"
                     value={formData.targetKg}
@@ -344,7 +352,9 @@ export default function FPOPoolsPage() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-stone-700 dark:text-stone-300">Asking Price (₹/quintal)</label>
+                  <label className="text-xs font-bold text-stone-700 dark:text-stone-300">
+                    {t('fpo_modal_target_price_qtl', 'Asking Price (₹/quintal)')}
+                  </label>
                   <input
                     type="number"
                     value={formData.pricePerQtl}
@@ -357,7 +367,9 @@ export default function FPOPoolsPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-stone-700 dark:text-stone-300">Destination Market</label>
+                  <label className="text-xs font-bold text-stone-700 dark:text-stone-300">
+                    {t('fpo_modal_dest_mandi', 'Destination Market')}
+                  </label>
                   <input
                     type="text"
                     value={formData.destinationMandi}
@@ -368,7 +380,9 @@ export default function FPOPoolsPage() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-stone-700 dark:text-stone-300">Closing Cutoff (Hours)</label>
+                  <label className="text-xs font-bold text-stone-700 dark:text-stone-300">
+                    {t('fpo_modal_cutoff_hrs', 'Closing Cutoff (Hours)')}
+                  </label>
                   <input
                     type="number"
                     value={formData.cutoffHours}
@@ -385,13 +399,13 @@ export default function FPOPoolsPage() {
                   onClick={() => setIsCreateOpen(false)}
                   className="py-2.5 px-4 rounded-xl border border-stone-300 dark:border-emerald-800 text-stone-700 dark:text-stone-300 font-bold text-xs hover:bg-stone-50 transition cursor-pointer"
                 >
-                  Cancel
+                  {t('cancel', 'Cancel')}
                 </button>
                 <button
                   type="submit"
                   className="py-2.5 px-5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs shadow-md transition cursor-pointer"
                 >
-                  Launch Pool
+                  {t('fpo_modal_launch_btn', 'Launch Pool')}
                 </button>
               </div>
             </form>

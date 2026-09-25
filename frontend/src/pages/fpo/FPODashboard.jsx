@@ -128,14 +128,14 @@ export default function FPODashboard() {
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-extrabold text-xs shadow-md transition cursor-pointer"
           >
             <span>⚠️</span>
-            <span>{pendingLots.length > 0 ? `${pendingLots.length} Lots Pending` : '13 Lots Pending'}</span>
+            <span>{pendingLots.length > 0 ? `${pendingLots.length} ${t('fpo_lots_pending_btn', 'Lots Pending')}` : `13 ${t('fpo_lots_pending_btn', 'Lots Pending')}`}</span>
           </Link>
           <Link
             to="/fpo/verify"
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-emerald-600/40 text-emerald-800 dark:text-emerald-300 bg-emerald-50/80 dark:bg-emerald-950/40 font-bold text-xs hover:bg-emerald-100 transition cursor-pointer"
           >
             <span>☑️</span>
-            <span>{isMr ? 'पडताळणी केंद्र' : isHi ? 'सत्यापन केंद्र' : 'Verify Lots'}</span>
+            <span>{t('fpo_verify_lots_btn', 'Verify Lots')}</span>
           </Link>
         </div>
       </div>
@@ -146,7 +146,7 @@ export default function FPODashboard() {
         <div className="p-4 rounded-2xl border border-amber-200 dark:border-amber-900/40 bg-amber-50/60 dark:bg-amber-950/20 shadow-xs">
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-[11px] font-extrabold text-amber-800 dark:text-amber-300 uppercase tracking-wider">
-              {isMr ? 'प्रलंबित' : isHi ? 'लंबित' : 'PENDING'}
+              {t('fpo_kpi_pending', 'PENDING')}
             </span>
             <span className="text-amber-600">⚠️</span>
           </div>
@@ -154,7 +154,7 @@ export default function FPODashboard() {
             {pendingLots.length || 13}
           </div>
           <p className="text-[11px] text-amber-700 dark:text-amber-400 mt-0.5">
-            {isMr ? 'लॉट पडताळणी बाकी' : isHi ? 'सत्यापन बाकी' : 'Lots awaiting verification'}
+            {t('fpo_kpi_pending_sub', 'Lots awaiting verification')}
           </p>
         </div>
 
@@ -162,7 +162,7 @@ export default function FPODashboard() {
         <div className="p-4 rounded-2xl border border-emerald-200 dark:border-emerald-900/40 bg-emerald-50/60 dark:bg-emerald-950/20 shadow-xs">
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-[11px] font-extrabold text-emerald-800 dark:text-emerald-300 uppercase tracking-wider">
-              {isMr ? 'सत्यापित' : isHi ? 'सत्यापित' : 'VERIFIED'}
+              {t('fpo_kpi_verified', 'VERIFIED')}
             </span>
             <span className="text-emerald-600">🛡️</span>
           </div>
@@ -170,7 +170,7 @@ export default function FPODashboard() {
             {verifiedLots.length || 4}
           </div>
           <p className="text-[11px] text-emerald-700 dark:text-emerald-400 mt-0.5">
-            {isMr ? 'तयार / पूलमध्ये' : isHi ? 'तैयार / पूल में' : 'Ready or Pooled'}
+            {t('fpo_kpi_verified_sub', 'Ready or Pooled')}
           </p>
         </div>
 
@@ -178,7 +178,7 @@ export default function FPODashboard() {
         <div className="p-4 rounded-2xl border border-blue-200 dark:border-blue-900/40 bg-blue-50/60 dark:bg-blue-950/20 shadow-xs">
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-[11px] font-extrabold text-blue-800 dark:text-blue-300 uppercase tracking-wider">
-              {isMr ? 'सक्रिय पूल' : isHi ? 'सक्रिय पूल' : 'ACTIVE POOLS'}
+              {t('fpo_kpi_active_pools', 'ACTIVE POOLS')}
             </span>
             <span className="text-blue-600">📦</span>
           </div>
@@ -186,7 +186,7 @@ export default function FPODashboard() {
             {openPools.length || 10}
           </div>
           <p className="text-[11px] text-blue-700 dark:text-blue-400 mt-0.5">
-            {poolFillPct}% {isMr ? 'सरासरी भरलेले' : isHi ? 'औसत भरा हुआ' : '80% filled on avg'}
+            {poolFillPct}% {t('fpo_kpi_active_pools_sub', 'filled on avg')}
           </p>
         </div>
 
@@ -194,7 +194,7 @@ export default function FPODashboard() {
         <div className="p-4 rounded-2xl border border-purple-200 dark:border-purple-900/40 bg-purple-50/60 dark:bg-purple-950/20 shadow-xs">
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-[11px] font-extrabold text-purple-800 dark:text-purple-300 uppercase tracking-wider">
-              {isMr ? 'सेटलमेंट' : isHi ? 'सेटलमेंट' : 'SETTLED'}
+              {t('fpo_kpi_settled', 'SETTLED')}
             </span>
             <span className="text-purple-600">₹</span>
           </div>
@@ -202,7 +202,7 @@ export default function FPODashboard() {
             ₹9K
           </div>
           <p className="text-[11px] text-purple-700 dark:text-purple-400 mt-0.5">
-            {isMr ? 'एकूण एस्क्रो मुक्त' : isHi ? 'कुल एस्क्रो विमोचित' : 'Total escrow released'}
+            {t('fpo_kpi_settled_sub', 'Total escrow released')}
           </p>
         </div>
       </div>
@@ -234,10 +234,10 @@ export default function FPODashboard() {
                 <div>
                   <h2 className="text-sm font-black text-stone-900 dark:text-stone-100 flex items-center gap-1.5">
                     <span>🧭</span>
-                    <span>FPO Hub &amp; Nearby Mandi Map</span>
+                    <span>{t('fpo_hub_map_title', 'FPO Hub & Nearby Mandi Map')}</span>
                   </h2>
                   <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
-                    Baramati, Pune — Live APMC satellite grid
+                    {t('fpo_hub_map_sub', 'Baramati, Pune — Live APMC satellite grid')}
                   </p>
                 </div>
                 <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
@@ -258,13 +258,13 @@ export default function FPODashboard() {
             <div className="bg-white dark:bg-[#132215] rounded-2xl border border-stone-200 dark:border-emerald-900/40 p-4 shadow-xs space-y-3">
               <div className="flex items-center justify-between pb-2 border-b border-stone-100 dark:border-emerald-900/30">
                 <h3 className="text-xs font-black text-stone-900 dark:text-stone-100 uppercase tracking-wider">
-                  Lots Awaiting Verification
+                  {t('fpo_lots_awaiting_title', 'Lots Awaiting Verification')}
                 </h3>
                 <Link
                   to="/fpo/verify"
                   className="text-[11px] font-extrabold text-[#255919] dark:text-[#D1BF4B] hover:underline flex items-center gap-1"
                 >
-                  <span>View All</span>
+                  <span>{t('fpo_view_all', 'View All')}</span>
                   <span>→</span>
                 </Link>
               </div>
@@ -288,7 +288,7 @@ export default function FPODashboard() {
                       to="/fpo/verify"
                       className="px-3 py-1 rounded-lg border border-amber-400 dark:border-amber-600 text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 font-bold text-[11px] hover:bg-amber-100 transition cursor-pointer"
                     >
-                      Review
+                      {t('fpo_review_btn', 'Review')}
                     </Link>
                   </div>
                 ))}
@@ -299,7 +299,7 @@ export default function FPODashboard() {
             <div className="bg-white dark:bg-[#132215] rounded-2xl border border-stone-200 dark:border-emerald-900/40 p-4 shadow-xs space-y-3">
               <div className="pb-2 border-b border-stone-100 dark:border-emerald-900/30">
                 <h3 className="text-xs font-black text-stone-900 dark:text-stone-100 uppercase tracking-wider">
-                  Active Freight Pools
+                  {t('fpo_active_pools_title', 'Active Freight Pools')}
                 </h3>
               </div>
 
@@ -317,7 +317,7 @@ export default function FPODashboard() {
                             ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300'
                             : 'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300'
                         }`}>
-                          {fillPct}% Filled
+                          {fillPct}% {t('fpo_filled_pct', 'Filled')}
                         </span>
                       </div>
 
@@ -342,7 +342,7 @@ export default function FPODashboard() {
             <div className="bg-white dark:bg-[#132215] rounded-2xl border border-stone-200 dark:border-emerald-900/40 p-4 shadow-xs space-y-3">
               <div className="pb-2 border-b border-stone-100 dark:border-emerald-900/30">
                 <h3 className="text-xs font-black text-stone-900 dark:text-stone-100 uppercase tracking-wider">
-                  Nearest APMC Mandis
+                  {t('fpo_nearest_mandis_title', 'Nearest APMC Mandis')}
                 </h3>
               </div>
 
@@ -371,17 +371,17 @@ export default function FPODashboard() {
           <div className="flex items-center justify-between pb-3 border-b border-stone-100 dark:border-emerald-900/30">
             <div>
               <h2 className="text-base font-black text-stone-900 dark:text-stone-100">
-                All Farmer Produce Lots
+                {t('fpo_all_produce_lots', 'All Farmer Produce Lots')}
               </h2>
               <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
-                Review, verify physical weigh-slips, or allocate lots into active freight pools.
+                {t('fpo_all_produce_lots_sub', 'Review, verify physical weigh-slips, or allocate lots into active freight pools.')}
               </p>
             </div>
             <Link
               to="/fpo/verify"
               className="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-xs"
             >
-              Physical Weigh-Slip Queue →
+              {t('fpo_weigh_slip_queue_btn', 'Physical Weigh-Slip Queue →')}
             </Link>
           </div>
 
@@ -416,14 +416,14 @@ export default function FPODashboard() {
                         ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
                         : 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
                     }`}>
-                      {isVerified ? 'Verified' : 'Awaiting Inspection'}
+                      {isVerified ? (isMr ? 'सत्यापित' : isHi ? 'सत्यापित' : 'Verified') : t('fpo_awaiting_inspection', 'Awaiting Inspection')}
                     </span>
                     {isAwaiting && (
                       <Link
                         to="/fpo/verify"
                         className="px-2.5 py-1 rounded-lg border border-amber-400 text-amber-800 bg-amber-50 font-bold text-[11px]"
                       >
-                        Inspect
+                        {t('fpo_inspect_btn', 'Inspect')}
                       </Link>
                     )}
                   </div>
@@ -439,13 +439,13 @@ export default function FPODashboard() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-black text-stone-900 dark:text-stone-100">
-              Active Regional Freight Pools
+              {t('fpo_active_regional_pools', 'Active Regional Freight Pools')}
             </h2>
             <Link
               to="/fpo/pools"
               className="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-xs"
             >
-              + Create / Manage Pools
+              {t('fpo_create_manage_pools', '+ Create / Manage Pools')}
             </Link>
           </div>
 
@@ -490,9 +490,9 @@ export default function FPODashboard() {
                   </div>
 
                   <div className="pt-2 border-t border-stone-100 dark:border-emerald-900/30 flex items-center justify-between text-xs text-stone-500">
-                    <span>{pool.sharedFreightSavingsPct}% Shared Freight Saved</span>
+                    <span>{pool.sharedFreightSavingsPct}% {t('fpo_shared_freight_saved', 'Shared Freight Saved')}</span>
                     <Link to="/fpo/pools" className="text-emerald-700 dark:text-[#D1BF4B] font-bold hover:underline">
-                      Manage →
+                      {t('fpo_manage_btn', 'Manage →')}
                     </Link>
                   </div>
                 </div>
@@ -508,43 +508,43 @@ export default function FPODashboard() {
           <div className="flex items-center justify-between pb-3 border-b border-stone-100 dark:border-emerald-900/30">
             <div>
               <h2 className="text-base font-black text-stone-900 dark:text-stone-100">
-                Logistics &amp; Transport Schedule
+                {t('fpo_logistics_schedule_title', 'Logistics & Transport Schedule')}
               </h2>
               <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
-                Multi-stop pickup routes and consignment weighbridge dispatches.
+                {t('fpo_logistics_schedule_sub', 'Multi-stop pickup routes and consignment weighbridge dispatches.')}
               </p>
             </div>
             <Link
               to="/fpo/logistics"
               className="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-xs"
             >
-              Open Route Optimizer →
+              {t('fpo_route_optimizer_btn', 'Open Route Optimizer →')}
             </Link>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
             <div className="p-3 bg-stone-50 dark:bg-[#182b1c] rounded-xl border border-stone-200 dark:border-emerald-900/40">
-              <span className="text-stone-400 text-[10px] block">Assigned Transport Fleet</span>
+              <span className="text-stone-400 text-[10px] block">{t('fpo_assigned_fleet', 'Assigned Transport Fleet')}</span>
               <strong className="text-stone-900 dark:text-stone-100 text-sm mt-0.5 block">
                 MahaKisan Logistics
               </strong>
               <span className="text-[11px] text-stone-500">MH-12-RN-5821</span>
             </div>
             <div className="p-3 bg-stone-50 dark:bg-[#182b1c] rounded-xl border border-stone-200 dark:border-emerald-900/40">
-              <span className="text-stone-400 text-[10px] block">Current Multi-Stop Loop</span>
+              <span className="text-stone-400 text-[10px] block">{t('fpo_current_loop', 'Current Multi-Stop Loop')}</span>
               <strong className="text-stone-900 dark:text-stone-100 text-sm mt-0.5 block">
                 142.6 km Loop
               </strong>
               <span className="text-[11px] text-emerald-700 dark:text-[#D1BF4B] font-bold">
-                88% Full Utilization
+                88% {t('fpo_full_utilization', 'Full Utilization')}
               </span>
             </div>
             <div className="p-3 bg-stone-50 dark:bg-[#182b1c] rounded-xl border border-stone-200 dark:border-emerald-900/40">
-              <span className="text-stone-400 text-[10px] block">Collective Fuel Savings</span>
+              <span className="text-stone-400 text-[10px] block">{t('fpo_collective_fuel_savings', 'Collective Fuel Savings')}</span>
               <strong className="text-stone-900 dark:text-stone-100 text-sm mt-0.5 block">
-                ₹520 Saved
+                ₹520 {isMr ? 'बचत' : isHi ? 'बचत' : 'Saved'}
               </strong>
-              <span className="text-[11px] text-stone-500">28.5% Cost Reduction</span>
+              <span className="text-[11px] text-stone-500">28.5% {t('fpo_cost_reduction', 'Cost Reduction')}</span>
             </div>
           </div>
         </div>
@@ -553,27 +553,27 @@ export default function FPODashboard() {
       {/* FPO VALUE CHAIN PROGRESS BAR matching Screenshot 4 */}
       <div className="bg-emerald-50/80 dark:bg-[#142617] rounded-2xl p-4 sm:p-5 border border-emerald-200 dark:border-emerald-800/60 shadow-xs">
         <h3 className="font-black text-emerald-950 dark:text-emerald-300 text-xs uppercase tracking-wider mb-3">
-          {isMr ? 'एफपीओ मूल्य साखळी: शेतकरी → बाजार → पेमेंट' : isHi ? 'एफपीओ मूल्य श्रृंखला: किसान → बाजार → भुगतान' : 'FPO VALUE CHAIN: FARMER → MARKET → PAYMENT'}
+          {t('fpo_value_chain_title', 'FPO VALUE CHAIN: FARMER → MARKET → PAYMENT')}
         </h3>
         <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-emerald-800 dark:text-emerald-300">
           <span className="px-3 py-1 rounded-full bg-emerald-700 text-white shadow-xs">
-            {isMr ? 'लॉट संकलन' : isHi ? 'लॉट संकलन' : 'Lot Collection'}
+            {t('fpo_step_lot_collection', 'Lot Collection')}
           </span>
           <span className="text-emerald-500">→</span>
           <span className="px-3 py-1 rounded-full bg-white dark:bg-[#1c331f] text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-700 shadow-2xs">
-            {isMr ? 'AI गुणवत्ता पडताळणी' : isHi ? 'AI गुणवत्ता सत्यापन' : 'AI Quality Verification'}
+            {t('fpo_step_ai_verification', 'AI Quality Verification')}
           </span>
           <span className="text-emerald-500">→</span>
           <span className="px-3 py-1 rounded-full bg-white dark:bg-[#1c331f] text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-700 shadow-2xs">
-            {isMr ? 'पूल एकत्रीकरण' : isHi ? 'पूल एकत्रीकरण' : 'Pool Aggregation'}
+            {t('fpo_step_pool_aggregation', 'Pool Aggregation')}
           </span>
           <span className="text-emerald-500">→</span>
           <span className="px-3 py-1 rounded-full bg-white dark:bg-[#1c331f] text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-700 shadow-2xs">
-            {isMr ? 'APMC / खरेदीदार' : isHi ? 'APMC / खरीदार' : 'APMC / Buyer'}
+            {t('fpo_step_apmc_buyer', 'APMC / Buyer')}
           </span>
           <span className="text-emerald-500">→</span>
           <span className="px-3 py-1 rounded-full bg-white dark:bg-[#1c331f] text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-700 shadow-2xs">
-            {isMr ? 'एस्क्रो सेटलमेंट' : isHi ? 'एस्क्रो सेटलमेंट' : 'Escrow Settlement'}
+            {t('fpo_step_escrow_settlement', 'Escrow Settlement')}
           </span>
         </div>
       </div>

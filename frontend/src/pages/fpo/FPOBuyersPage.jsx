@@ -57,16 +57,16 @@ export default function FPOBuyersPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">
-            Verified B2B Buyers Directory
+            {t('fpo_buyers_page_title', 'Verified B2B Buyers Directory')}
           </h1>
           <p className="text-stone-600 dark:text-stone-400 text-xs sm:text-sm mt-1">
-            Partnered institutional procurers, food retailers, and processing units with pre-verified payment records.
+            {t('fpo_buyers_page_sub', 'Partnered institutional procurers, food retailers, and processing units with pre-verified payment records.')}
           </p>
         </div>
 
         <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-extrabold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 w-fit shrink-0">
           <span>🛡️</span>
-          <span>All Buyers KYC &amp; GSTIN Verified</span>
+          <span>{t('fpo_buyers_kyc_badge', 'All Buyers KYC & GSTIN Verified')}</span>
         </span>
       </div>
 
@@ -102,21 +102,27 @@ export default function FPOBuyersPage() {
               {/* Specs & Requirements */}
               <div className="space-y-3 text-xs">
                 <div>
-                  <span className="text-stone-400 font-bold block text-[10px] uppercase">GSTIN</span>
+                  <span className="text-stone-400 font-bold block text-[10px] uppercase">
+                    {t('fpo_gstin_label', 'GSTIN')}
+                  </span>
                   <span className="font-mono font-bold text-stone-800 dark:text-stone-200">
                     {buyer.gstin}
                   </span>
                 </div>
 
                 <div>
-                  <span className="text-stone-400 font-bold block text-[10px] uppercase">Quality Requirement</span>
+                  <span className="text-stone-400 font-bold block text-[10px] uppercase">
+                    {t('fpo_quality_req_label', 'Quality Requirement')}
+                  </span>
                   <p className="text-stone-700 dark:text-stone-300 mt-0.5 leading-relaxed font-medium">
                     {buyer.qualityRequirement}
                   </p>
                 </div>
 
                 <div>
-                  <span className="text-stone-400 font-bold block text-[10px] uppercase">Payment Settlement Term</span>
+                  <span className="text-stone-400 font-bold block text-[10px] uppercase">
+                    {t('fpo_payment_term_label', 'Payment Settlement Term')}
+                  </span>
                   <p className="text-emerald-700 dark:text-[#D1BF4B] font-bold mt-0.5">
                     {buyer.paymentTerm}
                   </p>
@@ -124,7 +130,7 @@ export default function FPOBuyersPage() {
 
                 <div className="pt-2 border-t border-stone-100 dark:border-emerald-900/30">
                   <span className="text-stone-400 font-bold block text-[10px] uppercase mb-1.5">
-                    Target Commodities
+                    {t('fpo_target_commodities', 'Target Commodities')}
                   </span>
                   <div className="flex flex-wrap gap-1.5">
                     {buyer.cropPreferences.map((crop, idx) => (
@@ -139,9 +145,9 @@ export default function FPOBuyersPage() {
                 </div>
 
                 <div className="bg-stone-50 dark:bg-[#182b1c] p-2.5 rounded-xl border border-stone-200/80 dark:border-emerald-900/40 flex items-center justify-between text-[11px] text-stone-600 dark:text-stone-300">
-                  <span>Verified Historical Volume:</span>
+                  <span>{t('fpo_historical_vol', 'Verified Historical Volume')}:</span>
                   <strong className="text-stone-900 dark:text-stone-100 font-black">
-                    {buyer.tradeVolumeQuintal.toLocaleString()} Quintals
+                    {buyer.tradeVolumeQuintal.toLocaleString()} {isMr ? 'क्विंटल' : isHi ? 'क्विंटल' : 'Quintals'}
                   </strong>
                 </div>
               </div>
@@ -154,7 +160,7 @@ export default function FPOBuyersPage() {
                 className="w-full py-2.5 px-4 rounded-xl border border-stone-300 dark:border-emerald-800 text-stone-800 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-[#203a25] font-black text-xs transition cursor-pointer flex items-center justify-center gap-2"
               >
                 <span>📞</span>
-                <span>Contact</span>
+                <span>{t('fpo_contact_procurement_btn', 'Contact Procurement Desk')}</span>
               </button>
             </div>
           </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import Card from '../components/ui/Card';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
@@ -12,8 +13,12 @@ export default function LoginPage({ onReplayIntro }) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+  const { lang, t } = useLanguage();
   const navigate = useNavigate();
   const cardRef = useRef(null);
+
+  const isMr = lang === 'mr';
+  const isHi = lang === 'hi';
 
   useEffect(() => {
     if (cardRef.current) {
@@ -60,10 +65,10 @@ export default function LoginPage({ onReplayIntro }) {
               🌾
             </div>
             <h2 className="text-2xl font-black text-[#255919] dark:text-[#D1BF4B] tracking-tight">
-              Login to Krishi-Setu
+              {isMr ? 'कृषी-सेतू लॉगिन' : isHi ? 'कृषि-सेतु लॉगिन' : 'Login to Krishi-Setu'}
             </h2>
             <p className="text-stone-600 dark:text-stone-300 text-sm mt-1">
-              Strengthening Market Linkages for Farmers
+              {isMr ? 'शेतकऱ्यांसाठी थेट कृषी बाजार जोडणी' : isHi ? 'किसानों के लिए प्रत्यक्ष कृषि बाजार संपर्क' : 'Strengthening Market Linkages for Farmers'}
             </p>
           </div>
 
@@ -75,7 +80,7 @@ export default function LoginPage({ onReplayIntro }) {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
-              label="Phone Number"
+              label={isMr ? 'मोबाईल नंबर' : isHi ? 'मोबाइल नंबर' : 'Phone Number'}
               type="tel"
               placeholder="e.g. 9876543210"
               value={phone}
@@ -83,7 +88,7 @@ export default function LoginPage({ onReplayIntro }) {
               required
             />
             <Input
-              label="Password"
+              label={isMr ? 'पासवर्ड' : isHi ? 'पासवर्ड' : 'Password'}
               type="password"
               placeholder="••••••••"
               value={password}
@@ -95,22 +100,24 @@ export default function LoginPage({ onReplayIntro }) {
               className="w-full mt-4 bg-gradient-to-r from-[#255919] via-[#3d6f28] to-[#D1BF4B] hover:opacity-95 text-white font-bold py-3 rounded-xl shadow-lg transition-transform active:scale-95 cursor-pointer"
               disabled={loading}
             >
-              {loading ? 'Logging in...' : 'Sign In'}
+              {loading
+                ? (isMr ? 'लॉगिन करत आहे...' : isHi ? 'लॉगिन हो रहा है...' : 'Logging in...')
+                : (isMr ? 'लॉगिन करा' : isHi ? 'लॉगिन करें' : 'Sign In')}
             </Button>
           </form>
 
           <div className="mt-5 text-center text-sm text-stone-600 dark:text-stone-300">
             <p>
-              Don't have an account?{' '}
+              {isMr ? 'खाते नाही का? ' : isHi ? 'खाता नहीं है? ' : "Don't have an account? "}
               <Link to="/register" className="text-[#255919] dark:text-[#D1BF4B] font-bold hover:underline">
-                Register here
+                {isMr ? 'येथे नोंदणी करा' : isHi ? 'यहां पंजीकरण करें' : 'Register here'}
               </Link>
             </p>
           </div>
 
           <div className="mt-6 pt-4 border-t border-stone-200 dark:border-emerald-900/40">
             <p className="text-xs font-semibold text-stone-500 dark:text-stone-400 mb-2 text-center">
-              Quick Click-to-Fill Demo Accounts:
+              {isMr ? 'डेमो खाती (एका क्लिकवर भरा):' : isHi ? 'डेमो खाते (एक क्लिक में भरें):' : 'Quick Click-to-Fill Demo Accounts:'}
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-xs text-center">
               <button
@@ -118,14 +125,14 @@ export default function LoginPage({ onReplayIntro }) {
                 onClick={() => autofillDemo('9876543210', 'farmer')}
                 className="py-1.5 px-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/80 text-emerald-800 dark:text-emerald-300 font-semibold cursor-pointer transition text-xs"
               >
-                Farmer
+                {isMr ? 'शेतकरी' : isHi ? 'किसान' : 'Farmer'}
               </button>
               <button
                 type="button"
                 onClick={() => autofillDemo('9876543220', 'buyer')}
                 className="py-1.5 px-2 rounded-lg bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/80 text-blue-800 dark:text-blue-300 font-semibold cursor-pointer transition text-xs"
               >
-                Buyer
+                {isMr ? 'खरेदीदार' : isHi ? 'खरीदार' : 'Buyer'}
               </button>
               <button
                 type="button"

@@ -72,16 +72,16 @@ export default function FPOLogisticsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">
-            Logistics &amp; Route Optimization
+            {t('fpo_logistics_page_title', 'Logistics & Route Optimization')}
           </h1>
           <p className="text-stone-600 dark:text-stone-400 text-xs sm:text-sm mt-1">
-            Google OR-Tools CVRPTW solver generates optimal farmer pickup sequences and bulk transport dispatches.
+            {t('fpo_logistics_page_sub', 'Google OR-Tools CVRPTW solver generates optimal farmer pickup sequences and bulk transport dispatches.')}
           </p>
         </div>
 
         <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-extrabold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 w-fit shrink-0">
           <span>📉</span>
-          <span>28.5% Freight Cost Reduction vs Solo Vehicles</span>
+          <span>{t('fpo_cost_reduction_badge', '28.5% Freight Cost Reduction vs Solo Vehicles')}</span>
         </span>
       </div>
 
@@ -91,19 +91,19 @@ export default function FPOLogisticsPage() {
           <div>
             <h2 className="text-base font-black text-stone-900 dark:text-stone-100 flex items-center gap-2">
               <span>🧭</span>
-              <span>Optimized Multi-Stop Pickup Sequence ({routePlan.routeId})</span>
+              <span>{t('fpo_optimized_sequence', 'Optimized Multi-Stop Pickup Sequence')} ({routePlan.routeId})</span>
             </h2>
             <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
-              Algorithm: Capacitated Vehicle Routing Problem with Time Windows (CVRPTW)
+              {t('fpo_cvrptw_algo_sub', 'Algorithm: Capacitated Vehicle Routing Problem with Time Windows (CVRPTW)')}
             </p>
           </div>
 
           <div className="flex items-center gap-2 text-xs">
             <span className="bg-white dark:bg-[#132215] border border-stone-200 dark:border-emerald-800 px-2.5 py-1 rounded-lg font-bold text-stone-700 dark:text-stone-200">
-              Vehicle: <strong>{routePlan.vehicle.split(' ')[0]}</strong>
+              {t('fpo_vehicle_label', 'Vehicle')}: <strong>{routePlan.vehicle.split(' ')[0]}</strong>
             </span>
             <span className="bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 font-extrabold px-2.5 py-1 rounded-lg">
-              {routePlan.loadUtilizationPct}% Full
+              {routePlan.loadUtilizationPct}% {t('fpo_full_utilization', 'Full')}
             </span>
           </div>
         </div>
@@ -112,27 +112,37 @@ export default function FPOLogisticsPage() {
           {/* 4 Stats Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
             <div className="bg-stone-50 dark:bg-[#182b1c] p-3 rounded-xl border border-stone-200 dark:border-emerald-900/40">
-              <span className="text-stone-400 text-[10px] uppercase font-bold block">Total Loop Distance</span>
+              <span className="text-stone-400 text-[10px] uppercase font-bold block">
+                {t('fpo_total_loop_dist', 'Total Loop Distance')}
+              </span>
               <strong className="text-stone-900 dark:text-stone-100 text-sm mt-0.5 block">{routePlan.totalDistanceKm} km</strong>
             </div>
             <div className="bg-stone-50 dark:bg-[#182b1c] p-3 rounded-xl border border-stone-200 dark:border-emerald-900/40">
-              <span className="text-stone-400 text-[10px] uppercase font-bold block">Driver Assigned</span>
+              <span className="text-stone-400 text-[10px] uppercase font-bold block">
+                {t('fpo_driver_assigned', 'Driver Assigned')}
+              </span>
               <strong className="text-stone-900 dark:text-stone-100 text-sm mt-0.5 block truncate">{routePlan.driver}</strong>
             </div>
             <div className="bg-stone-50 dark:bg-[#182b1c] p-3 rounded-xl border border-stone-200 dark:border-emerald-900/40">
-              <span className="text-stone-400 text-[10px] uppercase font-bold block">Estimated Route Cost</span>
+              <span className="text-stone-400 text-[10px] uppercase font-bold block">
+                {t('fpo_est_route_cost', 'Estimated Route Cost')}
+              </span>
               <strong className="text-emerald-700 dark:text-[#D1BF4B] text-sm mt-0.5 block">₹{routePlan.estCostInr}</strong>
             </div>
             <div className="bg-stone-50 dark:bg-[#182b1c] p-3 rounded-xl border border-stone-200 dark:border-emerald-900/40">
-              <span className="text-stone-400 text-[10px] uppercase font-bold block">Collective Farmer Savings</span>
-              <strong className="text-emerald-700 dark:text-[#D1BF4B] text-sm mt-0.5 block">₹520 saved on fuel</strong>
+              <span className="text-stone-400 text-[10px] uppercase font-bold block">
+                {t('fpo_farmer_savings', 'Collective Farmer Savings')}
+              </span>
+              <strong className="text-emerald-700 dark:text-[#D1BF4B] text-sm mt-0.5 block">
+                ₹520 {isMr ? 'इंधनावर बचत' : isHi ? 'ईंधन पर बचत' : 'saved on fuel'}
+              </strong>
             </div>
           </div>
 
           {/* Timeline Geolocation Stops */}
           <div className="space-y-2.5">
             <span className="text-[10px] font-black uppercase tracking-wider text-stone-400 block">
-              SCHEDULED PICKUP TIMELINE &amp; GEOLOCATION STOPS
+              {t('fpo_scheduled_stops_title', 'SCHEDULED PICKUP TIMELINE & GEOLOCATION STOPS')}
             </span>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -143,7 +153,7 @@ export default function FPOLogisticsPage() {
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-extrabold text-emerald-800 dark:text-emerald-300 text-xs">
-                      Stop #{stop.stopNumber}
+                      {t('fpo_stop_label', 'Stop')} #{stop.stopNumber}
                     </span>
                     <span className="text-[10px] text-stone-400 font-mono font-bold">{stop.window}</span>
                   </div>
@@ -155,7 +165,7 @@ export default function FPOLogisticsPage() {
                   <div className="pt-2 border-t border-stone-100 dark:border-emerald-900/30 flex items-center justify-between text-[11px] text-stone-500">
                     <span className="font-mono text-[10px]">({stop.lat}, {stop.lng})</span>
                     <strong className="text-stone-900 dark:text-stone-100 font-black">
-                      {stop.pickupKg > 0 ? `+${stop.pickupKg} kg` : 'Hub Unload'}
+                      {stop.pickupKg > 0 ? `+${stop.pickupKg} kg` : (isMr ? 'हब अनलोड' : isHi ? 'हब अनलोड' : 'Hub Unload')}
                     </strong>
                   </div>
                 </div>
@@ -168,7 +178,7 @@ export default function FPOLogisticsPage() {
       {/* Consignments Awaiting Dispatch Section */}
       <div className="space-y-4">
         <h2 className="text-lg font-black text-stone-900 dark:text-stone-100">
-          Consignments Awaiting Dispatch
+          {isMr ? 'प्रेषणासाठी प्रतीक्षेत कन्साइनमेंट' : isHi ? 'प्रेषण प्रतीक्षारत कंसाइनमेंट' : 'Consignments Awaiting Dispatch'}
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -187,7 +197,7 @@ export default function FPOLogisticsPage() {
                         {pool.crop} Pool ({pool.id})
                       </h3>
                       <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
-                        {pool.variety} • Total Weight: <strong>{pool.currentKg} kg</strong>
+                        {pool.variety} • {isMr ? 'एकूण वजन' : isHi ? 'कुल वजन' : 'Total Weight'}: <strong>{pool.currentKg} kg</strong>
                       </p>
                     </div>
 
@@ -196,7 +206,7 @@ export default function FPOLogisticsPage() {
                         ? 'bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300'
                         : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
                     }`}>
-                      {isDispatched ? 'In Transit' : pool.status}
+                      {isDispatched ? t('fpo_dispatched_badge', 'In Transit') : pool.status}
                     </span>
                   </div>
 
@@ -204,21 +214,25 @@ export default function FPOLogisticsPage() {
                     <span className="text-xl">🚚</span>
                     <div>
                       <p className="font-bold text-stone-900 dark:text-stone-100">
-                        Transporter: {pool.transporter?.name || 'MahaKisan Logistics'}
+                        {isMr ? 'वाहतूकदार' : isHi ? 'ट्रांसपोर्टर' : 'Transporter'}: {pool.transporter?.name || 'MahaKisan Logistics'}
                       </p>
                       <p className="text-[11px] text-stone-500 mt-0.5">
-                        {pool.transporter?.vehicleNumber || 'MH-12-RN-5821'} • Contact: {pool.transporter?.contact || '+91 98220 12345'}
+                        {pool.transporter?.vehicleNumber || 'MH-12-RN-5821'} • {isMr ? 'संपर्क' : isHi ? 'संपर्क' : 'Contact'}: {pool.transporter?.contact || '+91 98220 12345'}
                       </p>
                     </div>
                   </div>
 
                   <div className="border-l-2 border-emerald-600 pl-3 ml-1 text-xs space-y-2">
                     <div>
-                      <span className="text-[10px] text-stone-400 font-bold uppercase block">Consolidation Hub</span>
+                      <span className="text-[10px] text-stone-400 font-bold uppercase block">
+                        {isMr ? 'संकलन केंद्र (FPO Hub)' : isHi ? 'संग्रह केंद्र (FPO Hub)' : 'Consolidation Hub'}
+                      </span>
                       <strong className="text-stone-800 dark:text-stone-200">{pool.collectionHub}</strong>
                     </div>
                     <div>
-                      <span className="text-[10px] text-stone-400 font-bold uppercase block">Destination Delivery Point</span>
+                      <span className="text-[10px] text-stone-400 font-bold uppercase block">
+                        {isMr ? 'गंतव्य वितरण ठिकाण' : isHi ? 'गंतव्य वितरण स्थल' : 'Destination Delivery Point'}
+                      </span>
                       <strong className="text-stone-800 dark:text-stone-200">{pool.destinationMandi}</strong>
                     </div>
                   </div>
@@ -236,7 +250,9 @@ export default function FPOLogisticsPage() {
                   >
                     <span>{isDispatched ? '✓' : '🚀'}</span>
                     <span>
-                      {isDispatched ? 'In Transit to Buyer Destination' : 'Mark Dispatch Verified & Generate Weigh-Slip'}
+                      {isDispatched
+                        ? (isMr ? 'खरेदीदाराकडे मार्गस्थ' : isHi ? 'खरीदार गंतव्य की ओर अग्रसर' : 'In Transit to Buyer Destination')
+                        : (isMr ? 'प्रेषण पडताळणी नोंदवा व वजन पावती तयार करा' : isHi ? 'प्रेषण सत्यापन दर्ज करें व वजन पर्ची बनाएं' : 'Mark Dispatch Verified & Generate Weigh-Slip')}
                     </span>
                   </button>
                 </div>

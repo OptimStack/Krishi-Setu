@@ -46,7 +46,7 @@ export default function Navbar({ onToggleSidebar }) {
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             <span className="font-bold text-[#255919] dark:text-[#D1BF4B]">{lastSavedLocation}</span>
             <span className="text-stone-400">|</span>
-            <span className="text-stone-500 dark:text-stone-400">Live APMC Grid: Pune Cluster</span>
+            <span className="text-stone-500 dark:text-stone-400">{t('live_apmc_grid', 'Live APMC Grid: Pune Cluster')}</span>
           </div>
 
           {/* Brand for non-farmer viewports or unauthenticated */}
