@@ -387,7 +387,7 @@ export const DEFAULT_RFQS = [
     min_supply_per_farmer_kg: 100,
     maxPricePerQtl: 2150,
     deliveryHub: "FreshMart Hadapsar Central Warehouse, Pune",
-    status: "Matched with Pool",
+    status: "Farmer Supply in Progress",
     createdAt: "2026-09-07",
     validTill: "2026-09-10",
     fulfillments: [
