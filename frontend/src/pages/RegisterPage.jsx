@@ -75,12 +75,12 @@ export default function RegisterPage() {
   return (
     <div className="flex justify-center items-center min-h-[80vh] py-8 px-4">
       <div ref={cardRef} className="w-full max-w-md">
-        <Card className="shadow-2xl border-white/20 dark:border-emerald-800/40">
+        <Card className="shadow-2xl border-[#D1BF4B]/30 dark:border-emerald-800/40 border-t-4 border-t-[#255919] dark:border-t-[#D1BF4B]">
           <div className="text-center mb-6">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#2A5124]/10 dark:bg-[#D3D67A]/20 text-3xl mb-3">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-[#255919]/15 to-[#D1BF4B]/25 text-3xl mb-3 border border-[#D1BF4B]/30">
               🌱
             </div>
-            <h2 className="text-2xl font-extrabold text-[#2A5124] dark:text-[#D3D67A]">
+            <h2 className="text-2xl font-extrabold text-[#255919] dark:text-[#D1BF4B]">
               Create an Account
             </h2>
             <p className="text-stone-600 dark:text-stone-300 text-sm mt-1">
@@ -147,7 +147,7 @@ export default function RegisterPage() {
                 <label
                   className={`flex items-center justify-center p-3 rounded-lg border cursor-pointer transition-all ${
                     formData.role === 'farmer'
-                      ? 'border-[#2A5124] dark:border-[#D3D67A] bg-[#2A5124]/10 dark:bg-[#D3D67A]/20 font-bold text-[#2A5124] dark:text-[#D3D67A]'
+                      ? 'border-[#255919] dark:border-[#D1BF4B] bg-[#255919]/10 dark:bg-[#D1BF4B]/20 font-bold text-[#255919] dark:text-[#D1BF4B]'
                       : 'border-stone-300 dark:border-stone-700 text-stone-600 dark:text-stone-400'
                   }`}
                 >
@@ -165,7 +165,7 @@ export default function RegisterPage() {
                 <label
                   className={`flex items-center justify-center p-3 rounded-lg border cursor-pointer transition-all ${
                     formData.role === 'buyer'
-                      ? 'border-[#2A5124] dark:border-[#D3D67A] bg-[#2A5124]/10 dark:bg-[#D3D67A]/20 font-bold text-[#2A5124] dark:text-[#D3D67A]'
+                      ? 'border-[#255919] dark:border-[#D1BF4B] bg-[#255919]/10 dark:bg-[#D1BF4B]/20 font-bold text-[#255919] dark:text-[#D1BF4B]'
                       : 'border-stone-300 dark:border-stone-700 text-stone-600 dark:text-stone-400'
                   }`}
                 >
@@ -184,7 +184,7 @@ export default function RegisterPage() {
 
             <Button
               type="submit"
-              className="w-full mt-4 bg-[#2A5124] hover:bg-[#1f3d1b] dark:bg-[#D3D67A] dark:hover:bg-[#c2c56a] dark:text-[#182d15] text-white font-bold py-2.5 rounded-lg shadow-md"
+              className="w-full mt-4 bg-gradient-to-r from-[#255919] via-[#3d6f28] to-[#D1BF4B] hover:opacity-95 text-white font-bold py-2.5 rounded-lg shadow-md cursor-pointer"
               disabled={loading}
             >
               {loading ? 'Creating Account...' : 'Create Account'}
@@ -194,7 +194,7 @@ export default function RegisterPage() {
           <div className="mt-5 text-center text-sm text-stone-600 dark:text-stone-300">
             <p>
               Already have an account?{' '}
-              <Link to="/login" className="text-[#2A5124] dark:text-[#D3D67A] font-bold hover:underline">
+              <Link to="/login" className="text-[#255919] dark:text-[#D1BF4B] font-bold hover:underline">
                 Login here
               </Link>
             </p>

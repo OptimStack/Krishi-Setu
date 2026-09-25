@@ -25,7 +25,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
       ),
     },
     {
-      to: '/farmer/submit-ask#quality',
+      to: '/farmer/grade',
       label: t('grade_crop', 'Grade Crop'),
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -33,72 +33,42 @@ export default function Sidebar({ isOpen, setIsOpen }) {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
         </svg>
       ),
-      customClick: () => {
-        navigate('/farmer/dashboard');
-        setTimeout(() => {
-          document.getElementById('map-forecast-section')?.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-      },
     },
     {
-      to: '/farmer/dashboard#market-prices',
+      to: '/farmer/market',
       label: t('market_prices', 'Market Prices'),
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
         </svg>
       ),
-      customClick: () => {
-        navigate('/farmer/dashboard');
-        setTimeout(() => {
-          document.getElementById('farm-map-section')?.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-      },
     },
     {
-      to: '/farmer/dashboard#sale-advisor',
+      to: '/farmer/advisor',
       label: t('sale_advisor', 'Sale Advisor'),
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
         </svg>
       ),
-      customClick: () => {
-        navigate('/farmer/dashboard');
-        setTimeout(() => {
-          document.getElementById('price-forecast-widget')?.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-      },
     },
     {
-      to: '/farmer/dashboard#pooling',
+      to: '/farmer/pooling',
       label: t('pooling', 'Pooling'),
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
         </svg>
       ),
-      customClick: () => {
-        navigate('/farmer/dashboard');
-        setTimeout(() => {
-          document.getElementById('pool-card-kpi')?.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-      },
     },
     {
-      to: '/farmer/dashboard#products',
+      to: '/farmer/products',
       label: t('my_products', 'My Products'),
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
         </svg>
       ),
-      customClick: () => {
-        navigate('/farmer/dashboard');
-        setTimeout(() => {
-          document.getElementById('recent-lots-section')?.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-      },
     },
     {
       to: '/farmer/payouts',
@@ -131,14 +101,14 @@ export default function Sidebar({ isOpen, setIsOpen }) {
         <div>
           <div className="p-5 border-b border-stone-100 dark:border-emerald-900/30 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#2A5124] text-[#D3D67A] flex items-center justify-center text-xl shadow-md border border-[#D3D67A]/30 shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#255919] to-[#D1BF4B] text-white flex items-center justify-center text-xl shadow-md border border-[#D1BF4B]/40 shrink-0">
                 🌾
               </div>
               <div>
                 <h1 className="font-black text-base tracking-tight text-stone-900 dark:text-stone-100 leading-tight">
                   KrishiSetu AI
                 </h1>
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 block mt-0.5">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#255919] dark:text-[#D1BF4B] block mt-0.5">
                   FPO & MARKET LINKAGE
                 </span>
               </div>
@@ -174,12 +144,12 @@ export default function Sidebar({ isOpen, setIsOpen }) {
                       setIsOpen(false);
                     }}
                     className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-left cursor-pointer ${
-                      isActive && item.to === '/farmer/dashboard' && !item.customClick
-                        ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-[#D3D67A] shadow-xs'
+                      isActive
+                        ? 'bg-[#255919]/10 dark:bg-[#D1BF4B]/15 text-[#255919] dark:text-[#D1BF4B] shadow-xs border border-[#D1BF4B]/40 dark:border-[#D1BF4B]/30'
                         : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-emerald-950/30 hover:text-stone-900 dark:hover:text-stone-100'
                     }`}
                   >
-                    <span className={isActive && item.to === '/farmer/dashboard' && !item.customClick ? 'text-emerald-700 dark:text-[#D3D67A]' : 'text-stone-400 dark:text-stone-500'}>
+                    <span className={isActive ? 'text-[#255919] dark:text-[#D1BF4B]' : 'text-stone-400 dark:text-stone-500'}>
                       {item.icon}
                     </span>
                     <span>{item.label}</span>

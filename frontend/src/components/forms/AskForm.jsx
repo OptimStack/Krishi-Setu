@@ -22,6 +22,39 @@ const FPO_OPTIONS = [
   'Solapur Pulses & Oilseeds FPO Cluster',
 ];
 
+const SAMPLE_PHOTOS = {
+  tomato: {
+    top: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=600&q=80',
+    side: 'https://images.unsplash.com/photo-1561136594-7f68413baa99?auto=format&fit=crop&w=600&q=80',
+    lot: 'https://images.unsplash.com/photo-1546470427-e26264be0b11?auto=format&fit=crop&w=600&q=80',
+  },
+  onion: {
+    top: 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?auto=format&fit=crop&w=600&q=80',
+    side: 'https://images.unsplash.com/photo-1508747703725-719777637510?auto=format&fit=crop&w=600&q=80',
+    lot: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=600&q=80',
+  },
+  potato: {
+    top: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&w=600&q=80',
+    side: 'https://images.unsplash.com/photo-1508747703725-719777637510?auto=format&fit=crop&w=600&q=80',
+    lot: 'https://images.unsplash.com/photo-1590165482129-1b8b27698980?auto=format&fit=crop&w=600&q=80',
+  },
+  soybean: {
+    top: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=600&q=80',
+    side: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80',
+    lot: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80',
+  },
+  wheat: {
+    top: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=600&q=80',
+    side: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80',
+    lot: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80',
+  },
+  cotton: {
+    top: 'https://images.unsplash.com/photo-1606041008023-472dfb5e530f?auto=format&fit=crop&w=600&q=80',
+    side: 'https://images.unsplash.com/photo-1594897030560-692749557a55?auto=format&fit=crop&w=600&q=80',
+    lot: 'https://images.unsplash.com/photo-1606041008023-472dfb5e530f?auto=format&fit=crop&w=600&q=80',
+  },
+};
+
 export default function AskForm({ onSubmit, loading }) {
   const { user } = useAuth();
   const formRef = useRef(null);
@@ -33,9 +66,9 @@ export default function AskForm({ onSubmit, loading }) {
   const [variety, setVariety] = useState('Nashik Red');
   const [expectedDate, setExpectedDate] = useState(new Date().toISOString().split('T')[0]);
 
-  // Section 2: Quality Verification & AI Grading
-  const [photo, setPhoto] = useState(null);
-  const [photoPreview, setPhotoPreview] = useState(null);
+  // Section 2: Quality Verification & 3-Angle AI Photos
+  const [photos, setPhotos] = useState({ top: null, side: null, lot: null });
+  const [photoPreviews, setPhotoPreviews] = useState({ top: null, side: null, lot: null });
   const [certFile, setCertFile] = useState(null);
   const [certNumber, setCertNumber] = useState('');
   const [verificationStatus, setVerificationStatus] = useState('system_ai');
@@ -94,12 +127,27 @@ export default function AskForm({ onSubmit, loading }) {
     }
   }, []);
 
-  const handlePhotoSelect = (e) => {
+  const handlePhotoSelect = (angle, e) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      setPhoto(file);
-      setPhotoPreview(URL.createObjectURL(file));
+      setPhotos((prev) => ({ ...prev, [angle]: file }));
+      setPhotoPreviews((prev) => ({ ...prev, [angle]: URL.createObjectURL(file) }));
     }
+  };
+
+  const handleLoadSamplePhotos = () => {
+    const c = crop.toLowerCase();
+    const sample = SAMPLE_PHOTOS[c] || SAMPLE_PHOTOS.tomato;
+    setPhotoPreviews({
+      top: sample.top,
+      side: sample.side,
+      lot: sample.lot,
+    });
+    setPhotos({
+      top: 'sample_top',
+      side: 'sample_side',
+      lot: 'sample_lot',
+    });
   };
 
   const handleCropChange = (cropId) => {
@@ -187,9 +235,9 @@ export default function AskForm({ onSubmit, loading }) {
     formData.append('packaging', packagingDetails);
     formData.append('upi_id', paymentMethod === 'upi' ? upiId : '');
 
-    if (photo) {
-      formData.append('photo', photo);
-    }
+    if (photos.top) formData.append('photo', photos.top);
+    if (photos.side) formData.append('side_photo', photos.side);
+    if (photos.lot) formData.append('lot_photo', photos.lot);
 
     onSubmit(formData);
   };
@@ -292,27 +340,152 @@ export default function AskForm({ onSubmit, loading }) {
           <span className="text-xs text-stone-400">Step 2 of 10</span>
         </div>
 
-        {/* AI Photo Upload */}
-        <div className="p-4 rounded-xl border border-dashed border-[#2A5124] dark:border-[#D3D67A] bg-emerald-50/50 dark:bg-emerald-950/30">
-          <label className="block text-sm font-bold text-[#2A5124] dark:text-[#D3D67A] mb-1">
-            📸 Upload Produce Photo for Real-Time AI Grading
-          </label>
-          <p className="text-xs text-stone-600 dark:text-stone-300 mb-3">
-            Our automated computer vision algorithm analyzes surface texture, color uniformity, and defect ratios to classify Grade A, B, or C.
-          </p>
+        {/* Multi-Angle AI Photo Upload Manager */}
+        <div className="p-5 rounded-2xl border border-stone-200 dark:border-emerald-800/40 bg-stone-50/50 dark:bg-stone-900/60 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h4 className="text-sm font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
+                <span>📸</span> Multi-Angle AI Quality Assessment Photos (3 Angles)
+              </h4>
+              <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+                Upload 3 standardized camera perspectives to calibrate computer vision size, surface defect %, and color score.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={handleLoadSamplePhotos}
+              className="bg-emerald-100 hover:bg-emerald-200 dark:bg-emerald-950 dark:hover:bg-emerald-900 text-emerald-800 dark:text-emerald-300 font-bold text-xs px-3.5 py-2 rounded-xl border border-emerald-300 dark:border-emerald-700 flex items-center gap-1.5 transition shrink-0 cursor-pointer"
+            >
+              <span>⚡</span> Load 3 Sample Field Photos ({crop.toUpperCase()})
+            </button>
+          </div>
 
-          <div className="flex items-center gap-4">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handlePhotoSelect}
-              className="text-xs text-stone-600 dark:text-stone-300 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-[#2A5124] file:text-white dark:file:bg-[#D3D67A] dark:file:text-[#182d15] cursor-pointer"
-            />
-            {photoPreview && (
-              <div className="relative w-16 h-16 rounded-lg overflow-hidden border border-emerald-400 flex-shrink-0 shadow-xs">
-                <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+            {/* 1. TOP VIEW */}
+            <div className="bg-white dark:bg-stone-800/80 rounded-xl p-3.5 border border-stone-200 dark:border-stone-700 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-stone-800 dark:text-stone-200">
+                  1. Top View (वरचा देखावा)
+                </span>
+                {photoPreviews.top && (
+                  <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 px-1.5 py-0.5 rounded">
+                    ✓ Attached
+                  </span>
+                )}
               </div>
-            )}
+              <p className="text-[11px] text-stone-500 dark:text-stone-400 leading-tight">
+                90° direct overhead shot of a clean flat layer. Analyzes skin texture & color.
+              </p>
+              {photoPreviews.top ? (
+                <div className="relative h-28 w-full rounded-lg overflow-hidden border border-emerald-300">
+                  <img src={photoPreviews.top} alt="Top View" className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPhotos((p) => ({ ...p, top: null }));
+                      setPhotoPreviews((p) => ({ ...p, top: null }));
+                    }}
+                    className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-1 text-[10px] hover:bg-red-600 transition"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ) : (
+                <label className="h-28 border-2 border-dashed border-stone-300 dark:border-stone-600 hover:border-emerald-500 rounded-lg flex flex-col items-center justify-center cursor-pointer transition text-xs text-stone-500 hover:text-emerald-700">
+                  <span>📸 Upload Overhead</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handlePhotoSelect('top', e)}
+                    className="hidden"
+                  />
+                </label>
+              )}
+            </div>
+
+            {/* 2. SIDE VIEW */}
+            <div className="bg-white dark:bg-stone-800/80 rounded-xl p-3.5 border border-stone-200 dark:border-stone-700 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-stone-800 dark:text-stone-200">
+                  2. Side View (बाजूचा देखावा)
+                </span>
+                {photoPreviews.side && (
+                  <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 px-1.5 py-0.5 rounded">
+                    ✓ Attached
+                  </span>
+                )}
+              </div>
+              <p className="text-[11px] text-stone-500 dark:text-stone-400 leading-tight">
+                Horizontal eye-level shot. Measures bulb/fruit caliber, length, diameter, and symmetry.
+              </p>
+              {photoPreviews.side ? (
+                <div className="relative h-28 w-full rounded-lg overflow-hidden border border-emerald-300">
+                  <img src={photoPreviews.side} alt="Side View" className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPhotos((p) => ({ ...p, side: null }));
+                      setPhotoPreviews((p) => ({ ...p, side: null }));
+                    }}
+                    className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-1 text-[10px] hover:bg-red-600 transition"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ) : (
+                <label className="h-28 border-2 border-dashed border-stone-300 dark:border-stone-600 hover:border-emerald-500 rounded-lg flex flex-col items-center justify-center cursor-pointer transition text-xs text-stone-500 hover:text-emerald-700">
+                  <span>📐 Upload Side / Caliber</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handlePhotoSelect('side', e)}
+                    className="hidden"
+                  />
+                </label>
+              )}
+            </div>
+
+            {/* 3. CRATE / LOT VIEW */}
+            <div className="bg-white dark:bg-stone-800/80 rounded-xl p-3.5 border border-stone-200 dark:border-stone-700 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-stone-800 dark:text-stone-200">
+                  3. Crate / Lot View (क्रॅट / ढीग)
+                </span>
+                {photoPreviews.lot && (
+                  <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 px-1.5 py-0.5 rounded">
+                    ✓ Attached
+                  </span>
+                )}
+              </div>
+              <p className="text-[11px] text-stone-500 dark:text-stone-400 leading-tight">
+                Wide 45° angle of the crates or container. Evaluates batch consistency & defect ratio.
+              </p>
+              {photoPreviews.lot ? (
+                <div className="relative h-28 w-full rounded-lg overflow-hidden border border-emerald-300">
+                  <img src={photoPreviews.lot} alt="Crate/Lot View" className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPhotos((p) => ({ ...p, lot: null }));
+                      setPhotoPreviews((p) => ({ ...p, lot: null }));
+                    }}
+                    className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-1 text-[10px] hover:bg-red-600 transition"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ) : (
+                <label className="h-28 border-2 border-dashed border-stone-300 dark:border-stone-600 hover:border-emerald-500 rounded-lg flex flex-col items-center justify-center cursor-pointer transition text-xs text-stone-500 hover:text-emerald-700">
+                  <span>🧺 Upload Crate / Lot</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handlePhotoSelect('lot', e)}
+                    className="hidden"
+                  />
+                </label>
+              )}
+            </div>
           </div>
         </div>
 

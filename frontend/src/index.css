@@ -2,3 +2,115 @@
 @import "leaflet/dist/leaflet.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: 'Open Sans', 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-display: 'Open Sans', 'Lato', sans-serif;
+
+  --color-sap-yellow: #D1BF4B;
+  --color-sap-green: #255919;
+  --color-sap-dark: #1b3d12;
+  --color-sap-light: #e5d878;
+}
+
+body {
+  font-family: 'Open Sans', 'Lato', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Elegant scrollbars and focus highlights */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.3);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.5);
+}
+
+/* KrishiSetu Signature Gradient: Sap Darkish Green (#255919) to Sap Yellowish Gold (#D1BF4B) */
+.bg-krishi-gradient {
+  background: linear-gradient(135deg, #255919 0%, #3d6f28 45%, #D1BF4B 100%);
+}
+
+.bg-krishi-gradient-rev {
+  background: linear-gradient(135deg, #D1BF4B 0%, #768a30 50%, #255919 100%);
+}
+
+.bg-krishi-subtle {
+  background: linear-gradient(135deg, rgba(37, 89, 25, 0.04) 0%, rgba(209, 191, 75, 0.07) 100%);
+}
+
+.dark .bg-krishi-subtle {
+  background: linear-gradient(135deg, rgba(37, 89, 25, 0.18) 0%, rgba(209, 191, 75, 0.08) 100%);
+}
+
+.text-krishi-gradient {
+  background: linear-gradient(135deg, #255919 0%, #8b8026 60%, #D1BF4B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.dark .text-krishi-gradient {
+  background: linear-gradient(135deg, #D1BF4B 0%, #b8e698 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Consistent Elevated Container */
+.krishi-container {
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(229, 231, 235, 0.9);
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 20px -3px rgba(37, 89, 25, 0.05);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+}
+
+.dark .krishi-container {
+  background: rgba(19, 34, 21, 0.96);
+  border: 1px solid rgba(209, 191, 75, 0.18);
+  box-shadow: 0 6px 24px -2px rgba(0, 0, 0, 0.45);
+}
+
+.krishi-container:hover {
+  border-color: rgba(209, 191, 75, 0.4);
+}
+
+/* Interactive Card Micro-Animation */
+.krishi-interactive-card {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.krishi-interactive-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px -4px rgba(37, 89, 25, 0.12);
+  border-color: #D1BF4B;
+}
+
+.dark .krishi-interactive-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.6);
+  border-color: rgba(209, 191, 75, 0.45);
+}
+
+/* Subtle Shimmer & Pulse Animation */
+@keyframes krishi-pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(209, 191, 75, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 16px 2px rgba(37, 89, 25, 0.25);
+  }
+}
+
+.animate-krishi-glow {
+  animation: krishi-pulse-glow 3s infinite ease-in-out;
+}

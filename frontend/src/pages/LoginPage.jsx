@@ -53,12 +53,12 @@ export default function LoginPage({ onReplayIntro }) {
   return (
     <div className="flex justify-center items-center min-h-[80vh] px-4">
       <div ref={cardRef} className="w-full max-w-md">
-        <Card highlight={true} className="shadow-2xl border-[#D3D67A]/30 dark:border-emerald-700/50">
+        <Card highlight={true} className="shadow-2xl border-[#D1BF4B]/30 dark:border-emerald-700/50 border-t-4 border-t-[#255919] dark:border-t-[#D1BF4B]">
           <div className="text-center mb-6">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#2A5124]/10 dark:bg-[#D3D67A]/20 text-3xl mb-3 shadow-inner">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-[#255919]/15 to-[#D1BF4B]/25 text-3xl mb-3 shadow-inner border border-[#D1BF4B]/30">
               🌾
             </div>
-            <h2 className="text-2xl font-black text-[#2A5124] dark:text-[#D3D67A] tracking-tight">
+            <h2 className="text-2xl font-black text-[#255919] dark:text-[#D1BF4B] tracking-tight">
               Login to Krishi-Setu
             </h2>
             <p className="text-stone-600 dark:text-stone-300 text-sm mt-1">
@@ -91,7 +91,7 @@ export default function LoginPage({ onReplayIntro }) {
             />
             <Button
               type="submit"
-              className="w-full mt-4 bg-[#2A5124] hover:bg-[#1f3d1b] dark:bg-[#D3D67A] dark:hover:bg-[#c2c56a] dark:text-[#182d15] text-white font-bold py-3 rounded-xl shadow-lg transition-transform active:scale-95"
+              className="w-full mt-4 bg-gradient-to-r from-[#255919] via-[#3d6f28] to-[#D1BF4B] hover:opacity-95 text-white font-bold py-3 rounded-xl shadow-lg transition-transform active:scale-95 cursor-pointer"
               disabled={loading}
             >
               {loading ? 'Logging in...' : 'Sign In'}
@@ -101,7 +101,7 @@ export default function LoginPage({ onReplayIntro }) {
           <div className="mt-5 text-center text-sm text-stone-600 dark:text-stone-300">
             <p>
               Don't have an account?{' '}
-              <Link to="/register" className="text-[#2A5124] dark:text-[#D3D67A] font-bold hover:underline">
+              <Link to="/register" className="text-[#255919] dark:text-[#D1BF4B] font-bold hover:underline">
                 Register here
               </Link>
             </p>
@@ -135,7 +135,7 @@ export default function LoginPage({ onReplayIntro }) {
               </button>
             </div>
             <p className="text-[11px] text-stone-400 dark:text-stone-500 text-center mt-2">
-              Password for all demo accounts: <code className="text-[#2A5124] dark:text-[#D3D67A] font-mono">demo123</code>
+              Password for all demo accounts: <code className="text-[#255919] dark:text-[#D1BF4B] font-mono">demo123</code>
             </p>
 
             {onReplayIntro && (
@@ -143,7 +143,7 @@ export default function LoginPage({ onReplayIntro }) {
                 <button
                   type="button"
                   onClick={onReplayIntro}
-                  className="inline-flex items-center gap-1.5 text-xs text-[#2A5124] dark:text-[#D3D67A] hover:underline font-semibold cursor-pointer py-1 px-2.5 rounded-full hover:bg-emerald-50 dark:hover:bg-emerald-950/50 transition"
+                  className="inline-flex items-center gap-1.5 text-xs text-[#255919] dark:text-[#D1BF4B] hover:underline font-semibold cursor-pointer py-1 px-2.5 rounded-full hover:bg-emerald-50 dark:hover:bg-emerald-950/50 transition"
                 >
                   <span>🎬</span>
                   <span>Replay Intro Animation</span>

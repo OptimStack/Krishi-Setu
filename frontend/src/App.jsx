@@ -8,6 +8,12 @@ import RegisterPage from './pages/RegisterPage';
 import FarmerDashboard from './pages/farmer/FarmerDashboard';
 import SubmitAskPage from './pages/farmer/SubmitAskPage';
 import PayoutsPage from './pages/farmer/PayoutsPage';
+import MarketPricesPage from './pages/farmer/MarketPricesPage';
+import SaleAdvisorPage from './pages/farmer/SaleAdvisorPage';
+import PoolingPage from './pages/farmer/PoolingPage';
+import FarmerProductsPage from './pages/farmer/FarmerProductsPage';
+import ProductDetailPage from './pages/farmer/ProductDetailPage';
+import GradeCropPage from './pages/farmer/GradeCropPage';
 import BuyerDashboard from './pages/buyer/BuyerDashboard';
 import BrowseBatchesPage from './pages/buyer/BrowseBatchesPage';
 import SubmitBidPage from './pages/buyer/SubmitBidPage';
@@ -44,9 +50,9 @@ function App() {
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-[#F5F8F4] via-[#EBF3EA] to-[#DFEDE1] dark:from-[#071309] dark:via-[#0E1F12] dark:to-[#142617] flex flex-col font-sans text-stone-900 dark:text-stone-100 transition-colors duration-500">
-      {/* Subtle organic ambient glow overlay */}
+      {/* Subtle organic ambient glow overlay with sap green (#255919) and yellowish gold (#D1BF4B) */}
       <div
-        className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-15%,_rgba(42,81,36,0.14),_transparent_70%)] dark:bg-[radial-gradient(ellipse_80%_60%_at_50%_-15%,_rgba(34,197,94,0.08),_transparent_70%)]"
+        className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-15%,_rgba(37,89,25,0.12),_rgba(209,191,75,0.08),_transparent_70%)] dark:bg-[radial-gradient(ellipse_80%_60%_at_50%_-15%,_rgba(37,89,25,0.22),_rgba(209,191,75,0.06),_transparent_70%)]"
         aria-hidden="true"
       />
 
@@ -78,6 +84,12 @@ function App() {
             <Route path="/farmer/*" element={<ProtectedRoute allowedRoles={['farmer']} />}>
               <Route path="dashboard" element={<FarmerDashboard />} />
               <Route path="submit-ask" element={<SubmitAskPage />} />
+              <Route path="grade" element={<GradeCropPage />} />
+              <Route path="market" element={<MarketPricesPage />} />
+              <Route path="advisor" element={<SaleAdvisorPage />} />
+              <Route path="pooling" element={<PoolingPage />} />
+              <Route path="products" element={<FarmerProductsPage />} />
+              <Route path="products/:id" element={<ProductDetailPage />} />
               <Route path="payouts" element={<PayoutsPage />} />
             </Route>
 

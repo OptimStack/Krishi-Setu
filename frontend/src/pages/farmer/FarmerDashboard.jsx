@@ -162,11 +162,12 @@ export default function FarmerDashboard() {
     }
   }, []);
 
-  // Standard recent lots matching screenshot
-  const standardRecentLots = [
+  // Harvest produce lots derived from active listings or realistic lots matching demo
+  const standardHarvestLots = [
     {
-      id: 'lot_tom_1',
-      crop: 'Tomato (Abhinav (Hybrid))',
+      id: 'LOT-TOM-8491',
+      crop: 'Tomato',
+      variety: 'Abhinav (Hybrid)',
       quantityKg: 450,
       lotNumber: 'LOT-TOM-8491',
       date: '9/7/2026',
@@ -174,8 +175,9 @@ export default function FarmerDashboard() {
       grade: 'Grade A',
     },
     {
-      id: 'lot_oni_1',
-      crop: 'Onion (Unhali Red Garva)',
+      id: 'LOT-ONI-3912',
+      crop: 'Onion',
+      variety: 'Unhali Red Garva',
       quantityKg: 1200,
       lotNumber: 'LOT-ONI-3912',
       date: '9/8/2026',
@@ -183,8 +185,9 @@ export default function FarmerDashboard() {
       grade: 'Grade A',
     },
     {
-      id: 'lot_pom_1',
-      crop: 'Pomegranate (Bhagwa Export Grade)',
+      id: 'LOT-POM-7219',
+      crop: 'Pomegranate',
+      variety: 'Bhagwa Export Grade',
       quantityKg: 600,
       lotNumber: 'LOT-POM-7219',
       date: '8/8/2026',
@@ -192,6 +195,8 @@ export default function FarmerDashboard() {
       grade: 'Grade A',
     },
   ];
+
+  const harvestProduceLots = listings.length > 0 ? listings.slice(0, 4) : standardHarvestLots;
 
   // Standard nearby mandis matching screenshot
   const nearbyMandisList = [
@@ -245,7 +250,7 @@ export default function FarmerDashboard() {
 
         <div className="flex items-center gap-3 shrink-0">
           <Link to="/farmer/submit-ask">
-            <button className="bg-[#0b4d26] hover:bg-[#07361b] text-white font-extrabold px-5 py-2.5 rounded-xl shadow-md transition-all hover:scale-[1.02] active:scale-95 flex items-center gap-2 text-xs md:text-sm cursor-pointer border border-[#D3D67A]/30">
+            <button className="bg-gradient-to-r from-[#255919] via-[#3f702b] to-[#D1BF4B] hover:opacity-95 text-white font-extrabold px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all hover:scale-[1.02] active:scale-95 flex items-center gap-2 text-xs md:text-sm cursor-pointer border border-[#D1BF4B]/40">
               <span>📷</span>
               <span>{t('start_selling', 'Start Selling')}</span>
             </button>
@@ -261,9 +266,9 @@ export default function FarmerDashboard() {
       </div>
 
       {/* 2. CURRENT FARM LOCATION CARD (Matching Screenshot) */}
-      <div className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl p-4 md:p-5 border border-stone-200/90 dark:border-emerald-800/40 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl p-4 md:p-5 border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] hover:shadow-md transition-all duration-300">
         <div className="flex items-start sm:items-center gap-3.5">
-          <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-[#D3D67A] border border-emerald-200 dark:border-emerald-800/60 flex items-center justify-center text-lg shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-[#255919] dark:text-[#D1BF4B] border border-emerald-200 dark:border-emerald-800/60 flex items-center justify-center text-lg shrink-0">
             📍
           </div>
           <div>
@@ -283,7 +288,7 @@ export default function FarmerDashboard() {
 
         <button
           onClick={() => setShowLocationModal(true)}
-          className="self-start sm:self-auto text-xs font-bold text-stone-700 dark:text-stone-200 hover:text-emerald-700 dark:hover:text-[#D3D67A] px-3.5 py-2 rounded-xl border border-stone-300 dark:border-emerald-800/60 hover:border-emerald-500 transition cursor-pointer bg-stone-50 dark:bg-[#162719] flex items-center gap-1.5"
+          className="self-start sm:self-auto text-xs font-bold text-stone-700 dark:text-stone-200 hover:text-[#255919] dark:hover:text-[#D1BF4B] px-3.5 py-2 rounded-xl border border-stone-300 dark:border-[#D1BF4B]/40 hover:border-[#D1BF4B] transition cursor-pointer bg-stone-50 dark:bg-[#162719] flex items-center gap-1.5"
         >
           <span>📍</span>
           <span>{t('change_location', 'Change Location')}</span>
@@ -343,12 +348,12 @@ export default function FarmerDashboard() {
       {/* 4. FOUR KPI CARDS (Matching Screenshot) */}
       <div ref={statsRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
         {/* Card 1: Today's Best Net */}
-        <div className="kpi-card bg-white/95 dark:bg-[#132215]/95 p-5 rounded-2xl border border-stone-200/90 dark:border-emerald-800/40 shadow-xs hover:shadow-md transition">
+        <div className="kpi-card bg-white/95 dark:bg-[#132215]/95 p-5 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs hover:shadow-md hover:-translate-y-1 hover:border-[#D1BF4B]/60 transition-all duration-300 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B]">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-stone-600 dark:text-stone-300">
               {t('todays_best_net', "Today's Best Net")}
             </span>
-            <span className="text-emerald-700 dark:text-[#D3D67A] font-bold text-sm">₹</span>
+            <span className="text-[#255919] dark:text-[#D1BF4B] font-bold text-sm">₹</span>
           </div>
           <p className="text-2xl md:text-3xl font-black text-stone-900 dark:text-stone-100 mt-2">
             ₹1,655 <span className="text-sm font-medium text-stone-500">/qtl</span>
@@ -359,28 +364,32 @@ export default function FarmerDashboard() {
         </div>
 
         {/* Card 2: Current Crop Grade */}
-        <div className="kpi-card bg-white/95 dark:bg-[#132215]/95 p-5 rounded-2xl border border-stone-200/90 dark:border-emerald-800/40 shadow-xs hover:shadow-md transition">
+        <Link
+          to="/farmer/grade"
+          className="kpi-card bg-white/95 dark:bg-[#132215]/95 p-5 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs hover:shadow-md hover:-translate-y-1 hover:border-[#D1BF4B]/60 transition-all duration-300 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] block cursor-pointer group"
+        >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-stone-600 dark:text-stone-300">
+            <span className="text-xs font-bold text-stone-600 dark:text-stone-300 group-hover:text-[#255919] dark:group-hover:text-[#D1BF4B] transition-colors">
               {t('current_crop_grade', 'Current Crop Grade')}
             </span>
             <span className="text-emerald-600 dark:text-emerald-400 text-sm">🌱</span>
           </div>
-          <p className="text-2xl md:text-3xl font-black text-emerald-700 dark:text-[#D3D67A] mt-2">
-            Grade A
+          <p className="text-2xl md:text-3xl font-black text-[#255919] dark:text-[#D1BF4B] mt-2 flex items-center justify-between">
+            <span>Grade A</span>
+            <span className="text-xs font-bold text-stone-400 group-hover:text-[#255919] dark:group-hover:text-[#D1BF4B] transition-colors">Grade Now →</span>
           </p>
           <p className="text-xs text-stone-500 dark:text-stone-400 mt-1 font-medium">
             {t('external_ai_estimate', 'External Visual AI Estimate')}
           </p>
-        </div>
+        </Link>
 
         {/* Card 3: Active Pool Progress */}
-        <div id="pool-card-kpi" className="kpi-card bg-white/95 dark:bg-[#132215]/95 p-5 rounded-2xl border border-stone-200/90 dark:border-emerald-800/40 shadow-xs hover:shadow-md transition">
+        <div id="pool-card-kpi" className="kpi-card bg-white/95 dark:bg-[#132215]/95 p-5 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs hover:shadow-md hover:-translate-y-1 hover:border-[#D1BF4B]/60 transition-all duration-300 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B]">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-stone-600 dark:text-stone-300">
               {t('active_pool_progress', 'Active Pool Progress')}
             </span>
-            <span className="text-amber-500 text-sm">🥞</span>
+            <span className="text-[#D1BF4B] text-sm">🥞</span>
           </div>
           <p className="text-2xl md:text-3xl font-black text-stone-900 dark:text-stone-100 mt-2">
             {Math.round(activePool.current_quantity_kg || 0)}{' '}
@@ -388,7 +397,7 @@ export default function FarmerDashboard() {
           </p>
           <div className="w-full bg-stone-100 dark:bg-stone-800 rounded-full h-1.5 mt-2.5 overflow-hidden">
             <div
-              className="bg-gradient-to-r from-amber-500 to-emerald-500 h-1.5 rounded-full transition-all duration-500"
+              className="bg-gradient-to-r from-[#255919] to-[#D1BF4B] h-1.5 rounded-full transition-all duration-500"
               style={{
                 width: `${Math.min(
                   100,
@@ -408,14 +417,14 @@ export default function FarmerDashboard() {
         </div>
 
         {/* Card 4: Pending Payment */}
-        <div className="kpi-card bg-white/95 dark:bg-[#132215]/95 p-5 rounded-2xl border border-stone-200/90 dark:border-emerald-800/40 shadow-xs hover:shadow-md transition">
+        <div className="kpi-card bg-white/95 dark:bg-[#132215]/95 p-5 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs hover:shadow-md hover:-translate-y-1 hover:border-[#D1BF4B]/60 transition-all duration-300 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B]">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-stone-600 dark:text-stone-300">
               {t('pending_payment', 'Pending Payment')}
             </span>
-            <span className="text-emerald-700 dark:text-[#D3D67A] font-bold text-sm">₹</span>
+            <span className="text-[#255919] dark:text-[#D1BF4B] font-bold text-sm">₹</span>
           </div>
-          <p className="text-2xl md:text-3xl font-black text-emerald-700 dark:text-[#D3D67A] mt-2">
+          <p className="text-2xl md:text-3xl font-black text-[#255919] dark:text-[#D1BF4B] mt-2">
             ₹8,420
           </p>
           <p className="text-xs text-stone-500 dark:text-stone-400 mt-1 font-medium">
@@ -425,7 +434,7 @@ export default function FarmerDashboard() {
       </div>
 
       {/* 5. FARM & NEARBY MANDI MAP (Matching Screenshot) */}
-      <div id="farm-map-section">
+      <div id="farm-map-section" className="rounded-2xl overflow-hidden border border-stone-200/90 dark:border-[#D1BF4B]/20 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] shadow-xs hover:shadow-md transition-all duration-300">
         <FarmMandiMap
           isPinDropMode={isMapPinMode}
           onPinDropped={() => setIsMapPinMode(false)}
@@ -433,148 +442,58 @@ export default function FarmerDashboard() {
       </div>
 
       {/* 6. END-TO-END MARKET LINKAGE JOURNEY STEPPER (Matching Screenshot) */}
-      <div className="bg-white/95 dark:bg-[#132215]/95 p-4 md:p-5 rounded-2xl border border-stone-200/90 dark:border-emerald-800/40 shadow-xs overflow-x-auto">
-        <p className="text-[11px] font-black uppercase tracking-wider text-emerald-800 dark:text-[#D3D67A] mb-3">
+      <div className="bg-white/95 dark:bg-[#132215]/95 p-4 md:p-5 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 border-t-2 border-t-[#D1BF4B] shadow-xs hover:shadow-md transition-all duration-300 overflow-x-auto">
+        <p className="text-[11px] font-black uppercase tracking-wider text-[#255919] dark:text-[#D1BF4B] mb-3">
           {t('journey_title', 'END-TO-END MARKET LINKAGE JOURNEY')}
         </p>
 
         <div className="flex items-center gap-2 min-w-max">
-          <span className="bg-[#0b4d26] text-white px-3.5 py-1.5 rounded-full text-xs font-bold shadow-xs">
+          <Link
+            to="/farmer/grade"
+            className="bg-gradient-to-r from-[#255919] to-[#3f702b] text-white px-3.5 py-1.5 rounded-full text-xs font-bold shadow-xs hover:opacity-95 transition"
+          >
             {t('step1', '1. Capture 3 Photos')}
-          </span>
+          </Link>
           <span className="text-stone-400 font-bold">→</span>
 
-          <span className="bg-stone-100 dark:bg-[#172a1a] text-stone-700 dark:text-stone-200 border border-stone-200 dark:border-emerald-800/60 px-3.5 py-1.5 rounded-full text-xs font-semibold">
+          <Link
+            to="/farmer/grade"
+            className="bg-stone-100 hover:bg-emerald-50 dark:bg-[#172a1a] text-stone-700 dark:text-stone-200 border border-stone-200 dark:border-emerald-800/60 px-3.5 py-1.5 rounded-full text-xs font-semibold transition"
+          >
             {t('step2', '2. External AI Grade')}
-          </span>
+          </Link>
           <span className="text-stone-400 font-bold">→</span>
 
-          <span className="bg-stone-100 dark:bg-[#172a1a] text-stone-700 dark:text-stone-200 border border-stone-200 dark:border-emerald-800/60 px-3.5 py-1.5 rounded-full text-xs font-semibold">
+          <Link
+            to="/farmer/market"
+            className="bg-stone-100 hover:bg-emerald-50 dark:bg-[#172a1a] text-stone-700 dark:text-stone-200 border border-stone-200 dark:border-emerald-800/60 px-3.5 py-1.5 rounded-full text-xs font-semibold transition"
+          >
             {t('step3', '3. Net Mandi Compare')}
-          </span>
+          </Link>
           <span className="text-stone-400 font-bold">→</span>
 
-          <span className="bg-stone-100 dark:bg-[#172a1a] text-stone-700 dark:text-stone-200 border border-stone-200 dark:border-emerald-800/60 px-3.5 py-1.5 rounded-full text-xs font-semibold">
+          <Link
+            to="/farmer/pooling"
+            className="bg-stone-100 hover:bg-emerald-50 dark:bg-[#172a1a] text-stone-700 dark:text-stone-200 border border-stone-200 dark:border-emerald-800/60 px-3.5 py-1.5 rounded-full text-xs font-semibold transition"
+          >
             {t('step4', '4. FPO Group Pooling')}
-          </span>
+          </Link>
           <span className="text-stone-400 font-bold">→</span>
 
-          <span className="bg-stone-100 dark:bg-[#172a1a] text-stone-700 dark:text-stone-200 border border-stone-200 dark:border-emerald-800/60 px-3.5 py-1.5 rounded-full text-xs font-semibold">
+          <Link
+            to="/farmer/payouts"
+            className="bg-stone-100 hover:bg-emerald-50 dark:bg-[#172a1a] text-stone-700 dark:text-stone-200 border border-stone-200 dark:border-emerald-800/60 px-3.5 py-1.5 rounded-full text-xs font-semibold transition"
+          >
             {t('step5', '5. Nodal Payout')}
-          </span>
+          </Link>
         </div>
       </div>
 
-      {/* 7. TWO-COLUMN SECTION: RECENT LOTS & NEARBY MANDIS (Matching Screenshot) */}
-      <div id="recent-lots-section" className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left (2 Cols): Recent Lots */}
-        <div className="lg:col-span-2 bg-white/95 dark:bg-[#132215]/95 rounded-2xl p-5 md:p-6 border border-stone-200/90 dark:border-emerald-800/40 shadow-xs flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between gap-3 mb-4">
-              <div>
-                <h3 className="text-base font-bold text-stone-900 dark:text-stone-100">
-                  {t('recent_lots', 'Recent Lots')}
-                </h3>
-                <p className="text-xs text-stone-500 dark:text-stone-400">
-                  {t('recent_lots_subtitle', 'Your active and verified crop lots in the system')}
-                </p>
-              </div>
-
-              <Link
-                to="/farmer/submit-ask"
-                className="text-xs font-bold text-emerald-700 dark:text-[#D3D67A] hover:underline shrink-0"
-              >
-                {t('my_products', 'My Products')} →
-              </Link>
-            </div>
-
-            {/* Standard Screenshot Cards */}
-            <div className="space-y-3">
-              {standardRecentLots.map((lot) => (
-                <div
-                  key={lot.id}
-                  className="p-3.5 rounded-xl border border-stone-200 dark:border-emerald-900/40 bg-stone-50/60 dark:bg-[#162719] flex items-center justify-between gap-3 hover:border-emerald-400 transition"
-                >
-                  <div>
-                    <h4 className="font-bold text-sm text-stone-900 dark:text-stone-100">
-                      {lot.crop} - {lot.quantityKg} kg
-                    </h4>
-                    <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
-                      Lot: {lot.lotNumber} • {lot.date}
-                    </p>
-                  </div>
-
-                  <div className="flex flex-col items-end gap-1">
-                    <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        lot.status === 'Verified'
-                          ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
-                          : lot.status === 'Pooled'
-                          ? 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300'
-                          : 'bg-stone-200 text-stone-700 dark:bg-stone-800 dark:text-stone-300'
-                      }`}
-                    >
-                      {lot.status}
-                    </span>
-                    <span className="text-xs font-semibold text-emerald-700 dark:text-[#D3D67A]">
-                      {lot.grade}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Right (1 Col): Nearby Mandis */}
-        <div className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl p-5 md:p-6 border border-stone-200/90 dark:border-emerald-800/40 shadow-xs">
-          <div className="mb-4">
-            <h3 className="text-base font-bold text-stone-900 dark:text-stone-100">
-              {t('nearby_mandis', 'Nearby Mandis')}
-            </h3>
-            <p className="text-xs text-stone-500 dark:text-stone-400">
-              {t('near_baramati', `Near ${lastSavedLocation.split(',')[0]}`)}
-            </p>
-          </div>
-
-          <div className="space-y-2.5">
-            {nearbyMandisList.map((m) => (
-              <div
-                key={m.name}
-                className="p-3 rounded-xl border border-stone-200 dark:border-emerald-900/40 bg-stone-50/60 dark:bg-[#162719] flex items-center justify-between gap-3"
-              >
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-bold text-xs text-stone-900 dark:text-stone-100">
-                      {m.name}
-                    </span>
-                    {m.status && (
-                      <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
-                        {m.status}
-                      </span>
-                    )}
-                  </div>
-                  <span className="text-[11px] text-stone-500 dark:text-stone-400 block mt-0.5">
-                    🚗 {m.distance} • ⏱️ {m.time}
-                  </span>
-                </div>
-
-                <span className="font-extrabold text-xs text-emerald-700 dark:text-[#D3D67A]">
-                  {m.price}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* 8. PRESERVED FUNCTIONAL MODULES ("don't remove any of the other stuff") */}
-
-      {/* 8A. Direct Buyer Offers Section */}
-      <div id="buyer-offers-section" className="bg-white/95 dark:bg-[#132215]/95 p-5 md:p-6 rounded-2xl border border-stone-200/90 dark:border-emerald-800/40 shadow-lg border-t-2 border-t-amber-500 transition-all">
+      {/* 7. DIRECT BUYER OFFERS SECTION (Moved above Harvest Produce Lots and Nearby Mandis) */}
+      <div id="buyer-offers-section" className="bg-white/95 dark:bg-[#132215]/95 p-5 md:p-6 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs hover:shadow-md border-t-2 border-t-[#D1BF4B] transition-all duration-300">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
           <div className="flex items-center gap-3">
-            <span className="text-2xl p-2 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 rounded-xl border border-amber-200/70 dark:border-amber-800/40">
+            <span className="text-2xl p-2 bg-amber-50 dark:bg-amber-950/40 text-[#D1BF4B] rounded-xl border border-amber-200/70 dark:border-[#D1BF4B]/30">
               🤝
             </span>
             <div>
@@ -612,7 +531,7 @@ export default function FarmerDashboard() {
               return (
                 <div
                   key={bId}
-                  className="p-4 bg-stone-50/70 dark:bg-[#162719] rounded-xl border border-stone-200/90 dark:border-emerald-900/50 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-stone-300 dark:hover:border-emerald-700/60 transition"
+                  className="p-4 bg-stone-50/70 dark:bg-[#162719] rounded-xl border border-stone-200/90 dark:border-emerald-900/50 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-[#D1BF4B]/60 hover:-translate-y-0.5 transition-all duration-200"
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
@@ -630,7 +549,7 @@ export default function FarmerDashboard() {
                       <span>•</span>
                       <span>Quantity: <strong>{formatQuantity(qty)}</strong> ({(qty / 100).toFixed(1)} Qtl)</span>
                       <span>•</span>
-                      <span>Offered Rate: <strong className="text-emerald-700 dark:text-[#D3D67A]">{formatCurrency(price)}/kg</strong></span>
+                      <span>Offered Rate: <strong className="text-[#255919] dark:text-[#D1BF4B]">{formatCurrency(price)}/kg</strong></span>
                     </div>
                     <div className="text-xs text-stone-500 dark:text-stone-400">
                       Total Value: <strong className="text-stone-900 dark:text-stone-100">{formatCurrency(grossAmount)}</strong>
@@ -643,7 +562,7 @@ export default function FarmerDashboard() {
                         type="button"
                         disabled={acceptingBidId === bId}
                         onClick={() => handleAcceptBid(bid, matchingListing)}
-                        className="bg-[#2A5124] hover:bg-[#1c3917] dark:bg-[#D3D67A] dark:hover:bg-[#c2c56a] text-white dark:text-[#1c3618] font-bold text-xs px-4 py-2.5 rounded-xl shadow transition active:scale-95 cursor-pointer disabled:opacity-50"
+                        className="bg-gradient-to-r from-[#255919] to-[#D1BF4B] hover:opacity-95 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-md transition active:scale-95 cursor-pointer disabled:opacity-50"
                       >
                         {acceptingBidId === bId ? 'Accepting...' : `Accept Offer (${formatCurrency(grossAmount)})`}
                       </button>
@@ -660,164 +579,273 @@ export default function FarmerDashboard() {
         )}
       </div>
 
-      {/* 8B. Complete Harvest Produce Listings Table */}
-      <Card highlight={true} className="border-[#D3D67A]/30 dark:border-emerald-800/50 shadow-xl border-t-2 border-t-[#2A5124] dark:border-t-[#D3D67A]">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+      {/* 8. MERGED UNIFIED HARVEST PRODUCE LOTS & NEARBY MANDIS */}
+      <div id="harvest-lots-section" className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left (2 Cols): Unified "Your Harvest Produce Lots" */}
+        <div className="lg:col-span-2 bg-white/95 dark:bg-[#132215]/95 rounded-2xl p-5 md:p-6 border border-stone-200/90 dark:border-[#D1BF4B]/25 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B]">
           <div>
-            <h3 className="text-lg font-bold text-stone-900 dark:text-stone-100">
-              {t('your_harvest_listings', 'Your Harvest Produce Lots')}
-            </h3>
-            <p className="text-xs text-stone-500 dark:text-stone-400">
-              Manage your listed crops, active double-auction bids, and settlement payouts
-            </p>
-          </div>
+            {/* Header: Title, Description, Status Tabs & CTAs */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-stone-100 dark:border-stone-800/60">
+              <div>
+                <h3 className="text-base font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
+                  <span>🌾 {t('your_harvest_produce_lots', 'Your Harvest Produce Lots')}</span>
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#255919]/10 text-[#255919] dark:bg-[#D1BF4B]/15 dark:text-[#D1BF4B] border border-[#D1BF4B]/30">
+                    {filteredListings.length > 0 ? filteredListings.length : harvestProduceLots.length} {filteredListings.length === 1 ? 'Lot' : 'Lots'}
+                  </span>
+                </h3>
+                <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+                  {t('your_harvest_produce_lots_desc', 'Your active, graded, and verified harvest produce lots in the system')}
+                </p>
+              </div>
 
-          {/* Status Filter Tabs */}
-          <div className="flex flex-wrap gap-1 bg-stone-100 dark:bg-stone-800/80 p-1 rounded-lg text-xs font-medium border border-stone-200 dark:border-stone-700/60">
-            {['all', 'open', 'pooled', 'matched', 'settled'].map((st) => (
-              <button
-                key={st}
-                onClick={() => setFilterStatus(st)}
-                className={`px-2.5 py-1 rounded-md capitalize transition cursor-pointer ${
-                  filterStatus === st
-                    ? 'bg-white dark:bg-emerald-800 text-green-900 dark:text-emerald-100 shadow-xs font-semibold'
-                    : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
-                }`}
-              >
-                {st}
-              </button>
-            ))}
+              <div className="flex items-center gap-2.5 shrink-0">
+                <Link
+                  to="/farmer/products"
+                  className="text-xs font-bold text-[#255919] dark:text-[#D1BF4B] hover:underline"
+                >
+                  {t('my_products', 'My Products')} →
+                </Link>
+                <Link
+                  to="/farmer/submit-ask"
+                  className="text-xs font-bold bg-gradient-to-r from-[#255919] to-[#D1BF4B] text-white px-3 py-1.5 rounded-lg shadow-xs hover:opacity-90 transition active:scale-95 flex items-center gap-1"
+                >
+                  <span>+</span>
+                  <span>{t('start_selling', 'New Lot')}</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* Filter Tabs */}
+            <div className="flex flex-wrap items-center gap-1.5 mb-4 bg-stone-100/80 dark:bg-stone-800/60 p-1 rounded-xl text-xs font-medium border border-stone-200/80 dark:border-stone-700/60 w-fit">
+              {['all', 'open', 'pooled', 'matched', 'settled'].map((st) => {
+                const count = st === 'all'
+                  ? (listings.length > 0 ? listings.length : harvestProduceLots.length)
+                  : listings.filter((l) => (l.status || '').toLowerCase() === st).length;
+
+                return (
+                  <button
+                    key={st}
+                    onClick={() => setFilterStatus(st)}
+                    className={`px-3 py-1 rounded-lg capitalize transition-all cursor-pointer flex items-center gap-1.5 ${
+                      filterStatus === st
+                        ? 'bg-gradient-to-r from-[#255919] to-[#3a6e29] text-white shadow-xs font-bold'
+                        : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
+                    }`}
+                  >
+                    <span>{st}</span>
+                    <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                      filterStatus === st ? 'bg-white/20 text-white' : 'bg-stone-200 dark:bg-stone-700 text-stone-600 dark:text-stone-300'
+                    }`}>
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Content List */}
+            {loading ? (
+              <div className="py-10 flex justify-center">
+                <LoadingSpinner />
+              </div>
+            ) : (filteredListings.length === 0 && filterStatus !== 'all') ? (
+              <div className="p-8 text-center bg-stone-50/60 dark:bg-[#162719]/60 rounded-xl border border-dashed border-stone-200 dark:border-stone-700/70">
+                <span className="text-3xl mb-2 block">🌾</span>
+                <h4 className="text-sm font-bold text-stone-800 dark:text-stone-200">
+                  No produce lots currently in '{filterStatus}' state
+                </h4>
+                <p className="text-xs text-stone-500 dark:text-stone-400 mt-1 max-w-sm mx-auto">
+                  Switch filter or submit a new produce listing to list in this category.
+                </p>
+                <div className="mt-3">
+                  <button
+                    onClick={() => setFilterStatus('all')}
+                    className="text-xs font-bold px-3.5 py-1.5 rounded-lg border border-stone-300 dark:border-stone-600 text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition"
+                  >
+                    Show All Lots
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {(filteredListings.length > 0 ? filteredListings : harvestProduceLots).map((lot) => {
+                  const id = lot._id || lot.id;
+                  const qty = parseFloat(lot.quantity_kg || lot.quantityKg || 0);
+                  const askPrice = parseFloat(lot.ask_price_per_kg || 0);
+                  const minPrice = parseFloat(lot.min_acceptable_price_per_kg || askPrice);
+                  const matchingBids = buyerBids.filter(
+                    (b) => (b.crop || '').toLowerCase() === (lot.crop || '').toLowerCase()
+                  );
+                  const cropName = lot.crop + (lot.variety ? ` • ${lot.variety}` : '');
+                  const lotNum = lot.lotNumber || lot.id || `LOT-${(lot.crop || 'CRP').substring(0, 3).toUpperCase()}-101`;
+                  const dateStr = lot.created_at ? formatDate(lot.created_at) : (lot.date || 'Today');
+                  const grade = lot.quality_grade || lot.grade || lot.aiGrade || 'Grade A';
+                  const rawStatus = (lot.status || 'open').toLowerCase();
+
+                  return (
+                    <div
+                      key={id}
+                      className="p-3.5 md:p-4 rounded-xl border border-stone-200/90 dark:border-emerald-900/40 bg-stone-50/70 dark:bg-[#162719] flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-[#D1BF4B]/70 hover:shadow-xs hover:-translate-y-0.5 transition-all duration-200 group"
+                    >
+                      <div className="flex items-center gap-3">
+                        {lot.image_url || lot.coverImageUrl ? (
+                          <img
+                            src={lot.image_url || lot.coverImageUrl}
+                            alt={lot.crop}
+                            className="w-12 h-12 object-cover rounded-xl border border-stone-200 dark:border-emerald-900/60 shrink-0"
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                            }}
+                          />
+                        ) : (
+                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#255919]/15 to-[#D1BF4B]/25 border border-[#D1BF4B]/30 flex items-center justify-center text-xl shrink-0">
+                            🌾
+                          </div>
+                        )}
+
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h4 className="font-bold text-sm text-stone-900 dark:text-stone-100 group-hover:text-[#255919] dark:group-hover:text-[#D1BF4B] transition">
+                              {cropName}
+                            </h4>
+                            <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+                              {grade}
+                            </span>
+                          </div>
+
+                          <div className="text-xs text-stone-500 dark:text-stone-400 mt-0.5 flex flex-wrap items-center gap-2">
+                            <span>Lot: <strong className="font-mono text-stone-700 dark:text-stone-300">{lotNum}</strong></span>
+                            <span>•</span>
+                            <span>Qty: <strong className="text-stone-800 dark:text-stone-200">{formatQuantity(qty)}</strong> ({(qty / 100).toFixed(1)} Qtl)</span>
+                            {askPrice > 0 && (
+                              <>
+                                <span>•</span>
+                                <span>Rate: <strong className="text-[#255919] dark:text-[#D1BF4B]">{formatCurrency(askPrice)}/kg</strong></span>
+                              </>
+                            )}
+                            <span>•</span>
+                            <span>{dateStr}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between sm:justify-end gap-2.5 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-stone-200/60 dark:border-stone-800/60">
+                        {matchingBids.length > 0 && (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300 dark:border-amber-700">
+                            🤝 {matchingBids.length} Offer{matchingBids.length > 1 ? 's' : ''}
+                          </span>
+                        )}
+
+                        <span
+                          className={`text-[10px] font-bold px-2.5 py-1 rounded-full capitalize ${
+                            rawStatus === 'open' || rawStatus === 'verified' || rawStatus === 'published'
+                              ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                              : rawStatus === 'pooled'
+                              ? 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300'
+                              : rawStatus === 'settled'
+                              ? 'bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300'
+                              : 'bg-stone-200 text-stone-700 dark:bg-stone-800 dark:text-stone-300'
+                          }`}
+                        >
+                          {rawStatus}
+                        </span>
+
+                        <div className="flex items-center gap-1.5">
+                          <Link
+                            to={`/farmer/products/${id}`}
+                            className="text-xs font-bold text-stone-700 dark:text-stone-200 hover:text-[#255919] dark:hover:text-[#D1BF4B] px-2.5 py-1 rounded-lg border border-stone-200 dark:border-stone-700 hover:border-[#D1BF4B] transition bg-white dark:bg-[#132215]"
+                          >
+                            View →
+                          </Link>
+
+                          {rawStatus === 'open' && (
+                            <button
+                              onClick={() => handleCancel(id)}
+                              disabled={actionLoading === id}
+                              className="text-xs border border-red-500/30 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/40 px-2 py-1 rounded-lg font-semibold transition cursor-pointer"
+                              title="Cancel listing"
+                            >
+                              {actionLoading === id ? '...' : '✕'}
+                            </button>
+                          )}
+
+                          {rawStatus === 'settled' && (
+                            <Link
+                              to="/farmer/payouts"
+                              className="text-xs text-emerald-700 dark:text-[#D1BF4B] font-bold bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 rounded-lg border border-emerald-200 dark:border-emerald-800 hover:underline"
+                            >
+                              Payout
+                            </Link>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
 
-        {loading ? (
-          <div className="py-12 flex justify-center">
-            <LoadingSpinner />
-          </div>
-        ) : filteredListings.length === 0 ? (
-          <div className="text-center py-12 px-4">
-            <span className="text-4xl mb-3 block">🌾</span>
-            <h4 className="text-base font-semibold text-stone-800 dark:text-stone-200">No produce lots found</h4>
-            <p className="text-stone-500 dark:text-stone-400 text-sm mt-1 max-w-sm mx-auto">
-              {filterStatus === 'all'
-                ? "You haven't listed any produce lots yet. Submit your first harvest lot to discover fair market prices!"
-                : `No produce lots currently in '${filterStatus}' state.`}
-            </p>
-            <div className="mt-4">
-              <Link to="/farmer/submit-ask">
-                <Button>Submit Produce Listing</Button>
+        {/* Right (1 Col): Nearby Mandis */}
+        <div className="bg-white/95 dark:bg-[#132215]/95 rounded-2xl p-5 md:p-6 border border-stone-200/90 dark:border-[#D1BF4B]/25 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between border-t-2 border-t-[#D1BF4B]">
+          <div>
+            <div className="flex items-center justify-between gap-2 mb-4 pb-3 border-b border-stone-100 dark:border-stone-800/60">
+              <div>
+                <h3 className="text-base font-bold text-stone-900 dark:text-stone-100 flex items-center gap-1.5">
+                  <span>🏛️ {t('nearby_mandis', 'Nearby Mandis')}</span>
+                </h3>
+                <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+                  {t('near_baramati', `Near ${lastSavedLocation.split(',')[0]}`)}
+                </p>
+              </div>
+
+              <Link
+                to="/farmer/market"
+                className="text-xs font-bold text-[#255919] dark:text-[#D1BF4B] hover:underline shrink-0"
+              >
+                Compare →
               </Link>
             </div>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead>
-                <tr className="border-b border-stone-200 dark:border-stone-800 text-stone-500 dark:text-stone-400 text-xs uppercase tracking-wider">
-                  <th className="pb-3 font-semibold">Produce</th>
-                  <th className="pb-3 font-semibold">Quantity</th>
-                  <th className="pb-3 font-semibold">Ask / Min</th>
-                  <th className="pb-3 font-semibold">Grade</th>
-                  <th className="pb-3 font-semibold">Offers</th>
-                  <th className="pb-3 font-semibold">Status</th>
-                  <th className="pb-3 font-semibold">Listed On</th>
-                  <th className="pb-3 font-semibold text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-stone-100 dark:divide-stone-800/60">
-                {filteredListings.map((listing) => {
-                  const id = listing._id || listing.id;
-                  const qty = parseFloat(listing.quantity_kg) || 0;
-                  const askPrice = parseFloat(listing.ask_price_per_kg) || 0;
-                  const minPrice = parseFloat(listing.min_acceptable_price_per_kg) || askPrice;
-                  const matchingBids = buyerBids.filter((b) => (b.crop || '').toLowerCase() === (listing.crop || '').toLowerCase());
 
-                  return (
-                    <tr key={id} className="hover:bg-stone-50/70 dark:hover:bg-emerald-950/20 transition">
-                      <td className="py-3.5 pr-2">
-                        <div className="flex items-center gap-3">
-                          {listing.image_url ? (
-                            <img
-                              src={listing.image_url}
-                              alt={listing.crop}
-                              className="w-10 h-10 object-cover rounded-md border border-stone-200 dark:border-stone-700 flex-shrink-0"
-                              onError={(e) => {
-                                e.target.style.display = 'none';
-                              }}
-                            />
-                          ) : (
-                            <div className="w-10 h-10 bg-green-50 dark:bg-emerald-950/60 border border-green-200 dark:border-emerald-800/60 rounded-md flex items-center justify-center text-lg flex-shrink-0">
-                              🌾
-                            </div>
-                          )}
-                          <div>
-                            <span className="font-bold text-stone-900 dark:text-stone-100 block capitalize">{listing.crop}</span>
-                            {listing.variety && (
-                              <span className="text-xs text-stone-500 dark:text-stone-400">{listing.variety}</span>
-                            )}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="py-3.5 whitespace-nowrap">
-                        <span className="font-semibold text-stone-900 dark:text-stone-100">{formatQuantity(qty)}</span>
-                        <span className="text-xs text-stone-400 dark:text-stone-400 block">
-                          {(qty / 100).toFixed(1)} Qtl
+            <div className="space-y-2.5">
+              {nearbyMandisList.map((m) => (
+                <div
+                  key={m.name}
+                  className="p-3 rounded-xl border border-stone-200 dark:border-emerald-900/40 bg-stone-50/70 dark:bg-[#162719] flex items-center justify-between gap-3 hover:border-[#D1BF4B]/60 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
+                >
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-bold text-xs text-stone-900 dark:text-stone-100">
+                        {m.name}
+                      </span>
+                      {m.status && (
+                        <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                          {m.status}
                         </span>
-                      </td>
-                      <td className="py-3.5 whitespace-nowrap">
-                        <span className="font-bold text-green-700 dark:text-[#D3D67A]">{formatCurrency(askPrice)}/kg</span>
-                        {minPrice !== askPrice && (
-                          <span className="text-xs text-stone-400 dark:text-stone-400 block">
-                            Min: {formatCurrency(minPrice)}/kg
-                          </span>
-                        )}
-                      </td>
-                      <td className="py-3.5 whitespace-nowrap">
-                        <StatusBadge status={listing.quality_grade || 'ungraded'} />
-                      </td>
-                      <td className="py-3.5 whitespace-nowrap">
-                        {matchingBids.length > 0 ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
-                            {matchingBids.length} Offer{matchingBids.length > 1 ? 's' : ''}
-                          </span>
-                        ) : (
-                          <span className="text-xs text-stone-400">—</span>
-                        )}
-                      </td>
-                      <td className="py-3.5 whitespace-nowrap">
-                        <StatusBadge status={listing.status} />
-                      </td>
-                      <td className="py-3.5 whitespace-nowrap text-xs text-stone-500 dark:text-stone-400">
-                        {formatDate(listing.created_at)}
-                      </td>
-                      <td className="py-3.5 whitespace-nowrap text-right">
-                        {listing.status === 'open' ? (
-                          <button
-                            onClick={() => handleCancel(id)}
-                            disabled={actionLoading === id}
-                            className="text-xs border border-red-500/40 text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-500/10 px-2.5 py-1 rounded-md font-semibold transition cursor-pointer"
-                          >
-                            {actionLoading === id ? '...' : 'Cancel'}
-                          </button>
-                        ) : listing.status === 'settled' ? (
-                          <Link
-                            to="/farmer/payouts"
-                            className="text-xs text-emerald-700 dark:text-[#D3D67A] font-bold bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 rounded-md border border-emerald-200 dark:border-emerald-800 hover:underline inline-flex items-center gap-1"
-                          >
-                            View Payout →
-                          </Link>
-                        ) : (
-                          <span className="text-xs text-stone-400">—</span>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                      )}
+                    </div>
+                    <span className="text-[11px] text-stone-500 dark:text-stone-400 block mt-0.5">
+                      🚗 {m.distance} • ⏱️ {m.time}
+                    </span>
+                  </div>
+
+                  <span className="font-black text-xs text-[#255919] dark:text-[#D1BF4B]">
+                    {m.price}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
-        )}
-      </Card>
+
+          <div className="mt-4 pt-3 border-t border-stone-100 dark:border-stone-800/60 flex items-center justify-between text-[11px] text-stone-500 dark:text-stone-400">
+            <span>Live MSAMB/AGMARKNET</span>
+            <Link to="/farmer/market" className="font-bold text-[#255919] dark:text-[#D1BF4B] hover:underline">
+              Net Calculator →
+            </Link>
+          </div>
+        </div>
+      </div>
 
       {/* 8C. MANDI PRICE FORECAST & WAREHOUSE FINDER WIDGETS */}
       <div id="map-forecast-section" className="grid grid-cols-1 lg:grid-cols-2 gap-8">

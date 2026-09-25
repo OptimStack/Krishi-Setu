@@ -44,7 +44,7 @@ export default function Navbar({ onToggleSidebar }) {
           {/* Location & APMC Grid Pill matching screenshot */}
           <div className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-stone-100/90 dark:bg-[#132416] text-xs font-semibold text-stone-700 dark:text-stone-200 border border-stone-200 dark:border-emerald-800/40">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span className="font-bold text-emerald-800 dark:text-[#D3D67A]">{lastSavedLocation}</span>
+            <span className="font-bold text-[#255919] dark:text-[#D1BF4B]">{lastSavedLocation}</span>
             <span className="text-stone-400">|</span>
             <span className="text-stone-500 dark:text-stone-400">Live APMC Grid: Pune Cluster</span>
           </div>
@@ -54,7 +54,7 @@ export default function Navbar({ onToggleSidebar }) {
             <Link to="/" className="lg:hidden flex items-center gap-2">
               <span className="text-xl">🌾</span>
               <span className="font-black text-base text-stone-900 dark:text-stone-100">
-                Krishi<span className="text-emerald-600 dark:text-[#D3D67A]">-Setu</span>
+                Krishi<span className="text-[#255919] dark:text-[#D1BF4B]">-Setu</span>
               </span>
             </Link>
           )}

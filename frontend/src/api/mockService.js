@@ -12,9 +12,9 @@
  * - Pooling, double auction, and settlement simulation
  */
 
-const STORAGE_KEY = 'krishisetu_mock_state_v4';
+const STORAGE_KEY = 'krishisetu_mock_state_v5';
 
-// Seed state matching backend/demo_fixtures.json
+// Seed state matching backend/demo_fixtures.json and full product telemetry
 const getInitialState = () => ({
   active_pool: {
     id: 'batch_fpo_pune',
@@ -83,123 +83,333 @@ const getInitialState = () => ({
   ],
   listings: [
     {
-      _id: 'lst_101',
+      _id: 'LOT-BAN-3129',
+      id: 'LOT-BAN-3129',
       farmer_id: 'usr_farmer_1',
       farmer_name: 'Ramesh Patil',
-      crop: 'onion',
-      variety: 'Nashik Red',
-      quantity_kg: 400.0,
-      quantity_remaining_kg: 400.0,
-      ask_price_per_kg: 25.0,
-      min_acceptable_price_per_kg: 23.0,
-      quality_grade: 'A',
-      confidence_score: 0.94,
-      needs_human_review: false,
-      status: 'open',
-      location: { address: 'Niphad, Nashik', geo: [73.9898, 20.0875] },
-      created_at: new Date(Date.now() - 45 * 60000).toISOString(),
-    },
-    {
-      _id: 'lst_102',
-      farmer_id: 'usr_farmer_2',
-      farmer_name: 'Suresh Deshmukh',
-      crop: 'onion',
-      variety: 'Nashik Red',
-      quantity_kg: 350.0,
-      quantity_remaining_kg: 350.0,
-      ask_price_per_kg: 24.5,
-      min_acceptable_price_per_kg: 22.5,
-      quality_grade: 'A',
+      crop: 'Banana',
+      variety: 'Grand Naine (G-9)',
+      quantityKg: 500,
+      quantity_kg: 500,
+      unit: 'metric_ton',
+      askingPricePerQtl: 1800,
+      askingPricePaise: 180000,
+      ask_price_per_kg: 18,
+      quality_grade: 'Grade A',
+      grade: 'Grade A',
+      aiGrade: 'Grade A',
+      confidenceScore: 91,
       confidence_score: 0.91,
-      needs_human_review: false,
+      locationName: 'Baramati FPO Hub #1',
+      location: { address: 'Baramati, Pune', geo: [74.5772, 18.1517] },
+      productStatus: 'PUBLISHED',
+      marketplaceVisibility: 'PUBLIC',
       status: 'open',
-      location: { address: 'Lasalgaon, Nashik', geo: [74.0150, 20.0650] },
-      created_at: new Date(Date.now() - 30 * 60000).toISOString(),
+      harvestDate: '2026-09-25',
+      packagingType: 'Corrugated Plastic Crates (20kg)',
+      created_at: '2026-09-25T10:00:00Z',
+      createdAt: '2026-09-25T10:00:00Z',
+      images: ['/demo/tomato-top.jpg', '/demo/tomato-side.jpg', '/demo/tomato-crate.jpg'],
+      coverImageUrl: '/demo/tomato-top.jpg',
+      qrCode: 'KS-LOT-BAN-3129-DRAFT-BARAMATI',
+      analysis: {
+        blurScore: 146.5,
+        blurPassed: true,
+        brightnessScore: 132.0,
+        brightnessPassed: true,
+        occupancyScore: 84,
+        occupancyPassed: true,
+        pHash: '9a2f7c81b04e',
+        parameters: {
+          sizeUniformity: '94% uniform caliber (38-42 grade) and finger length > 18cm',
+          surfaceDefectsPct: 1.6,
+          ripenessIndex: 'Color stage 2 (Clean Green export stage)',
+          colorScore: '93% Fresh Olive Green',
+        }
+      }
     },
     {
-      _id: 'lst_103',
-      farmer_id: 'usr_farmer_3',
-      farmer_name: 'Santosh Pawar',
-      crop: 'onion',
-      variety: 'Nashik Red',
-      quantity_kg: 250.0,
-      quantity_remaining_kg: 250.0,
-      ask_price_per_kg: 24.0,
-      min_acceptable_price_per_kg: 22.0,
-      quality_grade: 'A',
-      confidence_score: 0.96,
-      needs_human_review: false,
-      status: 'open',
-      location: { address: 'Yeola, Nashik', geo: [73.9500, 20.0400] },
-      created_at: new Date(Date.now() - 15 * 60000).toISOString(),
-    },
-    {
-      _id: 'lst_104',
+      _id: 'LOT-BAN-0822',
+      id: 'LOT-BAN-0822',
       farmer_id: 'usr_farmer_1',
       farmer_name: 'Ramesh Patil',
-      crop: 'tomato',
-      variety: 'Desi Red',
-      quantity_kg: 800.0,
-      quantity_remaining_kg: 800.0,
-      ask_price_per_kg: 28.0,
-      min_acceptable_price_per_kg: 25.0,
-      quality_grade: 'B',
-      confidence_score: 0.58,
-      needs_human_review: true,
-      status: 'open',
-      location: { address: 'Niphad, Nashik', geo: [73.9898, 20.0875] },
-      created_at: new Date(Date.now() - 120 * 60000).toISOString(),
+      crop: 'Banana',
+      variety: 'Grand Naine (G-9)',
+      quantityKg: 500,
+      quantity_kg: 500,
+      unit: 'metric_ton',
+      askingPricePerQtl: 1800,
+      askingPricePaise: 180000,
+      ask_price_per_kg: 18,
+      quality_grade: 'Grade A',
+      grade: 'Grade A',
+      aiGrade: 'Grade A',
+      confidenceScore: 91,
+      confidence_score: 0.91,
+      locationName: 'Baramati FPO Hub #1',
+      location: { address: 'Baramati, Pune', geo: [74.5772, 18.1517] },
+      productStatus: 'DRAFT',
+      marketplaceVisibility: 'PRIVATE',
+      status: 'draft',
+      harvestDate: '2026-09-25',
+      packagingType: 'Corrugated Plastic Crates (20kg)',
+      created_at: '2026-09-25T09:40:00Z',
+      createdAt: '2026-09-25T09:40:00Z',
+      images: ['/demo/tomato-top.jpg', '/demo/tomato-side.jpg', '/demo/tomato-crate.jpg'],
+      coverImageUrl: '/demo/tomato-top.jpg',
+      qrCode: 'KS-LOT-BAN-0822-DRAFT',
+      analysis: {
+        blurScore: 144.2,
+        blurPassed: true,
+        brightnessScore: 130.5,
+        brightnessPassed: true,
+        occupancyScore: 82,
+        occupancyPassed: true,
+        pHash: '8b3e7a91c04f',
+        parameters: {
+          sizeUniformity: '93% uniform caliber (38-42 grade)',
+          surfaceDefectsPct: 1.8,
+          ripenessIndex: 'Color stage 2 (Clean Green export stage)',
+          colorScore: '92% Fresh Olive Green',
+        }
+      }
     },
-    {
-      _id: 'lst_105',
-      farmer_id: 'usr_farmer_2',
-      farmer_name: 'Suresh Deshmukh',
-      crop: 'tomato',
-      variety: 'Hybrid Vaishali',
-      quantity_kg: 2000.0,
-      quantity_remaining_kg: 0.0,
-      ask_price_per_kg: 30.0,
-      min_acceptable_price_per_kg: 28.0,
-      quality_grade: 'B',
-      confidence_score: 0.88,
-      needs_human_review: false,
-      status: 'settled',
-      location: { address: 'Lasalgaon, Nashik', geo: [74.0150, 20.0650] },
-      created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
-    },
-    {
-      _id: 'lst_106',
+    ...[
+      'LOT-BAN-1397', 'LOT-BAN-7132', 'LOT-BAN-5879', 'LOT-BAN-2617',
+      'LOT-BAN-8706', 'LOT-BAN-1781', 'LOT-BAN-9421', 'LOT-BAN-3807',
+      'LOT-BAN-5909', 'LOT-BAN-7193', 'LOT-BAN-0387', 'LOT-BAN-4903'
+    ].map((id, index) => ({
+      _id: id,
+      id: id,
       farmer_id: 'usr_farmer_1',
       farmer_name: 'Ramesh Patil',
-      crop: 'wheat',
-      variety: 'Sharbati Gold',
-      quantity_kg: 1200.0,
-      quantity_remaining_kg: 1200.0,
-      ask_price_per_kg: 28.5,
-      min_acceptable_price_per_kg: 26.0,
-      quality_grade: 'A',
-      confidence_score: 0.95,
-      needs_human_review: false,
-      status: 'open',
-      location: { address: 'Niphad, Nashik', geo: [73.9898, 20.0875] },
-      created_at: new Date(Date.now() - 180 * 60000).toISOString(),
-    },
+      crop: 'Banana',
+      variety: 'Grand Naine (G-9)',
+      quantityKg: 500,
+      quantity_kg: 500,
+      unit: 'metric_ton',
+      askingPricePerQtl: 1800,
+      askingPricePaise: 180000,
+      ask_price_per_kg: 18,
+      quality_grade: 'Grade A',
+      grade: 'Grade A',
+      aiGrade: 'Grade A',
+      confidenceScore: 91,
+      confidence_score: 0.91,
+      locationName: 'Baramati FPO Hub #1',
+      location: { address: 'Baramati, Pune', geo: [74.5772, 18.1517] },
+      productStatus: 'AWAITING_FPO_VERIFICATION',
+      marketplaceVisibility: 'PRIVATE',
+      status: 'submitted',
+      harvestDate: '2026-09-25',
+      packagingType: 'Corrugated Plastic Crates (20kg)',
+      created_at: new Date(Date.now() - (index + 2) * 3600000).toISOString(),
+      createdAt: new Date(Date.now() - (index + 2) * 3600000).toISOString(),
+      images: ['/demo/tomato-top.jpg', '/demo/tomato-side.jpg', '/demo/tomato-crate.jpg'],
+      coverImageUrl: '/demo/tomato-top.jpg',
+      qrCode: `KS-${id}-VERIFY-PENDING`,
+      analysis: {
+        blurScore: 145.0,
+        blurPassed: true,
+        brightnessScore: 131.0,
+        brightnessPassed: true,
+        occupancyScore: 83,
+        occupancyPassed: true,
+        pHash: '9a2f7c81b04e',
+        parameters: {
+          sizeUniformity: '94% uniform caliber (38-42 grade) and finger length > 18cm',
+          surfaceDefectsPct: 1.6,
+          ripenessIndex: 'Color stage 2 (Clean Green export stage)',
+          colorScore: '93% Fresh Olive Green',
+        }
+      }
+    })),
     {
-      _id: 'lst_107',
+      _id: 'LOT-TOM-1076',
+      id: 'LOT-TOM-1076',
       farmer_id: 'usr_farmer_1',
       farmer_name: 'Ramesh Patil',
-      crop: 'soybean',
-      variety: 'JS-335',
-      quantity_kg: 600.0,
-      quantity_remaining_kg: 600.0,
-      ask_price_per_kg: 44.0,
-      min_acceptable_price_per_kg: 41.0,
-      quality_grade: 'A',
-      confidence_score: 0.92,
-      needs_human_review: false,
+      crop: 'Tomato',
+      variety: 'Abhinav (Hybrid)',
+      quantityKg: 500,
+      quantity_kg: 500,
+      unit: 'crates',
+      askingPricePerQtl: 1800,
+      askingPricePaise: 180000,
+      ask_price_per_kg: 18,
+      quality_grade: 'Grade A',
+      grade: 'Grade A',
+      aiGrade: 'Grade A',
+      confidenceScore: 91,
+      confidence_score: 0.91,
+      locationName: 'Baramati FPO Hub #1',
+      location: { address: 'Baramati, Pune', geo: [74.5772, 18.1517] },
+      productStatus: 'PUBLISHED',
+      marketplaceVisibility: 'PUBLIC',
       status: 'open',
-      location: { address: 'Niphad, Nashik', geo: [73.9898, 20.0875] },
-      created_at: new Date(Date.now() - 240 * 60000).toISOString(),
+      harvestDate: '2026-09-25',
+      packagingType: 'Corrugated Plastic Crates (20kg)',
+      created_at: '2026-09-25T08:00:00Z',
+      createdAt: '2026-09-25T08:00:00Z',
+      images: ['/demo/tomato-top.jpg', '/demo/tomato-side.jpg', '/demo/tomato-crate.jpg'],
+      coverImageUrl: '/demo/tomato-top.jpg',
+      qrCode: 'KS-LOT-TOM-1076-LIVE-BARAMATI',
+      analysis: {
+        blurScore: 152.0,
+        blurPassed: true,
+        brightnessScore: 138.0,
+        brightnessPassed: true,
+        occupancyScore: 86,
+        occupancyPassed: true,
+        pHash: 'c4e91a27b8',
+        parameters: {
+          sizeUniformity: '92% within 55-65mm band',
+          surfaceDefectsPct: 1.9,
+          ripenessIndex: 'Breaker to pink stage (optimal shelf life)',
+          colorScore: '95% Uniform Reddish-Orange',
+        }
+      }
+    },
+    {
+      _id: 'LOT-POM-7219',
+      id: 'LOT-POM-7219',
+      farmer_id: 'usr_farmer_1',
+      farmer_name: 'Ramesh Patil',
+      crop: 'Pomegranate',
+      variety: 'Bhagwa Export Grade',
+      quantityKg: 600,
+      quantity_kg: 600,
+      unit: 'kg',
+      askingPricePerQtl: 0,
+      askingPricePaise: 0,
+      ask_price_per_kg: 0,
+      quality_grade: 'Grade A',
+      grade: 'Grade A',
+      aiGrade: 'Grade A',
+      confidenceScore: 93,
+      confidence_score: 0.93,
+      locationName: 'Baramati FPO Yard',
+      location: { address: 'Baramati, Pune', geo: [74.5772, 18.1517] },
+      productStatus: 'DRAFT',
+      marketplaceVisibility: 'PRIVATE',
+      status: 'draft',
+      harvestDate: '2026-09-24',
+      packagingType: 'CFB Export Cartons',
+      created_at: '2026-09-24T16:00:00Z',
+      createdAt: '2026-09-24T16:00:00Z',
+      images: ['/demo/tomato-side.jpg'],
+      coverImageUrl: '/demo/tomato-side.jpg',
+      qrCode: 'KS-LOT-POM-7219-DRAFT',
+      analysis: {
+        blurScore: 148.0,
+        blurPassed: true,
+        brightnessScore: 134.0,
+        brightnessPassed: true,
+        occupancyScore: 81,
+        occupancyPassed: true,
+        pHash: 'd7a12b94f1',
+        parameters: {
+          sizeUniformity: '95% uniform 250g+ calibers',
+          surfaceDefectsPct: 1.2,
+          ripenessIndex: 'Deep ruby red skin, high aril fullness',
+          colorScore: '94% Glossy Crimson',
+        }
+      }
+    },
+    {
+      _id: 'LOT-ONI-5542',
+      id: 'LOT-ONI-5542',
+      farmer_id: 'usr_farmer_1',
+      farmer_name: 'Ramesh Patil',
+      crop: 'Onion',
+      variety: 'Unhali Red Garva',
+      quantityKg: 1200,
+      quantity_kg: 1200,
+      unit: 'kg',
+      askingPricePerQtl: 0,
+      askingPricePaise: 0,
+      ask_price_per_kg: 0,
+      quality_grade: 'Grade A',
+      grade: 'Grade A',
+      aiGrade: 'Grade A',
+      confidenceScore: 89,
+      confidence_score: 0.89,
+      locationName: 'Baramati FPO Yard',
+      location: { address: 'Baramati, Pune', geo: [74.5772, 18.1517] },
+      productStatus: 'IN_POOL',
+      marketplaceVisibility: 'PRIVATE',
+      status: 'open',
+      poolId: 'batch_fpo_pune',
+      harvestDate: '2026-09-23',
+      packagingType: 'Mesh Jute Bags (50kg)',
+      created_at: '2026-09-23T11:00:00Z',
+      createdAt: '2026-09-23T11:00:00Z',
+      images: ['/demo/tomato-crate.jpg'],
+      coverImageUrl: '/demo/tomato-crate.jpg',
+      qrCode: 'KS-LOT-ONI-5542-POOLED-BARAMATI',
+      analysis: {
+        blurScore: 139.0,
+        blurPassed: true,
+        brightnessScore: 128.0,
+        brightnessPassed: true,
+        occupancyScore: 79,
+        occupancyPassed: true,
+        pHash: 'e8b21c43a9',
+        parameters: {
+          sizeUniformity: '55mm-65mm export caliber',
+          surfaceDefectsPct: 2.3,
+          ripenessIndex: 'Cured dry outer skins, tight necks',
+          colorScore: '90% Deep Red',
+        }
+      }
+    },
+    {
+      _id: 'LOT-TOM-8491',
+      id: 'LOT-TOM-8491',
+      farmer_id: 'usr_farmer_1',
+      farmer_name: 'Ramesh Patil',
+      crop: 'Tomato',
+      variety: 'Abhinav (Hybrid)',
+      quantityKg: 450,
+      quantity_kg: 450,
+      unit: 'kg',
+      askingPricePerQtl: 0,
+      askingPricePaise: 0,
+      ask_price_per_kg: 0,
+      quality_grade: 'Grade A',
+      grade: 'Grade A',
+      aiGrade: 'Grade A',
+      confidenceScore: 91,
+      confidence_score: 0.91,
+      locationName: 'Baramati FPO Yard',
+      location: { address: 'Baramati, Pune', geo: [74.5772, 18.1517] },
+      productStatus: 'FPO_VERIFIED',
+      marketplaceVisibility: 'PRIVATE',
+      status: 'verified',
+      verifiedGrade: 'Grade A',
+      verifiedWeightKg: 450,
+      harvestDate: '2026-09-22',
+      packagingType: 'Standard Plastic Crates (20kg)',
+      created_at: '2026-09-22T09:30:00Z',
+      createdAt: '2026-09-22T09:30:00Z',
+      images: ['/demo/tomato-top.jpg', '/demo/tomato-side.jpg'],
+      coverImageUrl: '/demo/tomato-top.jpg',
+      qrCode: 'KS-LOT-TOM-8491-VERIFIED-BARAMATI',
+      analysis: {
+        blurScore: 142.5,
+        blurPassed: true,
+        brightnessScore: 135.0,
+        brightnessPassed: true,
+        occupancyScore: 78.4,
+        occupancyPassed: true,
+        pHash: 'a7c8e19f2b4c8d11',
+        parameters: {
+          sizeUniformity: '92% within 55-65mm band',
+          surfaceDefectsPct: 2.1,
+          ripenessIndex: '85% Table-firm breaker-to-pink',
+          colorScore: 'Optimal uniform red',
+        }
+      }
     }
   ],
   batches: [
@@ -1338,4 +1548,62 @@ export async function executeMockRequest(method, url, data, params) {
     error: null,
   };
 }
+
+export const mockService = {
+  loadState,
+  saveState,
+  getActivePool: () => {
+    const s = loadState();
+    return s.active_pool || s.batches?.find((b) => b.is_active_pool) || {};
+  },
+  updateActivePool: (patch) => {
+    const s = loadState();
+    s.active_pool = { ...(s.active_pool || {}), ...patch };
+    const matchingBatch = s.batches?.find(
+      (b) => b._id === s.active_pool.id || b.is_active_pool
+    );
+    if (matchingBatch) {
+      Object.assign(matchingBatch, patch);
+    }
+    saveState(s);
+    return s.active_pool;
+  },
+  getListings: () => loadState().listings || [],
+  getProductById: (id) => {
+    const listings = loadState().listings || [];
+    return listings.find((l) => l.id === id || l._id === id);
+  },
+  publishProduct: (id) => {
+    const s = loadState();
+    s.listings = (s.listings || []).map((l) =>
+      l.id === id || l._id === id
+        ? { ...l, productStatus: 'PUBLISHED', marketplaceVisibility: 'PUBLIC', status: 'open' }
+        : l
+    );
+    saveState(s);
+    return { success: true };
+  },
+  withdrawProduct: (id) => {
+    const s = loadState();
+    s.listings = (s.listings || []).map((l) =>
+      l.id === id || l._id === id
+        ? { ...l, productStatus: 'WITHDRAWN', marketplaceVisibility: 'PRIVATE', status: 'withdrawn' }
+        : l
+    );
+    saveState(s);
+    return { success: true };
+  },
+  deleteProduct: (id) => {
+    const s = loadState();
+    s.listings = (s.listings || []).filter((l) => l.id !== id && l._id !== id);
+    saveState(s);
+    return { success: true };
+  },
+  getBatches: () => loadState().batches || [],
+  getBids: () => loadState().bids || [],
+  executeMockRequest,
+};
+
+export default mockService;
+
 

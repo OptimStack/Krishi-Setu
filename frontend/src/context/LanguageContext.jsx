@@ -49,9 +49,10 @@ export const translations = {
     step4: '4. FPO Group Pooling',
     step5: '5. Nodal Payout',
 
-    // Sections
     recent_lots: 'Recent Lots',
     recent_lots_subtitle: 'Your active and verified crop lots in the system',
+    your_harvest_produce_lots: 'Your Harvest Produce Lots',
+    your_harvest_produce_lots_desc: 'Your active, graded, and verified harvest produce lots in the system',
     nearby_mandis: 'Nearby Mandis',
     near_baramati: 'Near Baramati Cluster',
     direct_buyer_offers: 'Direct Buyer Offers',
@@ -122,9 +123,10 @@ export const translations = {
     step4: '४. एफपीओ गट संकलन',
     step5: '५. बँक खात्यात थेट पैसे',
 
-    // Sections
     recent_lots: 'नुकतीच नोंदवलेली पिके',
     recent_lots_subtitle: 'तुमच्या सक्रिय आणि पडताळणी झालेल्या पिकांची यादी',
+    your_harvest_produce_lots: 'तुमचे काढणी केलेले पिकांचे लॉट्स',
+    your_harvest_produce_lots_desc: 'तुमचे सक्रिय, प्रतवारी प्रमाणित व तपासणी केलेले पिकांचे लॉट्स',
     nearby_mandis: 'जवळील बाजार समित्या',
     near_baramati: 'बारामती क्लस्टर जवळ',
     direct_buyer_offers: 'खरेदीदारांच्या थेट ऑफर्स',
@@ -195,9 +197,10 @@ export const translations = {
     step4: '४. एफपीओ समूह पूलिंग',
     step5: '५. बैंक खाते में सीधा भुगतान',
 
-    // Sections
     recent_lots: 'हाल की फसलें',
     recent_lots_subtitle: 'प्रणाली में आपकी सक्रिय और सत्यापित फसलें',
+    your_harvest_produce_lots: 'आपकी उपज के पंजीकृत लॉट्स',
+    your_harvest_produce_lots_desc: 'आपके सक्रिय, श्रेणीबद्ध और प्रमाणित फसल लॉट्स',
     nearby_mandis: 'निकटतम मंडियां',
     near_baramati: 'बारामती क्लस्टर के पास',
     direct_buyer_offers: 'खरीदारों के सीधे ऑफर्स',
