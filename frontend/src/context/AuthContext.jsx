@@ -85,6 +85,39 @@ export const AuthProvider = ({ children }) => {
   };
 
 
+  const switchRole = (targetRole) => {
+    let targetUser;
+    if (targetRole === 'fpo') {
+      targetUser = {
+        id: 'usr_fpo_saksham',
+        role: 'fpo',
+        name: 'Saksham FPO',
+        fpoName: 'Baramati Krushi Producer Company Ltd.',
+        phone: '9422088990',
+        kyc_verified: true,
+      };
+    } else if (targetRole === 'buyer') {
+      targetUser = {
+        id: 'usr_buyer_freshmart',
+        role: 'buyer',
+        name: 'FreshMart Foods Pvt. Ltd.',
+        phone: '9876543220',
+        kyc_verified: true,
+      };
+    } else {
+      targetUser = {
+        id: 'usr_farmer_1',
+        role: 'farmer',
+        name: 'Ramesh Patil',
+        phone: '9876543210',
+        kyc_verified: true,
+      };
+    }
+    localStorage.setItem('user', JSON.stringify(targetUser));
+    setUser(targetUser);
+    return targetUser;
+  };
+
   const logout = () => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
@@ -93,7 +126,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, register, logout, switchRole, loading }}>
       {!loading && children}
     </AuthContext.Provider>
   );

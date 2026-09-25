@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import { mockService } from '../../api/mockService';
-import { getStoredPools } from '../../api/fpoData';
+import { getStoredPools, INITIAL_LOGISTICS_ROUTE } from '../../api/fpoData';
 
 export default function PoolingPage() {
   const { lang, t } = useLanguage();
@@ -395,6 +396,82 @@ export default function PoolingPage() {
           </div>
         </div>
       )}
+
+      {/* Live CVRPTW Logistics Pickup Tracking Card */}
+      <div className="bg-white/95 dark:bg-[#132215]/95 border border-stone-200/90 dark:border-emerald-900/40 rounded-2xl p-6 shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-stone-100 dark:border-emerald-900/30 gap-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-xl">🚚</span>
+              <h3 className="font-extrabold text-stone-900 dark:text-stone-100 text-base">
+                {isMr ? 'लाईव्ह शेतकरी माल संकलन व वाहतूक मार्ग (CVRPTW)' : isHi ? 'लाइव किसान संग्रह एवं परिवहन मार्ग (CVRPTW)' : 'Live Multi-Stop Pickup Sequence & Freight Logistics'}
+              </h3>
+            </div>
+            <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+              {isMr
+                ? 'एफपीओ नियुक्त वाहन थेट शेतकऱ्यांच्या शेताजवळून माल संकलित करते व वजन पावती देते.'
+                : isHi
+                ? 'एफपीओ अधिकृत वाहन किसानों से सीधे माल संग्रह करता है और डिजिटल वजन पर्ची जारी करता है।'
+                : 'FPO designated vehicle collects produce directly along the optimized cluster route.'}
+            </p>
+          </div>
+          <Link
+            to="/farmer/logistics"
+            className="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-xs w-fit transition flex items-center gap-1.5"
+          >
+            <span>🗺️</span>
+            <span>{isMr ? 'संपूर्ण वाहतूक मार्ग व डिस्पॅच पहा' : isHi ? 'पूर्ण परिवहन मार्ग व प्रेषण देखें' : 'View Full Logistics & Dispatches'} →</span>
+          </Link>
+        </div>
+
+        {/* 4 Quick Info Badges */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+          <div className="p-3 bg-stone-50 dark:bg-[#182b1c] rounded-xl border border-stone-200 dark:border-emerald-900/40">
+            <span className="text-stone-400 text-[10px] uppercase font-bold block">{isMr ? 'नियुक्त वाहन' : isHi ? 'अधिकृत वाहन' : 'Assigned Fleet'}</span>
+            <strong className="text-stone-900 dark:text-stone-100 text-sm mt-0.5 block truncate">MahaKisan Logistics</strong>
+            <span className="text-[11px] text-stone-500 font-mono">MH-12-RN-5821</span>
+          </div>
+          <div className="p-3 bg-stone-50 dark:bg-[#182b1c] rounded-xl border border-stone-200 dark:border-emerald-900/40">
+            <span className="text-stone-400 text-[10px] uppercase font-bold block">{isMr ? 'चालक व संपर्क' : isHi ? 'चालक एवं संपर्क' : 'Driver & Contact'}</span>
+            <strong className="text-stone-900 dark:text-stone-100 text-sm mt-0.5 block truncate">Vithalrao Shinde</strong>
+            <span className="text-[11px] text-emerald-700 dark:text-[#D1BF4B] font-bold">+91 98223 88120</span>
+          </div>
+          <div className="p-3 bg-stone-50 dark:bg-[#182b1c] rounded-xl border border-stone-200 dark:border-emerald-900/40">
+            <span className="text-stone-400 text-[10px] uppercase font-bold block">{isMr ? 'संकलन वेळ खिडकी' : isHi ? 'संग्रह समय सीमा' : 'Pickup Time Window'}</span>
+            <strong className="text-stone-900 dark:text-stone-100 text-sm mt-0.5 block">06:30 - 07:15 AM</strong>
+            <span className="text-[11px] text-stone-500">Stop #1: Malegaon BK</span>
+          </div>
+          <div className="p-3 bg-stone-50 dark:bg-[#182b1c] rounded-xl border border-stone-200 dark:border-emerald-900/40">
+            <span className="text-stone-400 text-[10px] uppercase font-bold block">{isMr ? 'वाहतूक खर्च बचत' : isHi ? 'ढुलाई बचत' : 'Collective Savings'}</span>
+            <strong className="text-emerald-700 dark:text-[#D1BF4B] text-sm mt-0.5 block">28.5% {isMr ? 'कमी खर्च' : isHi ? 'कम खर्च' : 'Discount'}</strong>
+            <span className="text-[11px] text-stone-500">₹520 {isMr ? 'इंधन बचत' : isHi ? 'ईंधन बचत' : 'Fuel Saved'}</span>
+          </div>
+        </div>
+
+        {/* 3 Stop Sequence Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+          {INITIAL_LOGISTICS_ROUTE.stops.map((stop, idx) => (
+            <div
+              key={idx}
+              className="p-3 bg-stone-50/70 dark:bg-[#182b1c]/60 rounded-xl border border-stone-200 dark:border-emerald-900/40 text-xs space-y-1"
+            >
+              <div className="flex justify-between items-center">
+                <span className="font-extrabold text-emerald-800 dark:text-emerald-300">
+                  {isMr ? 'थांबा' : isHi ? 'स्टॉप' : 'Stop'} #{stop.stopNumber}
+                </span>
+                <span className="text-[10px] text-stone-400 font-mono font-bold">{stop.window}</span>
+              </div>
+              <p className="font-bold text-stone-800 dark:text-stone-200 text-xs truncate">{stop.locationName}</p>
+              <div className="pt-1 border-t border-stone-200/60 dark:border-emerald-900/30 flex justify-between text-[11px] text-stone-500">
+                <span className="font-mono text-[10px]">({stop.lat}, {stop.lng})</span>
+                <strong className="text-stone-800 dark:text-stone-200">
+                  {stop.pickupKg > 0 ? `+${stop.pickupKg} kg` : (isMr ? 'हब अनलोड' : isHi ? 'हब अनलोड' : 'Hub Unload')}
+                </strong>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

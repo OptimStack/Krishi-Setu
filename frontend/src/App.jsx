@@ -96,7 +96,7 @@ function App() {
             <Route path="/login" element={<LoginPage onReplayIntro={() => setShowIntro(true)} />} />
             <Route path="/register" element={<RegisterPage />} />
             
-            <Route path="/farmer/*" element={<ProtectedRoute allowedRoles={['farmer']} />}>
+            <Route path="/farmer/*" element={<ProtectedRoute allowedRoles={['farmer', 'fpo', 'admin']} />}>
               <Route path="dashboard" element={<FarmerDashboard />} />
               <Route path="auction-listing" element={<AuctionListingPage />} />
               <Route path="submit-ask" element={<AuctionListingPage />} />
@@ -109,9 +109,10 @@ function App() {
               <Route path="products" element={<FarmerProductsPage />} />
               <Route path="products/:id" element={<ProductDetailPage />} />
               <Route path="payouts" element={<PayoutsPage />} />
+              <Route path="logistics" element={<FPOLogisticsPage />} />
             </Route>
 
-            <Route path="/buyer/*" element={<ProtectedRoute allowedRoles={['buyer']} />}>
+            <Route path="/buyer/*" element={<ProtectedRoute allowedRoles={['buyer', 'fpo', 'admin']} />}>
               <Route path="dashboard" element={<BuyerMarketplacePage />} />
               <Route path="marketplace" element={<BuyerMarketplacePage />} />
               <Route path="offers" element={<BuyerOffersPage />} />
@@ -124,15 +125,20 @@ function App() {
               <Route path="browse" element={<BrowseBatchesPage />} />
               <Route path="bid/:batchId" element={<SubmitBidPage />} />
               <Route path="submit-bid" element={<SubmitBidPage />} />
+              <Route path="logistics" element={<BuyerDeliveryPage />} />
             </Route>
 
-            <Route path="/fpo/*" element={<ProtectedRoute allowedRoles={['fpo']} />}>
+            <Route path="/fpo/*" element={<ProtectedRoute allowedRoles={['fpo', 'farmer', 'buyer', 'admin']} />}>
               <Route path="" element={<FPODashboard />} />
               <Route path="dashboard" element={<FPODashboard />} />
               <Route path="verify" element={<FPOVerifyPage />} />
               <Route path="pools" element={<FPOPoolsPage />} />
               <Route path="logistics" element={<FPOLogisticsPage />} />
               <Route path="buyers" element={<FPOBuyersPage />} />
+            </Route>
+
+            <Route path="/logistics" element={<ProtectedRoute allowedRoles={['farmer', 'buyer', 'fpo', 'admin']} />}>
+              <Route path="" element={<FPOLogisticsPage />} />
             </Route>
 
             <Route path="/admin/*" element={<ProtectedRoute allowedRoles={['admin']} />}>

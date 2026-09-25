@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 
 export default function Sidebar({ isOpen, setIsOpen }) {
-  const { user, logout } = useAuth();
+  const { user, logout, switchRole } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
@@ -136,6 +136,16 @@ export default function Sidebar({ isOpen, setIsOpen }) {
       ),
     },
     {
+      to: '/farmer/logistics',
+      alias: ['/fpo/logistics', '/farmer/transport', '/logistics'],
+      label: t('fpo_nav_logistics', 'Logistics'),
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+        </svg>
+      ),
+    },
+    {
       to: '/farmer/products',
       label: t('my_products', 'My Products'),
       icon: (
@@ -179,11 +189,11 @@ export default function Sidebar({ isOpen, setIsOpen }) {
     },
     {
       to: '/buyer/delivery',
-      alias: ['/buyer/acceptance'],
-      label: t('buyer_nav_delivery', 'Delivery Acceptance'),
+      alias: ['/buyer/acceptance', '/buyer/logistics'],
+      label: t('buyer_nav_delivery', 'Delivery & Logistics'),
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
         </svg>
       ),
     },
@@ -291,6 +301,60 @@ export default function Sidebar({ isOpen, setIsOpen }) {
               <p className="text-[11px] text-stone-500 dark:text-stone-400 capitalize">
                 {isFpo ? 'Fpo' : (user?.role || (isBuyer ? 'Buyer' : 'Farmer'))}
               </p>
+            </div>
+          </div>
+
+          {/* Quick Portal Switcher */}
+          <div className="bg-stone-50/80 dark:bg-[#111e13] p-2 rounded-xl border border-stone-200/80 dark:border-emerald-900/40">
+            <span className="text-[10px] font-black uppercase tracking-wider text-stone-400 dark:text-stone-500 block mb-1.5 text-center">
+              {t('switch_portal', 'Switch Portal')}
+            </span>
+            <div className="grid grid-cols-3 gap-1 text-[11px] font-extrabold">
+              <button
+                type="button"
+                onClick={() => {
+                  switchRole('farmer');
+                  navigate('/farmer/dashboard');
+                  setIsOpen(false);
+                }}
+                className={`py-1.5 px-1 rounded-lg border transition text-center cursor-pointer ${
+                  !isFpo && !isBuyer
+                    ? 'bg-[#255919] text-white border-[#255919] shadow-xs'
+                    : 'bg-white dark:bg-[#182b1c] text-stone-700 dark:text-stone-300 border-stone-200 dark:border-emerald-900/60 hover:bg-stone-100 dark:hover:bg-emerald-900/30'
+                }`}
+              >
+                🌾 Farmer
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  switchRole('fpo');
+                  navigate('/fpo/dashboard');
+                  setIsOpen(false);
+                }}
+                className={`py-1.5 px-1 rounded-lg border transition text-center cursor-pointer ${
+                  isFpo
+                    ? 'bg-[#255919] text-white border-[#255919] shadow-xs'
+                    : 'bg-white dark:bg-[#182b1c] text-stone-700 dark:text-stone-300 border-stone-200 dark:border-emerald-900/60 hover:bg-stone-100 dark:hover:bg-emerald-900/30'
+                }`}
+              >
+                🏢 FPO
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  switchRole('buyer');
+                  navigate('/buyer/marketplace');
+                  setIsOpen(false);
+                }}
+                className={`py-1.5 px-1 rounded-lg border transition text-center cursor-pointer ${
+                  isBuyer
+                    ? 'bg-[#255919] text-white border-[#255919] shadow-xs'
+                    : 'bg-white dark:bg-[#182b1c] text-stone-700 dark:text-stone-300 border-stone-200 dark:border-emerald-900/60 hover:bg-stone-100 dark:hover:bg-emerald-900/30'
+                }`}
+              >
+                🛒 Buyer
+              </button>
             </div>
           </div>
 

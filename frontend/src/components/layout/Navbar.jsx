@@ -6,7 +6,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useOffline } from '../../context/OfflineContext';
 
 export default function Navbar({ onToggleSidebar }) {
-  const { user, logout } = useAuth();
+  const { user, logout, switchRole } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { lang, setLang, t } = useLanguage();
   const { isOnline, toggleOnline, lastSavedLocation } = useOffline();
@@ -22,6 +22,9 @@ export default function Navbar({ onToggleSidebar }) {
   };
 
   const isFarmer = user?.role === 'farmer';
+
+  const isMr = lang === 'mr';
+  const isHi = lang === 'hi';
 
   return (
     <header className="bg-white dark:bg-[#0c170e] text-stone-900 dark:text-stone-100 border-b border-stone-200/90 dark:border-emerald-900/40 sticky top-0 z-30 transition-colors shadow-2xs">
@@ -60,8 +63,76 @@ export default function Navbar({ onToggleSidebar }) {
           )}
         </div>
 
-        {/* Right Side: The THREE Core Items Specified by User */}
+        {/* Right Side: Switcher, Logistics, Language, Voice, Status */}
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Quick Portal Switcher (Desktop) */}
+          {user && (
+            <div className="hidden lg:inline-flex items-center bg-stone-100 dark:bg-[#142617] rounded-xl p-0.5 border border-stone-300/80 dark:border-emerald-800/50 shadow-2xs text-xs font-bold">
+              <button
+                type="button"
+                onClick={() => {
+                  switchRole('farmer');
+                  navigate('/farmer/dashboard');
+                }}
+                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                  user.role === 'farmer'
+                    ? 'bg-[#255919] text-white shadow-xs'
+                    : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
+                }`}
+                title="Switch to Farmer Portal"
+              >
+                🌾 {isMr ? 'शेतकरी' : isHi ? 'किसान' : 'Farmer'}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  switchRole('fpo');
+                  navigate('/fpo/dashboard');
+                }}
+                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                  user.role === 'fpo'
+                    ? 'bg-[#255919] text-white shadow-xs'
+                    : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
+                }`}
+                title="Switch to FPO Portal"
+              >
+                🏢 FPO
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  switchRole('buyer');
+                  navigate('/buyer/marketplace');
+                }}
+                className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                  user.role === 'buyer'
+                    ? 'bg-[#255919] text-white shadow-xs'
+                    : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
+                }`}
+                title="Switch to Buyer Portal"
+              >
+                🛒 {isMr ? 'खरेदीदार' : isHi ? 'खरीदार' : 'Buyer'}
+              </button>
+            </div>
+          )}
+
+          {/* Quick Logistics Direct Access Pill */}
+          {user && (
+            <button
+              type="button"
+              onClick={() => {
+                if (user.role === 'buyer') navigate('/buyer/delivery');
+                else if (user.role === 'fpo') navigate('/fpo/logistics');
+                else navigate('/farmer/logistics');
+              }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/60 dark:hover:bg-amber-900/60 text-amber-900 dark:text-amber-300 font-extrabold text-xs border border-amber-300/80 dark:border-amber-700/60 transition shadow-2xs cursor-pointer active:scale-95"
+              title="View Logistics & Fleet Dispatch"
+            >
+              <span className="text-sm">🚚</span>
+              <span>{t('fpo_nav_logistics', 'Logistics')}</span>
+            </button>
+          )}
+
           {/* 1. LANGUAGE SWITCHER: English, Hindi, Marathi */}
           <div className="inline-flex items-center bg-stone-100 dark:bg-[#142617] rounded-xl p-0.5 border border-stone-300/80 dark:border-emerald-800/50 shadow-2xs">
             <span className="px-2 text-stone-400 dark:text-stone-500 text-xs hidden md:inline">🌐</span>

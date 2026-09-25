@@ -88,6 +88,7 @@ export const translations = {
     fpo_nav_pools: 'Pool Management',
     fpo_nav_logistics: 'Logistics',
     fpo_nav_buyers: 'Buyers',
+    switch_portal: 'Switch Portal',
 
     // Buyer Marketplace
     b2b_marketplace_title: 'B2B Wholesale Agri Marketplace',
@@ -384,6 +385,7 @@ export const translations = {
     fpo_nav_pools: 'पूल व्यवस्थापन',
     fpo_nav_logistics: 'लॉजिस्टिक्स',
     fpo_nav_buyers: 'खरेदीदार',
+    switch_portal: 'पोर्टल बदला',
 
     // Buyer Marketplace (Marathi)
     b2b_marketplace_title: 'बी2बी घाऊक कृषी बाजार',
@@ -680,6 +682,7 @@ export const translations = {
     fpo_nav_pools: 'पूल प्रबंधन',
     fpo_nav_logistics: 'लॉजिस्टिक्स',
     fpo_nav_buyers: 'खरीदार',
+    switch_portal: 'पोर्टल बदलें',
 
     // Buyer Marketplace (Hindi)
     b2b_marketplace_title: 'बी2बी थोक कृषि मंडी',

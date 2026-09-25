@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { useOffline } from '../../context/OfflineContext';
 import mockService from '../../api/mockService';
-import { getStoredPools, INITIAL_VERIFIED_BUYERS } from '../../api/fpoData';
+import { getStoredPools, INITIAL_VERIFIED_BUYERS, INITIAL_LOGISTICS_ROUTE, dispatchFPOPool } from '../../api/fpoData';
 import FarmMandiMap from '../../components/widgets/FarmMandiMap';
 
 export default function FPODashboard() {
@@ -504,47 +504,182 @@ export default function FPODashboard() {
 
       {/* TAB 4: LOGISTICS */}
       {activeTab === 'logistics' && (
-        <div className="bg-white dark:bg-[#132215] p-5 rounded-2xl border border-stone-200 dark:border-emerald-900/40 shadow-xs space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-stone-100 dark:border-emerald-900/30">
-            <div>
-              <h2 className="text-base font-black text-stone-900 dark:text-stone-100">
-                {t('fpo_logistics_schedule_title', 'Logistics & Transport Schedule')}
-              </h2>
-              <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
-                {t('fpo_logistics_schedule_sub', 'Multi-stop pickup routes and consignment weighbridge dispatches.')}
-              </p>
+        <div className="space-y-6">
+          {/* CVRPTW Solver Overview Card */}
+          <div className="bg-white dark:bg-[#132215] p-5 rounded-2xl border border-stone-200 dark:border-emerald-900/40 shadow-xs space-y-5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-stone-100 dark:border-emerald-900/30 gap-3">
+              <div>
+                <h2 className="text-base font-black text-stone-900 dark:text-stone-100 flex items-center gap-2">
+                  <span>🧭</span>
+                  <span>{t('fpo_logistics_schedule_title', 'Logistics & Transport Schedule')} ({INITIAL_LOGISTICS_ROUTE.routeId})</span>
+                </h2>
+                <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+                  {t('fpo_logistics_schedule_sub', 'Multi-stop pickup routes and consignment weighbridge dispatches.')}
+                </p>
+              </div>
+              <Link
+                to="/fpo/logistics"
+                className="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-xs w-fit"
+              >
+                {t('fpo_route_optimizer_btn', 'Open Dedicated Route Optimizer →')}
+              </Link>
             </div>
-            <Link
-              to="/fpo/logistics"
-              className="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-xs"
-            >
-              {t('fpo_route_optimizer_btn', 'Open Route Optimizer →')}
-            </Link>
+
+            {/* 4 Telemetry Stats */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+              <div className="p-3 bg-stone-50 dark:bg-[#182b1c] rounded-xl border border-stone-200 dark:border-emerald-900/40">
+                <span className="text-stone-400 text-[10px] uppercase font-bold block">{t('fpo_assigned_fleet', 'Assigned Transport Fleet')}</span>
+                <strong className="text-stone-900 dark:text-stone-100 text-sm mt-0.5 block truncate">
+                  MahaKisan Logistics
+                </strong>
+                <span className="text-[11px] text-stone-500 font-mono">MH-12-RN-5821</span>
+              </div>
+              <div className="p-3 bg-stone-50 dark:bg-[#182b1c] rounded-xl border border-stone-200 dark:border-emerald-900/40">
+                <span className="text-stone-400 text-[10px] uppercase font-bold block">{t('fpo_current_loop', 'Current Multi-Stop Loop')}</span>
+                <strong className="text-stone-900 dark:text-stone-100 text-sm mt-0.5 block">
+                  {INITIAL_LOGISTICS_ROUTE.totalDistanceKm} km Loop
+                </strong>
+                <span className="text-[11px] text-emerald-700 dark:text-[#D1BF4B] font-bold">
+                  {INITIAL_LOGISTICS_ROUTE.loadUtilizationPct}% {t('fpo_full_utilization', 'Full Utilization')}
+                </span>
+              </div>
+              <div className="p-3 bg-stone-50 dark:bg-[#182b1c] rounded-xl border border-stone-200 dark:border-emerald-900/40">
+                <span className="text-stone-400 text-[10px] uppercase font-bold block">{t('fpo_est_route_cost', 'Estimated Route Cost')}</span>
+                <strong className="text-stone-900 dark:text-stone-100 text-sm mt-0.5 block">
+                  ₹{INITIAL_LOGISTICS_ROUTE.estCostInr}
+                </strong>
+                <span className="text-[11px] text-stone-500 truncate block">{INITIAL_LOGISTICS_ROUTE.driver}</span>
+              </div>
+              <div className="p-3 bg-stone-50 dark:bg-[#182b1c] rounded-xl border border-stone-200 dark:border-emerald-900/40">
+                <span className="text-stone-400 text-[10px] uppercase font-bold block">{t('fpo_collective_fuel_savings', 'Collective Fuel Savings')}</span>
+                <strong className="text-stone-900 dark:text-stone-100 text-sm mt-0.5 block">
+                  ₹520 {isMr ? 'बचत' : isHi ? 'बचत' : 'Saved'}
+                </strong>
+                <span className="text-[11px] text-emerald-700 dark:text-[#D1BF4B] font-bold">28.5% {t('fpo_cost_reduction', 'Cost Reduction')}</span>
+              </div>
+            </div>
+
+            {/* Scheduled Pickup Timeline & Geolocation Stops */}
+            <div className="space-y-3 pt-2">
+              <span className="text-[10px] font-black uppercase tracking-wider text-stone-400 block">
+                {t('fpo_scheduled_stops_title', 'SCHEDULED PICKUP TIMELINE & GEOLOCATION STOPS')}
+              </span>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {INITIAL_LOGISTICS_ROUTE.stops.map((stop, idx) => (
+                  <div
+                    key={idx}
+                    className="bg-white dark:bg-[#132215] border border-stone-200 dark:border-emerald-900/40 rounded-xl p-3 text-xs space-y-1 shadow-2xs"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-extrabold text-emerald-800 dark:text-emerald-300 text-xs">
+                        {t('fpo_stop_label', 'Stop')} #{stop.stopNumber}
+                      </span>
+                      <span className="text-[10px] text-stone-400 font-mono font-bold">{stop.window}</span>
+                    </div>
+                    <div className="font-bold text-stone-900 dark:text-stone-100 text-xs truncate">
+                      {stop.locationName}
+                    </div>
+                    <div className="pt-1.5 border-t border-stone-100 dark:border-emerald-900/30 flex items-center justify-between text-[11px] text-stone-500">
+                      <span className="font-mono text-[10px]">({stop.lat}, {stop.lng})</span>
+                      <strong className="text-stone-900 dark:text-stone-100 font-black">
+                        {stop.pickupKg > 0 ? `+${stop.pickupKg} kg` : (isMr ? 'हब अनलोड' : isHi ? 'हब अनलोड' : 'Hub Unload')}
+                      </strong>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-            <div className="p-3 bg-stone-50 dark:bg-[#182b1c] rounded-xl border border-stone-200 dark:border-emerald-900/40">
-              <span className="text-stone-400 text-[10px] block">{t('fpo_assigned_fleet', 'Assigned Transport Fleet')}</span>
-              <strong className="text-stone-900 dark:text-stone-100 text-sm mt-0.5 block">
-                MahaKisan Logistics
-              </strong>
-              <span className="text-[11px] text-stone-500">MH-12-RN-5821</span>
-            </div>
-            <div className="p-3 bg-stone-50 dark:bg-[#182b1c] rounded-xl border border-stone-200 dark:border-emerald-900/40">
-              <span className="text-stone-400 text-[10px] block">{t('fpo_current_loop', 'Current Multi-Stop Loop')}</span>
-              <strong className="text-stone-900 dark:text-stone-100 text-sm mt-0.5 block">
-                142.6 km Loop
-              </strong>
-              <span className="text-[11px] text-emerald-700 dark:text-[#D1BF4B] font-bold">
-                88% {t('fpo_full_utilization', 'Full Utilization')}
+          {/* Active Freight Consignments & Dispatch Pipeline */}
+          <div className="bg-white dark:bg-[#132215] p-5 rounded-2xl border border-stone-200 dark:border-emerald-900/40 shadow-xs space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-stone-100 dark:border-emerald-900/30">
+              <div>
+                <h3 className="text-base font-black text-stone-900 dark:text-stone-100">
+                  {isMr ? 'वाहतूक डिस्पॅच पाइपलाइन' : isHi ? 'परिवहन प्रेषण पाइपलाइन' : 'Transport Dispatch Pipeline & Consignments'}
+                </h3>
+                <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+                  {isMr ? 'थेट वजन पावती निर्मिती व खरेदीदार गंतव्य ट्रॅकिंग.' : isHi ? 'डिजिटल वजन पर्ची निर्माण एवं खरीदार गंतव्य ट्रैकिंग।' : 'Generate digital weigh-slips & track consignments to buyer destinations.'}
+                </p>
+              </div>
+              <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-blue-50 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                {pools.length} {isMr ? 'कन्साइनमेंट' : isHi ? 'कंसाइनमेंट' : 'Consignments'}
               </span>
             </div>
-            <div className="p-3 bg-stone-50 dark:bg-[#182b1c] rounded-xl border border-stone-200 dark:border-emerald-900/40">
-              <span className="text-stone-400 text-[10px] block">{t('fpo_collective_fuel_savings', 'Collective Fuel Savings')}</span>
-              <strong className="text-stone-900 dark:text-stone-100 text-sm mt-0.5 block">
-                ₹520 {isMr ? 'बचत' : isHi ? 'बचत' : 'Saved'}
-              </strong>
-              <span className="text-[11px] text-stone-500">28.5% {t('fpo_cost_reduction', 'Cost Reduction')}</span>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {pools.slice(0, 4).map((pool) => {
+                const isDispatched = pool.status === 'Dispatched';
+                return (
+                  <div
+                    key={pool.id}
+                    className="p-4 rounded-xl border border-stone-200 dark:border-emerald-900/40 bg-stone-50/50 dark:bg-[#182b1c]/40 space-y-3 flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <span className="text-[10px] font-mono font-bold text-stone-400 uppercase">{pool.id}</span>
+                          <h4 className="font-extrabold text-sm text-stone-900 dark:text-stone-100">
+                            {pool.crop} — {pool.variety}
+                          </h4>
+                          <p className="text-xs text-stone-500 mt-0.5">
+                            {pool.collectionHub} → {pool.destinationMandi}
+                          </p>
+                        </div>
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase flex items-center gap-1 ${
+                          isDispatched
+                            ? 'bg-blue-100 text-blue-800 dark:bg-blue-950/80 dark:text-blue-300'
+                            : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300'
+                        }`}>
+                          {isDispatched && <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />}
+                          <span>{isDispatched ? t('fpo_dispatched_badge', 'In Transit') : pool.status}</span>
+                        </span>
+                      </div>
+
+                      <div className="mt-2.5 pt-2 border-t border-stone-200/70 dark:border-emerald-900/30 flex items-center justify-between text-xs">
+                        <span className="text-stone-600 dark:text-stone-300">
+                          {isMr ? 'वजन' : isHi ? 'वजन' : 'Weight'}: <strong>{pool.currentKg} kg</strong>
+                        </span>
+                        <span className="text-emerald-700 dark:text-[#D1BF4B] font-bold">
+                          ₹{pool.pricePerQtl}/qtl
+                        </span>
+                      </div>
+
+                      <div className="mt-1 text-[11px] text-stone-500 flex items-center gap-1.5">
+                        <span>🚚</span>
+                        <span>{pool.transporter?.name || 'MahaKisan Logistics'} ({pool.transporter?.vehicleNumber || 'MH-12-RN-5821'})</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          dispatchFPOPool(pool.id, {
+                            name: 'MahaKisan Logistics',
+                            vehicleNumber: 'MH-12-RN-5821',
+                            contact: '+91 98220 12345',
+                          });
+                          fetchFPOData();
+                        }}
+                        disabled={isDispatched}
+                        className={`w-full py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                          isDispatched
+                            ? 'bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 cursor-not-allowed'
+                            : 'bg-emerald-700 hover:bg-emerald-800 text-white shadow-xs'
+                        }`}
+                      >
+                        <span>{isDispatched ? '🚚' : '🚀'}</span>
+                        <span>
+                          {isDispatched
+                            ? (isMr ? 'वाहतूक सुरू (मार्गक्रमण)' : isHi ? 'परिवहन जारी (मार्गस्थ)' : 'Consignment In Transit')
+                            : (isMr ? 'कन्साइनमेंट पाठवा (Dispatch)' : isHi ? 'कंसाइनमेंट भेजें (Dispatch)' : 'Dispatch Consignment')}
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
