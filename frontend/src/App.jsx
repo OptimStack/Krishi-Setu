@@ -15,6 +15,7 @@ import FarmerProductsPage from './pages/farmer/FarmerProductsPage';
 import ProductDetailPage from './pages/farmer/ProductDetailPage';
 import GradeCropPage from './pages/farmer/GradeCropPage';
 import AuctionListingPage from './pages/farmer/AuctionListingPage';
+import BuyerProcurementPage from './pages/farmer/BuyerProcurementPage';
 import BuyerDashboard from './pages/buyer/BuyerDashboard';
 import BrowseBatchesPage from './pages/buyer/BrowseBatchesPage';
 import SubmitBidPage from './pages/buyer/SubmitBidPage';
@@ -89,6 +90,8 @@ function App() {
               <Route path="grade" element={<GradeCropPage />} />
               <Route path="market" element={<MarketPricesPage />} />
               <Route path="advisor" element={<SaleAdvisorPage />} />
+              <Route path="procurement" element={<BuyerProcurementPage />} />
+              <Route path="buyer-procurement" element={<BuyerProcurementPage />} />
               <Route path="pooling" element={<PoolingPage />} />
               <Route path="products" element={<FarmerProductsPage />} />
               <Route path="products/:id" element={<ProductDetailPage />} />

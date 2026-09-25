@@ -506,16 +506,32 @@ export default function FarmerDashboard() {
               </p>
             </div>
           </div>
-          <span className="text-xs font-semibold text-stone-700 dark:text-emerald-200 bg-stone-100 dark:bg-[#162719] px-3 py-1 rounded-full border border-stone-200 dark:border-emerald-900/60 shrink-0">
-            {buyerBids.length} Active Offer{buyerBids.length === 1 ? '' : 's'}
-          </span>
+          <div className="flex items-center gap-2">
+            <Link
+              to="/farmer/procurement"
+              className="text-xs font-bold text-[#255919] dark:text-[#D1BF4B] hover:underline flex items-center gap-1 bg-[#255919]/10 dark:bg-[#D1BF4B]/10 px-3 py-1 rounded-full border border-[#255919]/20 dark:border-[#D1BF4B]/30 transition"
+            >
+              <span>{t('buyer_procurement', 'Buyer Procurement')}</span>
+              <span>→</span>
+            </Link>
+            <span className="text-xs font-semibold text-stone-700 dark:text-emerald-200 bg-stone-100 dark:bg-[#162719] px-3 py-1 rounded-full border border-stone-200 dark:border-emerald-900/60 shrink-0">
+              {buyerBids.length} Active Offer{buyerBids.length === 1 ? '' : 's'}
+            </span>
+          </div>
         </div>
 
         {buyerBids.length === 0 ? (
-          <div className="p-5 bg-stone-50 dark:bg-[#162719] rounded-xl border border-dashed border-stone-200 dark:border-emerald-900/50 text-center">
+          <div className="p-5 bg-stone-50 dark:bg-[#162719] rounded-xl border border-dashed border-stone-200 dark:border-emerald-900/50 text-center space-y-2">
             <p className="text-xs text-stone-500 dark:text-stone-400 font-medium">
-              No buyer offers at the moment. When buyers submit purchase offers matching your crops, they will appear here.
+              No direct buyer offers for your immediate lots right now. Browse open institutional procurement demands from verified corporate buyers at guaranteed Mandi rates.
             </p>
+            <Link
+              to="/farmer/procurement"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-[#255919] to-[#D1BF4B] text-white shadow-xs hover:opacity-90 transition"
+            >
+              <span>Explore Buyer Procurement Demands</span>
+              <span>→</span>
+            </Link>
           </div>
         ) : (
           <div className="space-y-3">

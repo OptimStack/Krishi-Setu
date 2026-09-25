@@ -57,6 +57,8 @@ export const translations = {
     near_baramati: 'Near Baramati Cluster',
     direct_buyer_offers: 'Direct Buyer Offers',
     direct_buyer_offers_subtitle: 'Verified buyers offering to buy your produce directly.',
+    buyer_procurement: 'Buyer Procurement',
+    buyer_procurement_subtitle: 'Verified corporate buyers procuring directly at official Mandi modal rates. Zero commission, direct escrow credit.',
     your_harvest_listings: 'Your Harvest Produce Lots',
 
     // Offline Banner
@@ -131,6 +133,8 @@ export const translations = {
     near_baramati: 'बारामती क्लस्टर जवळ',
     direct_buyer_offers: 'खरेदीदारांच्या थेट ऑफर्स',
     direct_buyer_offers_subtitle: 'नोंदणीकृत खरेदीदारांकडून थेट खरेदीच्या ऑफर्स.',
+    buyer_procurement: 'खरेदीदार खरेदी मागण्या',
+    buyer_procurement_subtitle: 'अधिकृत बाजार समिती दराने थेट खरेदी करणाऱ्या नामांकित कंपन्यांच्या मागण्या. शून्य दलाली व थेट बँक जमा.',
     your_harvest_listings: 'तुमच्या उत्पादनांची संपूर्ण यादी',
 
     // Offline Banner
@@ -205,6 +209,8 @@ export const translations = {
     near_baramati: 'बारामती क्लस्टर के पास',
     direct_buyer_offers: 'खरीदारों के सीधे ऑफर्स',
     direct_buyer_offers_subtitle: 'पंजीकृत खरीदारों से सीधी फसल खरीद के प्रस्ताव।',
+    buyer_procurement: 'खरीदार खरीद मांग',
+    buyer_procurement_subtitle: 'आधिकारिक मंडी भाव पर सीधे खरीद करने वाली कंपनियों की मांगें। शून्य कमीशन और सीधा बैंक भुगतान।',
     your_harvest_listings: 'आपकी फसलों की सूची',
 
     // Offline Banner
