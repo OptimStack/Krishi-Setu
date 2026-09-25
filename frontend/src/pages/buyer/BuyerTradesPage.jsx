@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import gsap from 'gsap';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { getBuyerTrades, createPaymentOrder, verifyPayment } from '../../api/payments';
@@ -17,36 +19,44 @@ export default function BuyerTradesPage() {
   const [payingLoading, setPayingLoading] = useState(false);
   const [notification, setNotification] = useState(null);
 
+  const containerRef = useRef(null);
+  const kpiGridRef = useRef(null);
+  const tableRef = useRef(null);
+  const modalRef = useRef(null);
+
   // Fallback demo cleared trades if backend database has none yet
-  const defaultDemoTrades = [
-    {
-      id: "TRD-2026-9018",
-      crop: "Tomato",
-      variety: "Abhinav (Hybrid)",
-      quantity_kg: 800,
-      clearing_price_per_kg: 21.5,
-      total_amount: 17200,
-      status: "pending_payment",
-      createdAt: "2026-09-08T10:30:00Z",
-      farmer_name: "Ramesh Patil",
-      lot_id: "LOT-TOM-8491",
-      escrow_ref: "YESB0000109-NODAL-ESCROW-SIM-81",
-    },
-    {
-      id: "TRD-2026-8842",
-      crop: "Onion",
-      variety: "Unhali Red Garva",
-      quantity_kg: 2000,
-      clearing_price_per_kg: 22.0,
-      total_amount: 44000,
-      status: "settled",
-      createdAt: "2026-09-06T14:15:00Z",
-      farmer_name: "Suresh Gaikwad",
-      lot_id: "LOT-ONI-3912",
-      escrow_ref: "YESB0000109-NODAL-ESCROW-SIM-74",
-      utr: "UTR-AXIS-9921008129",
-    },
-  ];
+  const defaultDemoTrades = useMemo(
+    () => [
+      {
+        id: 'TRD-2026-9018',
+        crop: 'Tomato',
+        variety: 'Abhinav (Hybrid)',
+        quantity_kg: 800,
+        clearing_price_per_kg: 21.5,
+        total_amount: 17200,
+        status: 'pending_payment',
+        createdAt: '2026-09-08T10:30:00Z',
+        farmer_name: 'Ramesh Patil',
+        lot_id: 'LOT-TOM-8491',
+        escrow_ref: 'YESB0000109-NODAL-ESCROW-SIM-81',
+      },
+      {
+        id: 'TRD-2026-8842',
+        crop: 'Onion',
+        variety: 'Unhali Red Garva',
+        quantity_kg: 2000,
+        clearing_price_per_kg: 22.0,
+        total_amount: 44000,
+        status: 'settled',
+        createdAt: '2026-09-06T14:15:00Z',
+        farmer_name: 'Suresh Gaikwad',
+        lot_id: 'LOT-ONI-3912',
+        escrow_ref: 'YESB0000109-NODAL-ESCROW-SIM-74',
+        utr: 'UTR-AXIS-9921008129',
+      },
+    ],
+    []
+  );
 
   const fetchTrades = useCallback(async () => {
     try {
@@ -63,13 +73,59 @@ export default function BuyerTradesPage() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [defaultDemoTrades]);
 
   useEffect(() => {
     fetchTrades();
     const interval = setInterval(fetchTrades, 12000);
     return () => clearInterval(interval);
   }, [fetchTrades]);
+
+  // GSAP Entrance Animations
+  useEffect(() => {
+    if (containerRef.current) {
+      gsap.fromTo(
+        containerRef.current,
+        { opacity: 0, y: 15 },
+        { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' }
+      );
+    }
+    if (kpiGridRef.current) {
+      const items = kpiGridRef.current.children;
+      if (items.length > 0) {
+        gsap.fromTo(
+          items,
+          { opacity: 0, scale: 0.95, y: 10 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.35, stagger: 0.05, ease: 'power2.out' }
+        );
+      }
+    }
+  }, []);
+
+  // GSAP Table Rows Animation
+  useEffect(() => {
+    if (tableRef.current) {
+      const rows = tableRef.current.querySelectorAll('.trade-row');
+      if (rows.length > 0) {
+        gsap.fromTo(
+          rows,
+          { opacity: 0, y: 12 },
+          { opacity: 1, y: 0, duration: 0.3, stagger: 0.04, ease: 'power2.out' }
+        );
+      }
+    }
+  }, [trades.length]);
+
+  // Modal GSAP Animation
+  useEffect(() => {
+    if (paymentModal && modalRef.current) {
+      gsap.fromTo(
+        modalRef.current,
+        { opacity: 0, scale: 0.94, y: 20 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.3, ease: 'back.out(1.4)' }
+      );
+    }
+  }, [paymentModal]);
 
   // Initiate payment for a trade
   const handleStartPayment = async (trade) => {
@@ -79,13 +135,13 @@ export default function BuyerTradesPage() {
 
     try {
       const res = await createPaymentOrder(tradeId);
-      if (res.error) {
+      if (res?.error) {
         // Fallback simulated orderData for seamless UX
         setPaymentModal({
           trade,
           orderData: {
             order_id: `order_${Date.now()}`,
-            amount: trade.total_amount * 100,
+            amount: (trade.total_amount || 10000) * 100,
             currency: 'INR',
           },
         });
@@ -97,7 +153,7 @@ export default function BuyerTradesPage() {
         trade,
         orderData: {
           order_id: `order_${Date.now()}`,
-          amount: trade.total_amount * 100,
+          amount: (trade.total_amount || 10000) * 100,
           currency: 'INR',
         },
       });
@@ -158,50 +214,68 @@ export default function BuyerTradesPage() {
   const totalClearedKg = trades.reduce((sum, t) => sum + (Number(t.quantity_kg) || 0), 0);
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 pb-16">
+    <div ref={containerRef} className="max-w-6xl mx-auto space-y-6 pb-20 font-sans">
       {/* Toast Notification */}
       {notification && (
         <div
-          className={`p-4 rounded-xl text-sm font-bold flex items-center justify-between shadow-lg transition-all animate-in fade-in slide-in-from-top-2 ${
+          className={`p-4 rounded-xl text-sm font-bold flex items-center justify-between shadow-lg transition-all animate-in fade-in slide-in-from-top-2 border ${
             notification.type === 'error'
-              ? 'bg-red-600 text-white'
-              : 'bg-emerald-700 text-white'
+              ? 'bg-red-600 text-white border-red-700'
+              : 'bg-emerald-700 text-white border-emerald-800'
           }`}
         >
-          <span>{notification.message}</span>
+          <div className="flex items-center gap-2">
+            <span>{notification.type === 'error' ? '⚠️' : '✅'}</span>
+            <span>{notification.message}</span>
+          </div>
           <button
             onClick={() => setNotification(null)}
-            className="text-white hover:opacity-75 font-black text-base ml-3"
+            className="text-white hover:opacity-75 font-black text-base ml-3 cursor-pointer"
           >
             ✕
           </button>
         </div>
       )}
 
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      {/* Breadcrumb Navigation matching Farmer Side */}
+      <div className="flex items-center gap-2 text-xs text-stone-500 dark:text-stone-400">
+        <Link to="/buyer/marketplace" className="hover:text-[#255919] dark:hover:text-[#D1BF4B] transition-colors">
+          {t('buyer_nav_marketplace', 'Marketplace')}
+        </Link>
+        <span>/</span>
+        <span className="font-semibold text-stone-800 dark:text-stone-200">
+          {t('trades_title', 'Auction Trades & Settlements')}
+        </span>
+      </div>
+
+      {/* Header matching Farmer side banner */}
+      <div className="bg-gradient-to-r from-[#255919]/10 via-[#D1BF4B]/10 to-transparent p-5 sm:p-6 rounded-2xl border border-[#255919]/20 dark:border-[#D1BF4B]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-[#255919] text-white dark:bg-[#D1BF4B] dark:text-stone-900 mb-2">
+            <span>⚖️</span>
+            <span>{lang === 'mr' ? 'आरबीआय सुसंगत द्विपक्षीय लिलाव' : lang === 'hi' ? 'आरबीआई अनुपालन द्विपक्षीय नीलामी' : 'Double Auction Equilibrium Clearing'}</span>
+          </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">
             {t('trades_title', 'Auction Trades & Settlements')}
           </h1>
-          <p className="text-stone-500 dark:text-stone-400 text-sm mt-1">
+          <p className="text-stone-600 dark:text-stone-300 text-xs sm:text-sm mt-1 max-w-2xl">
             {t('trades_subtitle', 'Double-auction cleared contracts, nodal escrow locks, clearing vouchers, and instant bank UTR settlement.')}
           </p>
         </div>
 
         <button
           onClick={fetchTrades}
-          className="bg-stone-100 dark:bg-[#142617] hover:bg-stone-200 dark:hover:bg-[#1b341f] text-stone-700 dark:text-stone-300 px-3.5 py-2 rounded-xl text-xs font-bold border border-stone-200 dark:border-emerald-900/50 flex items-center gap-1.5 transition cursor-pointer self-start sm:self-auto"
+          className="bg-white dark:bg-[#182b1c] hover:bg-stone-50 dark:hover:bg-[#203a25] text-stone-800 dark:text-stone-200 px-4 py-2.5 rounded-xl text-xs font-bold border border-stone-200 dark:border-emerald-800/50 flex items-center gap-2 shadow-xs transition cursor-pointer self-start sm:self-auto"
         >
-          <span>↻</span>
+          <span className="text-base">↻</span>
           <span>{lang === 'mr' ? 'ताजे करा' : lang === 'hi' ? 'रिफ्रेश करें' : 'Refresh Ledger'}</span>
         </button>
       </div>
 
       {/* Top 4 KPI Metrics */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-        <div className="bg-white dark:bg-[#132215] border border-stone-200 dark:border-emerald-900/40 rounded-2xl p-4 shadow-xs">
-          <div className="text-[11px] font-bold text-stone-400 dark:text-stone-400 uppercase tracking-wider">
+      <div ref={kpiGridRef} className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+        <div className="bg-white dark:bg-[#132215] border border-stone-200/90 dark:border-emerald-900/40 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] rounded-2xl p-4 shadow-xs">
+          <div className="text-[11px] font-bold text-stone-400 uppercase tracking-wider">
             {lang === 'mr' ? 'एकूण व्यवहार' : lang === 'hi' ? 'कुल सौदे' : 'Total Trades'}
           </div>
           <div className="text-2xl font-black text-stone-900 dark:text-stone-100 mt-1">
@@ -212,8 +286,8 @@ export default function BuyerTradesPage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-[#132215] border border-stone-200 dark:border-emerald-900/40 rounded-2xl p-4 shadow-xs">
-          <div className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
+        <div className="bg-white dark:bg-[#132215] border border-stone-200/90 dark:border-emerald-900/40 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] rounded-2xl p-4 shadow-xs">
+          <div className="text-[11px] font-bold text-[#255919] dark:text-[#D1BF4B] uppercase tracking-wider">
             {t('cleared_volume', 'Cleared Volume')}
           </div>
           <div className="text-2xl font-black text-[#255919] dark:text-[#D1BF4B] mt-1">
@@ -224,7 +298,7 @@ export default function BuyerTradesPage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-[#132215] border border-stone-200 dark:border-emerald-900/40 rounded-2xl p-4 shadow-xs">
+        <div className="bg-white dark:bg-[#132215] border border-stone-200/90 dark:border-emerald-900/40 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] rounded-2xl p-4 shadow-xs">
           <div className="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
             {t('total_settled', 'Total Settled')}
           </div>
@@ -236,7 +310,7 @@ export default function BuyerTradesPage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-[#132215] border border-stone-200 dark:border-emerald-900/40 rounded-2xl p-4 shadow-xs">
+        <div className="bg-white dark:bg-[#132215] border border-stone-200/90 dark:border-emerald-900/40 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] rounded-2xl p-4 shadow-xs">
           <div className="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
             {t('pending_escrow', 'Pending Escrow')}
           </div>
@@ -250,7 +324,7 @@ export default function BuyerTradesPage() {
       </div>
 
       {/* Double Auction Protocol Architecture Banner */}
-      <div className="bg-stone-50 dark:bg-[#182b1c] border border-stone-200 dark:border-emerald-800/40 rounded-2xl p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="bg-stone-50 dark:bg-[#182b1c] border border-stone-200/90 dark:border-emerald-800/40 rounded-2xl p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <span className="text-lg">⚖️</span>
@@ -278,7 +352,10 @@ export default function BuyerTradesPage() {
       </div>
 
       {/* Cleared Trades Table */}
-      <div className="bg-white dark:bg-[#132215] border border-stone-200 dark:border-emerald-900/40 rounded-2xl overflow-hidden shadow-xs">
+      <div
+        ref={tableRef}
+        className="bg-white dark:bg-[#132215] border border-stone-200/90 dark:border-emerald-900/40 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] rounded-2xl overflow-hidden shadow-xs"
+      >
         <div className="p-4 sm:p-5 border-b border-stone-100 dark:border-emerald-900/30 flex items-center justify-between">
           <h2 className="font-extrabold text-base text-stone-900 dark:text-stone-100 flex items-center gap-2">
             <span>🤝</span>
@@ -326,7 +403,7 @@ export default function BuyerTradesPage() {
                   return (
                     <tr
                       key={tradeId}
-                      className="hover:bg-stone-50/80 dark:hover:bg-[#182b1c]/40 transition-colors"
+                      className="hover:bg-stone-50/80 dark:hover:bg-[#182b1c]/40 transition-colors trade-row"
                     >
                       <td className="py-3.5 px-4 font-mono text-xs font-bold text-stone-700 dark:text-stone-300">
                         #{String(tradeId).slice(-6).toUpperCase()}
@@ -363,7 +440,7 @@ export default function BuyerTradesPage() {
                             type="button"
                             disabled={actionLoading === tradeId}
                             onClick={() => handleStartPayment(trade)}
-                            className="bg-[#255919] hover:bg-[#1b4313] text-white font-extrabold text-xs px-3.5 py-2 rounded-xl shadow-xs transition cursor-pointer disabled:opacity-50"
+                            className="bg-gradient-to-r from-[#255919] to-[#2A5124] hover:from-[#1b4313] hover:to-[#255919] text-white font-extrabold text-xs px-3.5 py-2 rounded-xl shadow-xs transition cursor-pointer disabled:opacity-50"
                           >
                             {actionLoading === tradeId ? 'Opening...' : `💳 ${t('pay_and_settle', 'Pay & Settle')}`}
                           </button>
@@ -386,8 +463,11 @@ export default function BuyerTradesPage() {
 
       {/* Payment / Escrow Release Modal */}
       {paymentModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in">
-          <div className="bg-white dark:bg-[#132215] border border-stone-200 dark:border-emerald-900/40 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div
+            ref={modalRef}
+            className="bg-white dark:bg-[#132215] border border-stone-200 dark:border-emerald-900/40 border-t-4 border-t-[#255919] dark:border-t-[#D1BF4B] rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl"
+          >
             <div className="flex items-center justify-between border-b border-stone-100 dark:border-emerald-900/30 pb-3">
               <div className="flex items-center gap-2">
                 <span className="text-xl">💳</span>
@@ -397,7 +477,7 @@ export default function BuyerTradesPage() {
               </div>
               <button
                 onClick={() => setPaymentModal(null)}
-                className="text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 font-bold"
+                className="text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 font-bold p-1 cursor-pointer"
               >
                 ✕
               </button>
@@ -455,7 +535,7 @@ export default function BuyerTradesPage() {
                 type="button"
                 disabled={payingLoading}
                 onClick={handleCompletePayment}
-                className="w-1/2 py-2.5 px-4 rounded-xl bg-[#255919] hover:bg-[#1b4313] text-white font-black text-xs shadow-md transition cursor-pointer flex items-center justify-center gap-1.5"
+                className="w-1/2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#255919] to-[#2A5124] hover:from-[#1b4313] hover:to-[#255919] text-white font-black text-xs shadow-md transition cursor-pointer flex items-center justify-center gap-1.5"
               >
                 {payingLoading ? 'Processing...' : 'Authorize Payment'}
               </button>

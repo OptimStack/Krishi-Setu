@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import gsap from 'gsap';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { getBids, cancelBid } from '../../api/bids';
@@ -23,6 +24,11 @@ export default function BuyerDeliveryPage() {
   const [notification, setNotification] = useState(null);
   const [cancellingBidId, setCancellingBidId] = useState(null);
 
+  const containerRef = useRef(null);
+  const kpiGridRef = useRef(null);
+  const cardsGridRef = useRef(null);
+  const modalRef = useRef(null);
+
   // Load backend bids placed to FPOs/farmers
   const fetchBids = useCallback(async () => {
     try {
@@ -38,27 +44,101 @@ export default function BuyerDeliveryPage() {
     }
   }, []);
 
+  const syncDeliveries = useCallback(() => {
+    const list = getStoredReservedPools();
+    setActiveDeliveries(Array.isArray(list) && list.length > 0 ? list : DEFAULT_ACTIVE_DELIVERIES);
+  }, []);
+
   useEffect(() => {
     fetchBids();
-    const handleSync = () => {
-      const list = getStoredReservedPools();
-      setActiveDeliveries(Array.isArray(list) && list.length > 0 ? list : DEFAULT_ACTIVE_DELIVERIES);
-    };
-    window.addEventListener('krishisetu_buyer_pool_reserved', handleSync);
-    window.addEventListener('krishisetu_buyer_delivery_updated', handleSync);
+    syncDeliveries();
+
+    window.addEventListener('krishisetu_buyer_pool_reserved', syncDeliveries);
+    window.addEventListener('krishisetu_buyer_delivery_updated', syncDeliveries);
+    window.addEventListener('storage', syncDeliveries);
+
+    const poll = setInterval(syncDeliveries, 5000);
+
     return () => {
-      window.removeEventListener('krishisetu_buyer_pool_reserved', handleSync);
-      window.removeEventListener('krishisetu_buyer_delivery_updated', handleSync);
+      window.removeEventListener('krishisetu_buyer_pool_reserved', syncDeliveries);
+      window.removeEventListener('krishisetu_buyer_delivery_updated', syncDeliveries);
+      window.removeEventListener('storage', syncDeliveries);
+      clearInterval(poll);
     };
-  }, [fetchBids]);
+  }, [fetchBids, syncDeliveries]);
+
+  // GSAP Entrance Animations
+  useEffect(() => {
+    if (containerRef.current) {
+      gsap.fromTo(
+        containerRef.current,
+        { opacity: 0, y: 15 },
+        { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' }
+      );
+    }
+    if (kpiGridRef.current) {
+      const items = kpiGridRef.current.children;
+      if (items.length > 0) {
+        gsap.fromTo(
+          items,
+          { opacity: 0, scale: 0.95, y: 10 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.35, stagger: 0.05, ease: 'power2.out' }
+        );
+      }
+    }
+  }, []);
+
+  // GSAP Cards Grid Animation
+  useEffect(() => {
+    if (cardsGridRef.current) {
+      const cards = cardsGridRef.current.querySelectorAll('.consignment-card');
+      if (cards.length > 0) {
+        gsap.fromTo(
+          cards,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.4, stagger: 0.06, ease: 'power2.out' }
+        );
+      }
+    }
+  }, [activeDeliveries.length]);
+
+  // Modal GSAP Animation
+  useEffect(() => {
+    if (selectedDisputePool && modalRef.current) {
+      gsap.fromTo(
+        modalRef.current,
+        { opacity: 0, scale: 0.94, y: 20 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.3, ease: 'back.out(1.4)' }
+      );
+    }
+  }, [selectedDisputePool]);
+
+  // KPI calculations
+  const kpiStats = useMemo(() => {
+    const totalConsignments = activeDeliveries.length;
+    let totalKg = 0;
+    let totalValue = 0;
+    let acceptedCount = 0;
+    let disputedCount = 0;
+
+    activeDeliveries.forEach((p) => {
+      const kg = Number(p.current_kg || 0);
+      const val = Math.round((kg / 100) * Number(p.price_per_qtl || 0));
+      totalKg += kg;
+      totalValue += val;
+      if (p.status === 'Accepted') acceptedCount += 1;
+      if (p.status === 'Disputed') disputedCount += 1;
+    });
+
+    return { totalConsignments, totalKg, totalValue, acceptedCount, disputedCount };
+  }, [activeDeliveries]);
 
   // Handle Delivery Acceptance & Payout Release
   const handleAcceptDelivery = (poolId) => {
     updateDeliveryStatus(poolId, 'Accepted', {
       acceptedAt: new Date().toISOString(),
     });
-    const list = getStoredReservedPools();
-    setActiveDeliveries(Array.isArray(list) && list.length > 0 ? list : DEFAULT_ACTIVE_DELIVERIES);
+    syncDeliveries();
     setNotification({
       type: 'success',
       message:
@@ -77,8 +157,7 @@ export default function BuyerDeliveryPage() {
       disputeReason,
       disputedAt: new Date().toISOString(),
     });
-    const list = getStoredReservedPools();
-    setActiveDeliveries(Array.isArray(list) && list.length > 0 ? list : DEFAULT_ACTIVE_DELIVERIES);
+    syncDeliveries();
     setSelectedDisputePool(null);
     setNotification({
       type: 'error',
@@ -113,39 +192,118 @@ export default function BuyerDeliveryPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 pb-16">
+    <div ref={containerRef} className="max-w-6xl mx-auto space-y-6 pb-20 font-sans">
       {/* Toast Banner */}
       {notification && (
         <div
-          className={`p-4 rounded-xl text-sm font-bold flex items-center justify-between shadow-lg transition-all animate-in fade-in slide-in-from-top-2 ${
+          className={`p-4 rounded-xl text-sm font-bold flex items-center justify-between shadow-lg transition-all animate-in fade-in slide-in-from-top-2 border ${
             notification.type === 'error'
-              ? 'bg-red-600 text-white'
-              : 'bg-emerald-700 text-white'
+              ? 'bg-red-600 text-white border-red-700'
+              : 'bg-emerald-700 text-white border-emerald-800'
           }`}
         >
-          <span>{notification.message}</span>
+          <div className="flex items-center gap-2">
+            <span>{notification.type === 'error' ? '⚠️' : '✅'}</span>
+            <span>{notification.message}</span>
+          </div>
           <button
             onClick={() => setNotification(null)}
-            className="text-white hover:opacity-75 font-black text-base ml-3"
+            className="text-white hover:opacity-75 font-black text-base ml-3 cursor-pointer"
           >
             ✕
           </button>
         </div>
       )}
 
-      {/* Header matching Screenshot 4 */}
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">
+      {/* Breadcrumbs matching Farmer side */}
+      <div className="flex items-center gap-2 text-xs text-stone-500 dark:text-stone-400">
+        <Link to="/buyer/marketplace" className="hover:text-[#255919] dark:hover:text-[#D1BF4B] transition-colors">
+          {t('buyer_nav_marketplace', 'Marketplace')}
+        </Link>
+        <span>/</span>
+        <span className="font-semibold text-stone-800 dark:text-stone-200">
           {t('delivery_acceptance_title', 'Delivery Acceptance & Payout Release')}
-        </h1>
-        <p className="text-stone-500 dark:text-stone-400 text-sm mt-1">
-          {t('delivery_acceptance_subtitle', 'Inspect arrived consignments against digital weigh-slips. Release funds or log quality adjustments within 24 hours.')}
-        </p>
+        </span>
       </div>
 
-      {/* Empty State matching Screenshot 4 */}
+      {/* Hero Header with Farmer Side Styling */}
+      <div className="bg-gradient-to-r from-[#255919]/10 via-[#D1BF4B]/10 to-transparent p-5 sm:p-6 rounded-2xl border border-[#255919]/20 dark:border-[#D1BF4B]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-[#255919] text-white dark:bg-[#D1BF4B] dark:text-stone-900 mb-2">
+            <span>🛡️</span>
+            <span>{lang === 'mr' ? 'आरबीआय नोडल एस्क्रो व ओएनडीसी लॉजिस्टिक्स' : lang === 'hi' ? 'आरबीआई नोडल एस्क्रो व ओएनडीसी लॉजिस्टिक्स' : 'RBI Nodal Escrow & ONDC Logistics Protocol'}</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">
+            {t('delivery_acceptance_title', 'Delivery Acceptance & Payout Release')}
+          </h1>
+          <p className="text-stone-600 dark:text-stone-300 text-xs sm:text-sm mt-1 max-w-2xl">
+            {t('delivery_acceptance_subtitle', 'Inspect arrived consignments against digital weigh-slips. Release funds or log quality adjustments within 24 hours.')}
+          </p>
+        </div>
+
+        <Link
+          to="/buyer/marketplace"
+          className="bg-gradient-to-r from-[#255919] to-[#2A5124] hover:from-[#1b4313] hover:to-[#255919] text-white px-5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 shadow-md hover:shadow-lg transition cursor-pointer shrink-0 border border-emerald-700/50"
+        >
+          <span>🏪</span>
+          <span>{t('buyer_nav_marketplace', 'Browse Marketplace')}</span>
+        </Link>
+      </div>
+
+      {/* Top 4 KPI Metrics */}
+      <div ref={kpiGridRef} className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        <div className="bg-white dark:bg-[#132215] border border-stone-200/90 dark:border-emerald-900/40 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] rounded-2xl p-4 shadow-xs">
+          <div className="text-[11px] font-bold text-stone-400 uppercase tracking-wider">
+            {lang === 'mr' ? 'एकूण कन्साइनमेंट' : lang === 'hi' ? 'कुल कंसाइनमेंट' : 'Total Consignments'}
+          </div>
+          <div className="text-2xl font-black text-stone-900 dark:text-stone-100 mt-1">
+            {kpiStats.totalConsignments}
+          </div>
+          <div className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+            {activeDeliveries.filter((p) => p.status !== 'Accepted').length} {lang === 'mr' ? 'प्रतीक्षेत' : lang === 'hi' ? 'प्रतीक्षारत' : 'in-pipeline'}
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-[#132215] border border-stone-200/90 dark:border-emerald-900/40 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] rounded-2xl p-4 shadow-xs">
+          <div className="text-[11px] font-bold text-[#255919] dark:text-[#D1BF4B] uppercase tracking-wider">
+            {lang === 'mr' ? 'एकूण वजन' : lang === 'hi' ? 'कुल वजन' : 'Total Weight'}
+          </div>
+          <div className="text-2xl font-black text-[#255919] dark:text-[#D1BF4B] mt-1">
+            {(kpiStats.totalKg / 100).toFixed(1)} <span className="text-xs font-semibold">Qtl</span>
+          </div>
+          <div className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+            {kpiStats.totalKg.toLocaleString()} kg verified
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-[#132215] border border-stone-200/90 dark:border-emerald-900/40 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] rounded-2xl p-4 shadow-xs">
+          <div className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
+            {lang === 'mr' ? 'एस्क्रो मूल्य' : lang === 'hi' ? 'एस्क्रो मूल्य' : 'Total Escrow Value'}
+          </div>
+          <div className="text-2xl font-black text-emerald-700 dark:text-emerald-400 mt-1">
+            ₹{kpiStats.totalValue.toLocaleString()}
+          </div>
+          <div className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+            {kpiStats.acceptedCount} {lang === 'mr' ? 'स्वीकृत व अदा' : lang === 'hi' ? 'स्वीकृत व भुगतान पूर्ण' : 'accepted & paid'}
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-[#132215] border border-stone-200/90 dark:border-emerald-900/40 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] rounded-2xl p-4 shadow-xs">
+          <div className="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
+            {lang === 'mr' ? 'विवाद / रोखलेली रक्कम' : lang === 'hi' ? 'विवादित / रुकी राशि' : 'Under Dispute'}
+          </div>
+          <div className="text-2xl font-black text-amber-600 dark:text-amber-400 mt-1">
+            {kpiStats.disputedCount}
+          </div>
+          <div className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+            {lang === 'mr' ? '२४ तास SLA अंतर्गत' : lang === 'hi' ? '24 घंटे SLA के तहत' : '24-hr resolution SLA'}
+          </div>
+        </div>
+      </div>
+
+      {/* Empty State */}
       {activeDeliveries.length === 0 && (
-        <div className="p-10 sm:p-14 text-center text-stone-500 dark:text-stone-400 border border-dashed border-stone-300 dark:border-emerald-900/50 rounded-2xl bg-white dark:bg-[#132215] shadow-xs space-y-4">
+        <div className="p-10 sm:p-14 text-center text-stone-500 dark:text-stone-400 border-2 border-dashed border-stone-300 dark:border-emerald-900/50 rounded-2xl bg-white dark:bg-[#132215] border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] shadow-xs space-y-4">
           <div className="text-4xl">🚚</div>
           <p className="text-sm sm:text-base font-semibold text-stone-600 dark:text-stone-300 max-w-md mx-auto">
             {t('no_active_deliveries', 'You have no active deliveries. Reserve a pool in the B2B Marketplace first.')}
@@ -153,7 +311,7 @@ export default function BuyerDeliveryPage() {
           <div>
             <Link
               to="/buyer/marketplace"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#255919] hover:bg-[#1b4313] text-white font-bold text-xs shadow-md transition"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#255919] to-[#2A5124] hover:from-[#1b4313] hover:to-[#255919] text-white font-bold text-xs shadow-md transition"
             >
               <span>🏪</span>
               <span>{t('buyer_nav_marketplace', 'Go to Marketplace')}</span>
@@ -163,7 +321,7 @@ export default function BuyerDeliveryPage() {
       )}
 
       {/* Active Consignments Cards */}
-      <div className="space-y-6">
+      <div ref={cardsGridRef} className="space-y-6">
         {activeDeliveries.map((pool, poolIdx) => {
           const poolTotal = Math.round((Number(pool.current_kg || 0) / 100) * Number(pool.price_per_qtl || 0));
           const isPending = pool.status === 'Reserved' || pool.status === 'Dispatched';
@@ -174,7 +332,7 @@ export default function BuyerDeliveryPage() {
           return (
             <div
               key={poolKey}
-              className="bg-white dark:bg-[#132215] border border-stone-200 dark:border-emerald-900/40 rounded-2xl overflow-hidden shadow-sm"
+              className="bg-white dark:bg-[#132215] border border-stone-200/90 dark:border-emerald-900/40 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition consignment-card"
             >
               {/* Consignment Header */}
               <div className="bg-stone-50/80 dark:bg-[#182b1c]/80 p-5 sm:p-6 border-b border-stone-100 dark:border-emerald-900/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -225,28 +383,28 @@ export default function BuyerDeliveryPage() {
               {/* Consignment Metadata Grid */}
               <div className="p-5 sm:p-6 space-y-5">
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-                  <div className="bg-stone-50 dark:bg-[#182b1c] p-3.5 rounded-xl border border-stone-200 dark:border-emerald-800/40">
+                  <div className="bg-stone-50 dark:bg-[#182b1c] p-3.5 rounded-xl border border-stone-200/80 dark:border-emerald-800/40">
                     <div className="text-stone-400 block mb-0.5">{t('assigned_fpo', 'Assigned FPO')}</div>
                     <div className="font-extrabold text-stone-900 dark:text-stone-100 text-sm">
                       {pool.fpoName || 'Saksham Baramati Krushi PC'}
                     </div>
                   </div>
 
-                  <div className="bg-stone-50 dark:bg-[#182b1c] p-3.5 rounded-xl border border-stone-200 dark:border-emerald-800/40">
+                  <div className="bg-stone-50 dark:bg-[#182b1c] p-3.5 rounded-xl border border-stone-200/80 dark:border-emerald-800/40">
                     <div className="text-stone-400 block mb-0.5">{t('verified_bulk_weight', 'Verified Bulk Weight')}</div>
                     <div className="font-extrabold text-stone-900 dark:text-stone-100 text-sm">
                       {pool.current_kg} kg
                     </div>
                   </div>
 
-                  <div className="bg-stone-50 dark:bg-[#182b1c] p-3.5 rounded-xl border border-stone-200 dark:border-emerald-800/40">
+                  <div className="bg-stone-50 dark:bg-[#182b1c] p-3.5 rounded-xl border border-stone-200/80 dark:border-emerald-800/40">
                     <div className="text-stone-400 block mb-0.5">{t('assigned_transporter', 'Assigned Transporter')}</div>
                     <div className="font-extrabold text-stone-900 dark:text-stone-100 text-sm">
                       {pool.transporter?.vehicleNumber || 'MH-12-RN-5821'}
                     </div>
                   </div>
 
-                  <div className="bg-stone-50 dark:bg-[#182b1c] p-3.5 rounded-xl border border-stone-200 dark:border-emerald-800/40">
+                  <div className="bg-stone-50 dark:bg-[#182b1c] p-3.5 rounded-xl border border-stone-200/80 dark:border-emerald-800/40">
                     <div className="text-stone-400 block mb-0.5">{t('contract_price', 'Contract Price')}</div>
                     <div className="font-extrabold text-[#255919] dark:text-[#D1BF4B] text-sm">
                       ₹{pool.price_per_qtl} / qtl
@@ -302,7 +460,7 @@ export default function BuyerDeliveryPage() {
                 {/* Arrival & Release Action Box */}
                 {isPending && (
                   <div className="border border-stone-200 dark:border-emerald-900/40 rounded-2xl p-6 text-center space-y-4 bg-stone-50/60 dark:bg-[#182b1c]/50">
-                    <div className="mx-auto w-14 h-14 bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 rounded-full flex items-center justify-center text-2xl shadow-xs">
+                    <div className="mx-auto w-14 h-14 bg-emerald-100 dark:bg-emerald-950/70 text-[#255919] dark:text-[#D1BF4B] rounded-full flex items-center justify-center text-2xl shadow-xs">
                       🚚
                     </div>
                     <div>
@@ -327,7 +485,7 @@ export default function BuyerDeliveryPage() {
                       <button
                         type="button"
                         onClick={() => handleAcceptDelivery(pool.id || pool.reservationId)}
-                        className="py-2.5 px-5 rounded-xl bg-[#255919] hover:bg-[#1b4313] text-white font-bold text-xs shadow-md transition cursor-pointer flex items-center justify-center gap-1.5"
+                        className="py-2.5 px-5 rounded-xl bg-gradient-to-r from-[#255919] to-[#2A5124] hover:from-[#1b4313] hover:to-[#255919] text-white font-bold text-xs shadow-md transition cursor-pointer flex items-center justify-center gap-1.5"
                       >
                         <span>✅</span>
                         <span>{t('confirm_delivery', 'Confirm Delivery & Release Funds')}</span>
@@ -426,7 +584,7 @@ export default function BuyerDeliveryPage() {
                 return (
                   <div
                     key={rawBidId}
-                    className="bg-white dark:bg-[#132215] border border-stone-200 dark:border-emerald-900/40 rounded-xl p-4 space-y-3 shadow-xs"
+                    className="bg-white dark:bg-[#132215] border border-stone-200/90 dark:border-emerald-900/40 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] rounded-2xl p-4 space-y-3 shadow-xs hover:shadow-md transition"
                   >
                     <div className="flex items-center justify-between">
                       <span className="font-mono text-[11px] text-stone-400">Bid #{shortBidId}</span>
@@ -480,8 +638,11 @@ export default function BuyerDeliveryPage() {
 
       {/* Dispute Modal */}
       {selectedDisputePool && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in">
-          <div className="bg-white dark:bg-[#132215] border border-stone-200 dark:border-emerald-900/40 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div
+            ref={modalRef}
+            className="bg-white dark:bg-[#132215] border border-stone-200 dark:border-emerald-900/40 border-t-4 border-t-rose-600 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl"
+          >
             <div className="flex items-center gap-2 text-red-600 dark:text-red-400 border-b border-stone-100 dark:border-emerald-900/30 pb-3">
               <span className="text-2xl">⚠️</span>
               <div>
@@ -507,7 +668,7 @@ export default function BuyerDeliveryPage() {
                   rows="3"
                   value={disputeReason}
                   onChange={(e) => setDisputeReason(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-stone-50 dark:bg-[#182b1c] border border-stone-300 dark:border-emerald-800 text-stone-900 dark:text-stone-100 focus:outline-emerald-600"
+                  className="w-full px-3 py-2 rounded-xl bg-stone-50 dark:bg-[#182b1c] border border-stone-300 dark:border-emerald-800 text-stone-900 dark:text-stone-100 focus:outline-[#255919]"
                 />
               </div>
 

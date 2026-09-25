@@ -1,9 +1,11 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import gsap from 'gsap';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { getAvailableProduce } from '../../api/listings';
 import { buyBatchDirect } from '../../api/bids';
+import { mockService } from '../../api/mockService';
 import {
   DEFAULT_FPO_POOLS,
   DEFAULT_DIRECT_LOTS,
@@ -27,7 +29,7 @@ export default function BuyerMarketplacePage() {
   const [authProcessing, setAuthProcessing] = useState(false);
   const [notification, setNotification] = useState(null);
 
-  // Live lots from backend + default curated lots
+  // Live lots from backend + farmer-submitted lots from mockService
   const [backendLots, setBackendLots] = useState([]);
   const [loadingBackendLots, setLoadingBackendLots] = useState(false);
 
@@ -40,16 +42,38 @@ export default function BuyerMarketplacePage() {
   const [inspectedLot, setInspectedLot] = useState(null);
   const [directReserveProcessing, setDirectReserveProcessing] = useState(false);
 
-  // Fetch produce from backend API
+  // GSAP animation refs
+  const containerRef = useRef(null);
+  const kpiGridRef = useRef(null);
+  const cardsGridRef = useRef(null);
+  const modalRef = useRef(null);
+
+  // Fetch produce from backend API and sync with Farmer listings
   const fetchProduce = useCallback(async () => {
     try {
       setLoadingBackendLots(true);
-      const res = await getAvailableProduce();
-      if (res?.data && Array.isArray(res.data)) {
-        setBackendLots(res.data);
-      }
+      const res = await getAvailableProduce().catch(() => ({ data: [] }));
+      const liveData = Array.isArray(res?.data) ? res.data : [];
+
+      // Also get listings from farmer side mock state
+      const farmerListings = mockService.getListings().filter(
+        (l) => l.status === 'open' || l.productStatus === 'PUBLISHED' || l.marketplaceVisibility === 'PUBLIC'
+      );
+
+      // Merge unique listings
+      const combined = [...liveData];
+      farmerListings.forEach((fl) => {
+        const flId = fl.id || fl._id;
+        if (!combined.some((item) => (item.id || item._id) === flId)) {
+          combined.push(fl);
+        }
+      });
+
+      setBackendLots(combined);
     } catch (err) {
       console.warn('Backend produce fetch fallback to local store:', err);
+      const farmerListings = mockService.getListings();
+      setBackendLots(farmerListings);
     } finally {
       setLoadingBackendLots(false);
     }
@@ -60,31 +84,106 @@ export default function BuyerMarketplacePage() {
     const handleReserved = () => {
       setReservedPoolIds(getStoredReservedPools().map((p) => p.id));
     };
+    const handleProduceSync = () => {
+      fetchProduce();
+    };
+
     window.addEventListener('krishisetu_buyer_pool_reserved', handleReserved);
-    return () => window.removeEventListener('krishisetu_buyer_pool_reserved', handleReserved);
+    window.addEventListener('krishisetu_listing_created', handleProduceSync);
+    window.addEventListener('krishisetu_product_updated', handleProduceSync);
+    window.addEventListener('storage', handleProduceSync);
+
+    // Light poll to capture any background farmer listings
+    const pollTimer = setInterval(fetchProduce, 5000);
+
+    return () => {
+      window.removeEventListener('krishisetu_buyer_pool_reserved', handleReserved);
+      window.removeEventListener('krishisetu_listing_created', handleProduceSync);
+      window.removeEventListener('krishisetu_product_updated', handleProduceSync);
+      window.removeEventListener('storage', handleProduceSync);
+      clearInterval(pollTimer);
+    };
   }, [fetchProduce]);
 
-  // Combined Farmer Lots
+  // GSAP Entrance Animations
+  useEffect(() => {
+    if (containerRef.current) {
+      gsap.fromTo(
+        containerRef.current,
+        { opacity: 0, y: 15 },
+        { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' }
+      );
+    }
+    if (kpiGridRef.current) {
+      const items = kpiGridRef.current.children;
+      if (items.length > 0) {
+        gsap.fromTo(
+          items,
+          { opacity: 0, scale: 0.95, y: 10 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.4, stagger: 0.06, ease: 'power2.out' }
+        );
+      }
+    }
+  }, []);
+
+  // GSAP Cards Grid Animation on mode / filter switch
+  useEffect(() => {
+    if (cardsGridRef.current) {
+      const cards = cardsGridRef.current.querySelectorAll('.marketplace-card');
+      if (cards.length > 0) {
+        gsap.fromTo(
+          cards,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.45, stagger: 0.05, ease: 'power2.out' }
+        );
+      }
+    }
+  }, [marketplaceMode, cropFilter, backendLots.length]);
+
+  // Modal Animation
+  useEffect(() => {
+    if ((isAuthOpen || inspectedLot) && modalRef.current) {
+      gsap.fromTo(
+        modalRef.current,
+        { opacity: 0, scale: 0.94, y: 20 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.35, ease: 'back.out(1.4)' }
+      );
+    }
+  }, [isAuthOpen, inspectedLot]);
+
+  // Combined Farmer Lots (Direct integration with Farmer Listings)
   const allFarmerLots = useMemo(() => {
     const mappedBackend = backendLots.map((b) => ({
-      id: b.id || `LOT-${b.crop?.slice(0, 3).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`,
+      id: b.id || b._id || `LOT-${(b.crop || 'PRD').slice(0, 3).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`,
       crop: b.crop ? b.crop.charAt(0).toUpperCase() + b.crop.slice(1) : 'Produce',
       variety: b.variety || 'Hybrid Commercial',
-      locationName: b.village ? `${b.village}, ${b.district || 'Pune'}` : 'Baramati FPO Hub #1, Pune',
-      quantity: b.quantity_kg || b.quantityKg || 500,
+      locationName: b.locationName || (b.village ? `${b.village}, ${b.district || 'Pune'}` : 'Baramati FPO Hub #1, Pune'),
+      quantity: b.quantityKg || b.quantity_kg || 500,
       unit: b.unit || 'kg',
-      askingPrice: b.min_price_per_kg || b.askingPrice || 22,
-      grade: b.quality_grade || b.grade || 'Grade A',
+      askingPrice: b.ask_price_per_kg || b.min_price_per_kg || b.askingPrice || 22,
+      grade: b.grade || b.quality_grade || 'Grade A',
       producer: b.farmer_name || 'Verified Member (FPO Network)',
-      confidenceScore: Math.round(b.confidence_score || b.confidenceScore || 91),
-      coverImageUrl: CROP_IMAGES[b.crop?.charAt(0).toUpperCase() + b.crop?.slice(1)] || CROP_IMAGES.default,
-      harvestDate: b.harvest_date || '2026-09-24',
+      confidenceScore: Math.round(
+        b.confidence_score ? (b.confidence_score > 1 ? b.confidence_score : b.confidence_score * 100) : 91
+      ),
+      coverImageUrl: b.coverImageUrl || (b.images && b.images[0]) || CROP_IMAGES[b.crop?.charAt(0).toUpperCase() + b.crop?.slice(1)] || CROP_IMAGES.default,
+      harvestDate: b.harvestDate || b.harvest_date || '2026-09-24',
       description: b.description || 'Verified farm harvest ready for wholesale delivery.',
+      specs: b.specs || b.analysis?.parameters || {
+        moisture: '11.5%',
+        uniformity: '94%',
+        brix: '18°',
+        certNumber: b.cert_number || 'NABL-AGMARK-VERIFIED',
+      },
       isLiveBackend: true,
       rawBatch: b,
     }));
 
-    return [...DEFAULT_DIRECT_LOTS, ...mappedBackend];
+    // Deduplicate against DEFAULT_DIRECT_LOTS by id
+    const existingIds = new Set(mappedBackend.map((l) => l.id));
+    const uniqueDefaults = DEFAULT_DIRECT_LOTS.filter((d) => !existingIds.has(d.id));
+
+    return [...mappedBackend, ...uniqueDefaults];
   }, [backendLots]);
 
   // Filtered Farmer Lots
@@ -155,6 +254,19 @@ export default function BuyerMarketplacePage() {
       if (lot.rawBatch?.id) {
         await buyBatchDirect(lot.rawBatch.id).catch(() => {});
       }
+
+      // Update lot status on farmer side so it moves to BUYER_RESERVED
+      try {
+        const state = mockService.loadState();
+        state.listings = (state.listings || []).map((l) =>
+          l.id === lot.id || l._id === lot.id
+            ? { ...l, status: 'reserved', productStatus: 'BUYER_RESERVED' }
+            : l
+        );
+        mockService.saveState(state);
+        window.dispatchEvent(new CustomEvent('krishisetu_product_updated', { detail: { id: lot.id, status: 'reserved' } }));
+      } catch {}
+
       // Save as reserved pool delivery
       const pseudoPool = {
         id: lot.id,
@@ -167,7 +279,7 @@ export default function BuyerMarketplacePage() {
         destination_mandi: 'FreshMart Hadapsar Central Warehouse, Pune',
         collection_hub: lot.locationName,
         shared_freight_savings_pct: 25.0,
-        fpoName: 'Saksham Baramati Krushi PC',
+        fpoName: lot.producer || 'Saksham Baramati Krushi PC',
         transporter: {
           name: 'Sahyadri Cold Chain Logistics',
           vehicleNumber: 'MH-12-RN-5821',
@@ -178,7 +290,7 @@ export default function BuyerMarketplacePage() {
       setInspectedLot(null);
       setNotification({
         type: 'success',
-        message: `Order for ${lot.crop} (${lot.quantity} ${lot.unit}) confirmed in escrow!`,
+        message: `Consignment #${lot.id} for ${lot.crop} confirmed in RBI-compliant escrow!`,
       });
       setTimeout(() => {
         navigate('/buyer/delivery');
@@ -191,7 +303,16 @@ export default function BuyerMarketplacePage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 pb-16">
+    <div ref={containerRef} className="max-w-7xl mx-auto space-y-6 pb-16">
+      {/* Breadcrumb Navigation matching Farmer side */}
+      <div className="flex flex-wrap items-center gap-2 text-xs text-stone-500 dark:text-stone-400">
+        <span className="text-[#255919] dark:text-[#D1BF4B] font-bold">KrishiSetu B2B</span>
+        <span>›</span>
+        <span className="font-semibold text-stone-800 dark:text-[#D1BF4B]">
+          {t('b2b_marketplace_title', 'B2B Wholesale Agri Marketplace')}
+        </span>
+      </div>
+
       {/* Toast Banner */}
       {notification && (
         <div
@@ -204,20 +325,23 @@ export default function BuyerMarketplacePage() {
           <span>{notification.message}</span>
           <button
             onClick={() => setNotification(null)}
-            className="text-white hover:opacity-75 font-black text-base ml-3"
+            className="text-white hover:opacity-75 font-black text-base ml-3 cursor-pointer"
           >
             ✕
           </button>
         </div>
       )}
 
-      {/* Header matching Screenshot 1 & 2 */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+      {/* Hero Header Section matching Farmer side */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/95 dark:bg-[#132215]/95 p-5 md:p-6 rounded-2xl border border-stone-200/90 dark:border-[#D1BF4B]/20 shadow-xs hover:shadow-md border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] transition-all">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">
-            {t('b2b_marketplace_title', 'B2B Wholesale Agri Marketplace')}
-          </h1>
-          <p className="text-stone-500 dark:text-stone-400 text-sm mt-1">
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
+            <span className="text-xl">🏪</span>
+            <h1 className="text-2xl sm:text-3xl font-black text-stone-900 dark:text-stone-100 tracking-tight">
+              {t('b2b_marketplace_title', 'B2B Wholesale Agri Marketplace')}
+            </h1>
+          </div>
+          <p className="text-stone-500 dark:text-stone-400 text-sm">
             {t('b2b_marketplace_subtitle', 'Procure FPO-verified, escrow-protected aggregated consignments. Connected directly to farms.')}
           </p>
         </div>
@@ -229,10 +353,10 @@ export default function BuyerMarketplacePage() {
         </div>
       </div>
 
-      {/* 4 KPI Summary Cards matching Screenshot */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+      {/* 4 KPI Summary Cards matching Screenshot & Farmer side styling */}
+      <div ref={kpiGridRef} className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
         {/* KPI 1: Available Pools */}
-        <div className="bg-white dark:bg-[#132215] border border-stone-200 dark:border-emerald-900/40 rounded-2xl p-4 flex items-center gap-3.5 shadow-xs hover:border-emerald-500/40 transition">
+        <div className="bg-white dark:bg-[#132215] border border-stone-200/90 dark:border-[#D1BF4B]/20 rounded-2xl p-4 flex items-center gap-3.5 shadow-xs hover:shadow-md border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] transition-all">
           <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/60 flex items-center justify-center text-emerald-700 dark:text-emerald-300 text-xl font-bold shrink-0">
             📦
           </div>
@@ -247,7 +371,7 @@ export default function BuyerMarketplacePage() {
         </div>
 
         {/* KPI 2: Total Stock */}
-        <div className="bg-white dark:bg-[#132215] border border-stone-200 dark:border-emerald-900/40 rounded-2xl p-4 flex items-center gap-3.5 shadow-xs hover:border-emerald-500/40 transition">
+        <div className="bg-white dark:bg-[#132215] border border-stone-200/90 dark:border-[#D1BF4B]/20 rounded-2xl p-4 flex items-center gap-3.5 shadow-xs hover:shadow-md border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] transition-all">
           <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950/60 flex items-center justify-center text-amber-700 dark:text-amber-300 text-xl font-bold shrink-0">
             🚚
           </div>
@@ -262,7 +386,7 @@ export default function BuyerMarketplacePage() {
         </div>
 
         {/* KPI 3: Total Market Value */}
-        <div className="bg-white dark:bg-[#132215] border border-stone-200 dark:border-emerald-900/40 rounded-2xl p-4 flex items-center gap-3.5 shadow-xs hover:border-emerald-500/40 transition">
+        <div className="bg-white dark:bg-[#132215] border border-stone-200/90 dark:border-[#D1BF4B]/20 rounded-2xl p-4 flex items-center gap-3.5 shadow-xs hover:shadow-md border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] transition-all">
           <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-950/60 flex items-center justify-center text-blue-700 dark:text-blue-300 text-xl font-bold shrink-0">
             ₹
           </div>
@@ -277,7 +401,7 @@ export default function BuyerMarketplacePage() {
         </div>
 
         {/* KPI 4: Registered Buyers */}
-        <div className="bg-white dark:bg-[#132215] border border-stone-200 dark:border-emerald-900/40 rounded-2xl p-4 flex items-center gap-3.5 shadow-xs hover:border-emerald-500/40 transition">
+        <div className="bg-white dark:bg-[#132215] border border-stone-200/90 dark:border-[#D1BF4B]/20 rounded-2xl p-4 flex items-center gap-3.5 shadow-xs hover:shadow-md border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] transition-all">
           <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-950/60 flex items-center justify-center text-purple-700 dark:text-purple-300 text-xl font-bold shrink-0">
             ⭐
           </div>
@@ -359,7 +483,7 @@ export default function BuyerMarketplacePage() {
 
       {/* VIEW 1: Direct Farmer Lots */}
       {marketplaceMode === 'farmer_products' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div ref={cardsGridRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredFarmerLots.length === 0 ? (
             <div className="col-span-full p-12 text-center border border-dashed border-stone-300 dark:border-emerald-900/50 rounded-2xl bg-stone-50 dark:bg-[#132215]">
               <div className="text-4xl mb-3">🌾</div>
@@ -376,7 +500,7 @@ export default function BuyerMarketplacePage() {
               return (
                 <div
                   key={lot.id}
-                  className="bg-white dark:bg-[#132215] border border-stone-200 dark:border-emerald-900/40 rounded-2xl overflow-hidden shadow-xs hover:shadow-lg hover:border-emerald-500/50 transition-all flex flex-col justify-between group"
+                  className="marketplace-card bg-white dark:bg-[#132215] border border-stone-200/90 dark:border-[#D1BF4B]/20 rounded-2xl overflow-hidden shadow-xs hover:shadow-lg hover:border-emerald-500/50 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] transition-all flex flex-col justify-between group"
                 >
                   <div>
                     {/* Image Cover matching Screenshot 1 */}

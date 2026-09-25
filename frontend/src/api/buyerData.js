@@ -605,6 +605,9 @@ export function saveRFQ(rfqData) {
       status: "Active RFQ",
       createdAt: new Date().toISOString().split("T")[0],
       validTill: new Date(Date.now() + 5 * 86400000).toISOString().split("T")[0],
+      total_quantity_needed_kg: (rfqData.quantityQuintal || 10) * 100,
+      fulfilled_quantity_kg: 0,
+      fulfillments: [],
       ...rfqData,
     };
     const updated = [newRfq, ...current];
@@ -616,3 +619,59 @@ export function saveRFQ(rfqData) {
     return null;
   }
 }
+
+export function recordRfqFulfillment(targetIdOrCrop, fulfillment) {
+  try {
+    const current = getStoredRFQs();
+    let matched = false;
+    const updated = current.map((rfq) => {
+      const matchId = rfq.id === targetIdOrCrop || rfq._id === targetIdOrCrop;
+      const matchCrop = !matched && !matchId && rfq.crop?.toLowerCase() === (targetIdOrCrop || '').toLowerCase();
+      if (matchId || matchCrop) {
+        matched = true;
+        const existingFulfillments = Array.isArray(rfq.fulfillments) ? rfq.fulfillments : [];
+        const newFulfilledQty = (rfq.fulfilled_quantity_kg || 0) + (fulfillment.quantity_kg || 0);
+        const totalNeeded = rfq.total_quantity_needed_kg || (rfq.quantityQuintal ? rfq.quantityQuintal * 100 : 1000);
+        const isComplete = newFulfilledQty >= totalNeeded;
+        return {
+          ...rfq,
+          fulfilled_quantity_kg: newFulfilledQty,
+          status: isComplete ? 'Fulfilled' : 'Partially Fulfilled',
+          fulfillments: [fulfillment, ...existingFulfillments],
+        };
+      }
+      return rfq;
+    });
+
+    if (!matched) {
+      const cropName = fulfillment.crop || (typeof targetIdOrCrop === 'string' && !targetIdOrCrop.startsWith('req_') ? targetIdOrCrop : 'Produce');
+      const formattedCrop = cropName.charAt(0).toUpperCase() + cropName.slice(1);
+      const totalKg = Math.max(1000, Math.round((fulfillment.quantity_kg || 500) * 1.5));
+      const newEntry = {
+        id: typeof targetIdOrCrop === 'string' && !targetIdOrCrop.includes(' ') ? targetIdOrCrop : `RFQ-2026-${Math.floor(100 + Math.random() * 900)}`,
+        crop: formattedCrop,
+        variety: fulfillment.variety || 'Hybrid Quality',
+        gradeRequired: 'Grade A',
+        quantityQuintal: Math.round(totalKg / 100),
+        total_quantity_needed_kg: totalKg,
+        fulfilled_quantity_kg: fulfillment.quantity_kg || 0,
+        min_supply_per_farmer_kg: 100,
+        maxPricePerQtl: Math.round((fulfillment.mandi_price || 22) * 100),
+        deliveryHub: 'FreshMart Central Logistics Hub, Pune',
+        status: (fulfillment.quantity_kg || 0) >= totalKg ? 'Fulfilled' : 'Partially Fulfilled',
+        createdAt: new Date().toISOString().split('T')[0],
+        validTill: new Date(Date.now() + 5 * 86400000).toISOString().split('T')[0],
+        fulfillments: [fulfillment],
+      };
+      updated.unshift(newEntry);
+    }
+
+    localStorage.setItem(STORAGE_KEYS.RFQS, JSON.stringify(updated));
+    window.dispatchEvent(new CustomEvent("krishisetu_requirement_fulfilled", { detail: { targetIdOrCrop, fulfillment, updated } }));
+    return updated;
+  } catch (err) {
+    console.error("Failed recording RFQ fulfillment:", err);
+    return null;
+  }
+}
+

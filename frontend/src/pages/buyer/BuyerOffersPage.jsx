@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import gsap from 'gsap';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { getRequirements, createRequirement } from '../../api/requirements';
@@ -15,6 +17,11 @@ export default function BuyerOffersPage() {
   const [submitting, setSubmitting] = useState(false);
   const [notification, setNotification] = useState(null);
   const [expandedRfqId, setExpandedRfqId] = useState(null);
+
+  const containerRef = useRef(null);
+  const kpiGridRef = useRef(null);
+  const cardsGridRef = useRef(null);
+  const modalRef = useRef(null);
 
   // Form data for broadcasting new RFQ
   const [formData, setFormData] = useState({
@@ -41,38 +48,183 @@ export default function BuyerOffersPage() {
     }
   }, []);
 
-  useEffect(() => {
+  const syncAllRFQs = useCallback(() => {
+    setRfqs(getStoredRFQs());
     fetchBackendRequirements();
+  }, [fetchBackendRequirements]);
+
+  useEffect(() => {
+    syncAllRFQs();
+
     const handleRfqCreated = () => {
       setRfqs(getStoredRFQs());
     };
-    window.addEventListener('krishisetu_buyer_rfq_created', handleRfqCreated);
-    return () => window.removeEventListener('krishisetu_buyer_rfq_created', handleRfqCreated);
-  }, [fetchBackendRequirements]);
+    const handleRequirementFulfilled = (e) => {
+      setRfqs(getStoredRFQs());
+      fetchBackendRequirements();
+      if (e?.detail?.fulfillment) {
+        setNotification({
+          type: 'success',
+          message: `🌾 New farmer supply recorded! ${e.detail.fulfillment.farmer_name} allocated ${e.detail.fulfillment.quantity_kg} kg.`,
+        });
+      }
+    };
+    const handleMockStateUpdated = () => {
+      setRfqs(getStoredRFQs());
+      fetchBackendRequirements();
+    };
 
-  // Combined list of RFQs and Demands
-  const combinedRFQs = [
-    ...rfqs,
-    ...backendReqs.map((req) => ({
-      id: req.id ? `REQ-${req.id.slice(0, 6)}` : `RFQ-2026-${Math.floor(100 + Math.random() * 900)}`,
-      crop: req.crop ? req.crop.charAt(0).toUpperCase() + req.crop.slice(1) : 'Onion',
-      variety: req.variety || 'Nashik Red Garva',
-      gradeRequired: req.grade_required || 'Grade A',
-      quantityQuintal: Math.round((req.total_quantity_needed_kg || 5000) / 100),
-      maxPricePerQtl: Math.round((req.mandi_modal_price_per_kg || 24.5) * 100),
-      deliveryHub: req.target_mandi || 'Lasalgaon APMC (Nashik)',
-      status: req.matched_pool_id ? 'Matched with Pool' : 'Active RFQ',
-      createdAt: req.created_at ? req.created_at.split('T')[0] : '2026-09-08',
-      validTill: req.delivery_deadline || '2026-09-18',
-    })),
-  ];
+    window.addEventListener('krishisetu_buyer_rfq_created', handleRfqCreated);
+    window.addEventListener('krishisetu_requirement_fulfilled', handleRequirementFulfilled);
+    window.addEventListener('krishisetu_mock_state_updated', handleMockStateUpdated);
+    window.addEventListener('storage', handleRfqCreated);
+
+    // Periodic live sync to pick up farmer procurement allocations
+    const syncInterval = setInterval(syncAllRFQs, 4000);
+
+    return () => {
+      window.removeEventListener('krishisetu_buyer_rfq_created', handleRfqCreated);
+      window.removeEventListener('krishisetu_requirement_fulfilled', handleRequirementFulfilled);
+      window.removeEventListener('krishisetu_mock_state_updated', handleMockStateUpdated);
+      window.removeEventListener('storage', handleRfqCreated);
+      clearInterval(syncInterval);
+    };
+  }, [syncAllRFQs, fetchBackendRequirements]);
+
+  // GSAP Entrance Animations
+  useEffect(() => {
+    if (containerRef.current) {
+      gsap.fromTo(
+        containerRef.current,
+        { opacity: 0, y: 15 },
+        { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' }
+      );
+    }
+    if (kpiGridRef.current) {
+      const items = kpiGridRef.current.children;
+      if (items.length > 0) {
+        gsap.fromTo(
+          items,
+          { opacity: 0, scale: 0.95, y: 10 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.35, stagger: 0.05, ease: 'power2.out' }
+        );
+      }
+    }
+  }, []);
+
+  // Modal GSAP Animation
+  useEffect(() => {
+    if (isCreateOpen && modalRef.current) {
+      gsap.fromTo(
+        modalRef.current,
+        { opacity: 0, scale: 0.94, y: 20 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.3, ease: 'back.out(1.4)' }
+      );
+    }
+  }, [isCreateOpen]);
+
+  // Combine and deduplicate RFQs and Demands
+  const combinedRFQs = useMemo(() => {
+    const list = [...rfqs];
+    const seenCropsAndIds = new Set();
+
+    list.forEach((r) => {
+      if (r.id) seenCropsAndIds.add(String(r.id).toLowerCase());
+      if (r._id) seenCropsAndIds.add(String(r._id).toLowerCase());
+    });
+
+    backendReqs.forEach((req) => {
+      const reqId = req.id || req._id;
+      if (reqId && seenCropsAndIds.has(String(reqId).toLowerCase())) {
+        return;
+      }
+
+      // Check if we already have an active RFQ for this exact crop with same volume
+      const totalKg = req.total_quantity_needed_kg || 5000;
+      const qtl = Math.round(totalKg / 100);
+      const matchingLocal = list.find(
+        (local) =>
+          local.crop?.toLowerCase() === req.crop?.toLowerCase() &&
+          local.quantityQuintal === qtl
+      );
+
+      if (matchingLocal) {
+        // Merge fulfillment state if backend has higher quantity
+        if ((req.fulfilled_quantity_kg || 0) > (matchingLocal.fulfilled_quantity_kg || 0)) {
+          matchingLocal.fulfilled_quantity_kg = req.fulfilled_quantity_kg;
+          matchingLocal.fulfillments = req.fulfillments || matchingLocal.fulfillments || [];
+        }
+        return;
+      }
+
+      list.push({
+        id: req.id ? (String(req.id).startsWith('REQ-') ? req.id : `REQ-${String(req.id).slice(0, 6)}`) : `RFQ-2026-${Math.floor(100 + Math.random() * 900)}`,
+        crop: req.crop ? req.crop.charAt(0).toUpperCase() + req.crop.slice(1) : 'Onion',
+        variety: req.variety || 'Nashik Red Garva',
+        gradeRequired: req.grade_required || 'Grade A',
+        quantityQuintal: qtl,
+        total_quantity_needed_kg: totalKg,
+        fulfilled_quantity_kg: req.fulfilled_quantity_kg || 0,
+        min_supply_per_farmer_kg: req.min_supply_per_farmer_kg || 100,
+        maxPricePerQtl: Math.round((req.mandi_modal_price_per_kg || 24.5) * 100),
+        deliveryHub: req.target_mandi || 'Lasalgaon APMC (Nashik)',
+        status: req.fulfilled_quantity_kg >= totalKg
+          ? 'Fulfilled'
+          : req.fulfilled_quantity_kg > 0
+          ? 'Partially Fulfilled'
+          : req.matched_pool_id
+          ? 'Matched with Pool'
+          : 'Active RFQ',
+        createdAt: req.created_at ? req.created_at.split('T')[0] : '2026-09-08',
+        validTill: req.delivery_deadline || '2026-09-18',
+        fulfillments: Array.isArray(req.fulfillments) ? req.fulfillments : [],
+      });
+    });
+
+    return list;
+  }, [rfqs, backendReqs]);
+
+  // GSAP Cards Grid Animation on data update
+  useEffect(() => {
+    if (cardsGridRef.current) {
+      const cards = cardsGridRef.current.querySelectorAll('.rfq-card');
+      if (cards.length > 0) {
+        gsap.fromTo(
+          cards,
+          { opacity: 0, y: 15 },
+          { opacity: 1, y: 0, duration: 0.35, stagger: 0.05, ease: 'power2.out' }
+        );
+      }
+    }
+  }, [combinedRFQs.length]);
+
+  // Metrics for Top KPI
+  const kpiStats = useMemo(() => {
+    const totalOrders = combinedRFQs.length;
+    let totalNeededKg = 0;
+    let totalFulfilledKg = 0;
+    let completedCount = 0;
+
+    combinedRFQs.forEach((r) => {
+      const needed = r.total_quantity_needed_kg || (r.quantityQuintal ? r.quantityQuintal * 100 : 1000);
+      const fulfilled = r.fulfilled_quantity_kg !== undefined
+        ? r.fulfilled_quantity_kg
+        : (r.status === 'Matched with Pool' ? Math.round(needed * 0.72) : (r.id === 'RFQ-2026-074' ? needed : Math.round(needed * 0.3)));
+      totalNeededKg += needed;
+      totalFulfilledKg += Math.min(needed, fulfilled);
+      if (fulfilled >= needed) completedCount += 1;
+    });
+
+    const overallPct = totalNeededKg > 0 ? Math.round((totalFulfilledKg / totalNeededKg) * 100) : 0;
+    return { totalOrders, totalNeededKg, totalFulfilledKg, completedCount, overallPct };
+  }, [combinedRFQs]);
 
   const handleCreateRFQ = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const qtl = parseInt(formData.quantityQuintal) || 10;
-      const rate = parseInt(formData.maxPricePerQtl) || 2000;
+      const qtl = parseInt(formData.quantityQuintal, 10) || 10;
+      const rate = parseInt(formData.maxPricePerQtl, 10) || 2000;
 
       // 1. Save locally
       const created = saveRFQ({
@@ -102,10 +254,11 @@ export default function BuyerOffersPage() {
       }
 
       setRfqs(getStoredRFQs());
+      fetchBackendRequirements();
       setIsCreateOpen(false);
       setNotification({
         type: 'success',
-        message: `Purchase Request (${created.id}) broadcasted to regional FPO clusters!`,
+        message: `Purchase Request (${created?.id || 'RFQ'}) broadcasted to regional FPO clusters!`,
       });
     } catch (err) {
       console.error(err);
@@ -119,51 +272,120 @@ export default function BuyerOffersPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 pb-16">
+    <div ref={containerRef} className="max-w-6xl mx-auto space-y-6 pb-20 font-sans">
       {/* Toast Banner */}
       {notification && (
         <div
-          className={`p-4 rounded-xl text-sm font-bold flex items-center justify-between shadow-lg transition-all animate-in fade-in slide-in-from-top-2 ${
+          className={`p-4 rounded-xl text-sm font-bold flex items-center justify-between shadow-lg transition-all animate-in fade-in slide-in-from-top-2 border ${
             notification.type === 'error'
-              ? 'bg-red-600 text-white'
-              : 'bg-emerald-700 text-white'
+              ? 'bg-red-600 text-white border-red-700'
+              : 'bg-emerald-700 text-white border-emerald-800'
           }`}
         >
-          <span>{notification.message}</span>
+          <div className="flex items-center gap-2">
+            <span>{notification.type === 'error' ? '⚠️' : '✅'}</span>
+            <span>{notification.message}</span>
+          </div>
           <button
             onClick={() => setNotification(null)}
-            className="text-white hover:opacity-75 font-black text-base ml-3"
+            className="text-white hover:opacity-75 font-black text-base ml-3 cursor-pointer"
           >
             ✕
           </button>
         </div>
       )}
 
-      {/* Header matching Screenshot 3 */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      {/* Breadcrumb Navigation matching Farmer Side */}
+      <div className="flex items-center gap-2 text-xs text-stone-500 dark:text-stone-400">
+        <Link to="/buyer/marketplace" className="hover:text-[#255919] dark:hover:text-[#D1BF4B] transition-colors">
+          {t('buyer_nav_marketplace', 'Marketplace')}
+        </Link>
+        <span>/</span>
+        <span className="font-semibold text-stone-800 dark:text-stone-200">
+          {t('buyer_nav_offers', 'My Orders & Procurement Demands')}
+        </span>
+      </div>
+
+      {/* Hero Header with Farmer Side Styling */}
+      <div className="bg-gradient-to-r from-[#255919]/10 via-[#D1BF4B]/10 to-transparent p-5 sm:p-6 rounded-2xl border border-[#255919]/20 dark:border-[#D1BF4B]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-[#255919] text-white dark:bg-[#D1BF4B] dark:text-stone-900 mb-2">
+            <span>⚡</span>
+            <span>{lang === 'mr' ? 'थेट शेतकरी पुरवठा समन्वय' : lang === 'hi' ? 'सीधा किसान आपूर्ति समन्वय' : 'Live Direct Farmer Procurement Sync'}</span>
+          </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">
             {t('procurement_orders_title', 'Procurement Orders & RFQs')}
           </h1>
-          <p className="text-stone-500 dark:text-stone-400 text-sm mt-1">
-            {t('procurement_orders_subtitle', 'Publish direct purchase requirements to FPOs or track existing contracts.')}
+          <p className="text-stone-600 dark:text-stone-300 text-xs sm:text-sm mt-1 max-w-2xl">
+            {t('procurement_orders_subtitle', 'Publish direct purchase requirements to FPOs or track existing contracts with real-time farmer supply allocation.')}
           </p>
         </div>
 
         {/* Broadcast Button */}
         <button
           onClick={() => setIsCreateOpen(true)}
-          className="bg-[#255919] hover:bg-[#1b4313] text-white px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-1.5 shadow-md transition cursor-pointer"
+          className="bg-gradient-to-r from-[#255919] to-[#2A5124] hover:from-[#1b4313] hover:to-[#255919] text-white px-5 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 shadow-md hover:shadow-lg transition cursor-pointer shrink-0 border border-emerald-700/50"
         >
-          <span className="text-sm">＋</span>
+          <span className="text-base font-black">＋</span>
           <span>{t('broadcast_new_rfq', 'Broadcast New RFQ')}</span>
         </button>
       </div>
 
-      {/* RFQ Cards matching Screenshot 3 */}
-      <div className="space-y-4">
+      {/* Top 4 KPI Metrics */}
+      <div ref={kpiGridRef} className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        <div className="bg-white dark:bg-[#132215] border border-stone-200/90 dark:border-emerald-900/40 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] rounded-2xl p-4 shadow-xs">
+          <div className="text-[11px] font-bold text-stone-400 uppercase tracking-wider">
+            {lang === 'mr' ? 'एकूण मागण्या' : lang === 'hi' ? 'कुल मांगें' : 'Total Demands'}
+          </div>
+          <div className="text-2xl font-black text-stone-900 dark:text-stone-100 mt-1">
+            {kpiStats.totalOrders}
+          </div>
+          <div className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+            {combinedRFQs.filter((r) => r.status !== 'Fulfilled').length} {lang === 'mr' ? 'सक्रिय' : lang === 'hi' ? 'सक्रिय' : 'active requirements'}
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-[#132215] border border-stone-200/90 dark:border-emerald-900/40 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] rounded-2xl p-4 shadow-xs">
+          <div className="text-[11px] font-bold text-[#255919] dark:text-[#D1BF4B] uppercase tracking-wider">
+            {lang === 'mr' ? 'आवश्यक प्रमाण' : lang === 'hi' ? 'आवश्यक मात्रा' : 'Target Volume'}
+          </div>
+          <div className="text-2xl font-black text-[#255919] dark:text-[#D1BF4B] mt-1">
+            {(kpiStats.totalNeededKg / 100).toFixed(1)} <span className="text-xs font-semibold">Qtl</span>
+          </div>
+          <div className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+            {kpiStats.totalNeededKg.toLocaleString()} kg total
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-[#132215] border border-stone-200/90 dark:border-emerald-900/40 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] rounded-2xl p-4 shadow-xs">
+          <div className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
+            {lang === 'mr' ? 'पुरवठा पूर्ण' : lang === 'hi' ? 'आपूर्ति पूर्ण' : 'Fulfilled Volume'}
+          </div>
+          <div className="text-2xl font-black text-emerald-700 dark:text-emerald-400 mt-1">
+            {(kpiStats.totalFulfilledKg / 100).toFixed(1)} <span className="text-xs font-semibold">Qtl</span>
+          </div>
+          <div className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+            {kpiStats.overallPct}% {lang === 'mr' ? 'एकूण पूर्णता' : lang === 'hi' ? 'कुल पूर्ण' : 'overall fulfillment'}
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-[#132215] border border-stone-200/90 dark:border-emerald-900/40 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] rounded-2xl p-4 shadow-xs">
+          <div className="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
+            {lang === 'mr' ? 'पूर्ण झालेले ऑर्डर्स' : lang === 'hi' ? 'पूर्ण ऑर्डर्स' : 'Completed Orders'}
+          </div>
+          <div className="text-2xl font-black text-blue-700 dark:text-blue-400 mt-1">
+            {kpiStats.completedCount}
+          </div>
+          <div className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+            {lang === 'mr' ? '१००% पुरवठा झालेले' : lang === 'hi' ? '100% आपूर्ति पूर्ण' : '100% fulfilled'}
+          </div>
+        </div>
+      </div>
+
+      {/* RFQ Cards matching Screenshot 3 & Farmer Styling */}
+      <div ref={cardsGridRef} className="space-y-4">
         {combinedRFQs.length === 0 ? (
-          <div className="p-12 text-center border border-dashed border-stone-300 dark:border-emerald-900/50 rounded-2xl bg-white dark:bg-[#132215]">
+          <div className="p-12 text-center border-2 border-dashed border-stone-300 dark:border-emerald-900/50 rounded-2xl bg-white dark:bg-[#132215] border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B]">
             <div className="text-3xl mb-2">📋</div>
             <p className="font-bold text-stone-700 dark:text-stone-300">
               {lang === 'mr' ? 'कोणत्याही खरेदी मागण्या प्रकाशित नाहीत.' : lang === 'hi' ? 'कोई खरीद मांग प्रकाशित नहीं है।' : 'No active procurement demands published.'}
@@ -175,20 +397,21 @@ export default function BuyerOffersPage() {
         ) : (
           combinedRFQs.map((rfq) => {
             const isMatched = rfq.status === 'Matched with Pool';
-            const totalCommitment = rfq.quantityQuintal * rfq.maxPricePerQtl;
+            const isFulfilled = rfq.status === 'Fulfilled';
+            const totalCommitment = (rfq.quantityQuintal || 10) * (rfq.maxPricePerQtl || 2000);
             const totalKg = rfq.total_quantity_needed_kg || (rfq.quantityQuintal ? rfq.quantityQuintal * 100 : 1000);
-            const fulfilledKg = rfq.fulfilled_quantity_kg !== undefined 
-              ? rfq.fulfilled_quantity_kg 
+            const fulfilledKg = rfq.fulfilled_quantity_kg !== undefined
+              ? rfq.fulfilled_quantity_kg
               : (rfq.status === 'Matched with Pool' ? Math.round(totalKg * 0.72) : (rfq.id === 'RFQ-2026-074' ? totalKg : Math.round(totalKg * 0.3)));
             const progressPct = Math.min(100, Math.round((fulfilledKg / totalKg) * 100));
             const remainingKg = Math.max(0, totalKg - fulfilledKg);
-            const fulfillments = rfq.fulfillments || [];
+            const fulfillments = Array.isArray(rfq.fulfillments) ? rfq.fulfillments : [];
             const isExpanded = expandedRfqId === rfq.id;
 
             return (
               <div
                 key={rfq.id}
-                className="bg-white dark:bg-[#132215] border border-stone-200 dark:border-emerald-900/40 rounded-2xl shadow-xs hover:shadow-md transition p-5 sm:p-6 space-y-4"
+                className="bg-white dark:bg-[#132215] border border-stone-200/90 dark:border-emerald-900/40 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] rounded-2xl shadow-xs hover:shadow-md transition p-5 sm:p-6 space-y-4 rfq-card"
               >
                 {/* Header row: Title + Status + Ceiling Price */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-stone-100 dark:border-emerald-900/30 pb-4">
@@ -199,8 +422,12 @@ export default function BuyerOffersPage() {
                       </h3>
                       <span
                         className={`text-[10px] font-black px-2.5 py-0.5 rounded-full ${
-                          isMatched
+                          isFulfilled
+                            ? 'bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border border-emerald-300'
+                            : isMatched
                             ? 'bg-purple-100 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-800'
+                            : rfq.status === 'Partially Fulfilled'
+                            ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300'
                             : 'bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800'
                         }`}
                       >
@@ -230,9 +457,9 @@ export default function BuyerOffersPage() {
                   </div>
                 </div>
 
-                {/* 3 Grid boxes matching Screenshot 3 */}
+                {/* 3 Grid boxes matching Screenshot 3 & Farmer Styling */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                  <div className="bg-stone-50 dark:bg-[#182b1c] p-3.5 rounded-xl border border-stone-200 dark:border-emerald-800/40">
+                  <div className="bg-stone-50 dark:bg-[#182b1c] p-3.5 rounded-xl border border-stone-200/80 dark:border-emerald-800/40">
                     <span className="text-stone-500 dark:text-stone-400 block mb-1 font-medium">
                       {t('quality_tolerance', 'Quality Tolerance')}
                     </span>
@@ -241,7 +468,7 @@ export default function BuyerOffersPage() {
                     </strong>
                   </div>
 
-                  <div className="bg-stone-50 dark:bg-[#182b1c] p-3.5 rounded-xl border border-stone-200 dark:border-emerald-800/40">
+                  <div className="bg-stone-50 dark:bg-[#182b1c] p-3.5 rounded-xl border border-stone-200/80 dark:border-emerald-800/40">
                     <span className="text-stone-500 dark:text-stone-400 block mb-1 font-medium">
                       {t('total_procurement_commitment', 'Total Procurement Commitment')}
                     </span>
@@ -250,11 +477,11 @@ export default function BuyerOffersPage() {
                     </strong>
                   </div>
 
-                  <div className="bg-stone-50 dark:bg-[#182b1c] p-3.5 rounded-xl border border-stone-200 dark:border-emerald-800/40">
+                  <div className="bg-stone-50 dark:bg-[#182b1c] p-3.5 rounded-xl border border-stone-200/80 dark:border-emerald-800/40">
                     <span className="text-stone-500 dark:text-stone-400 block mb-1 font-medium">
                       {t('delivery_destination', 'Delivery Destination')}
                     </span>
-                    <strong className="text-stone-800 dark:text-stone-100 text-sm truncate block">
+                    <strong className="text-stone-800 dark:text-stone-100 text-sm truncate block" title={rfq.deliveryHub}>
                       {rfq.deliveryHub}
                     </strong>
                   </div>
@@ -366,10 +593,13 @@ export default function BuyerOffersPage() {
         )}
       </div>
 
-      {/* Broadcast New RFQ Dialog matching Screenshot */}
+      {/* Broadcast New RFQ Dialog matching Screenshot & Farmer Styling */}
       {isCreateOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in">
-          <div className="bg-white dark:bg-[#132215] border border-stone-200 dark:border-emerald-900/40 rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div
+            ref={modalRef}
+            className="bg-white dark:bg-[#132215] border border-stone-200 dark:border-emerald-900/40 border-t-4 border-t-[#255919] dark:border-t-[#D1BF4B] rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl"
+          >
             <div className="flex items-center justify-between border-b border-stone-100 dark:border-emerald-900/30 pb-3">
               <div>
                 <h3 className="font-black text-lg text-stone-900 dark:text-stone-100">
@@ -385,7 +615,7 @@ export default function BuyerOffersPage() {
               </div>
               <button
                 onClick={() => setIsCreateOpen(false)}
-                className="text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 font-bold"
+                className="text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 font-bold p-1 cursor-pointer"
               >
                 ✕
               </button>
@@ -400,7 +630,7 @@ export default function BuyerOffersPage() {
                   <select
                     value={formData.crop}
                     onChange={(e) => setFormData({ ...formData, crop: e.target.value })}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-stone-50 dark:bg-[#182b1c] border border-stone-300 dark:border-emerald-800 text-stone-900 dark:text-stone-100 focus:outline-emerald-600"
+                    className="w-full px-3 py-2 text-xs rounded-xl bg-stone-50 dark:bg-[#182b1c] border border-stone-300 dark:border-emerald-800 text-stone-900 dark:text-stone-100 focus:outline-[#255919]"
                   >
                     <option value="Tomato">{lang === 'mr' ? 'टोमॅटो' : lang === 'hi' ? 'टमाटर' : 'Tomato'}</option>
                     <option value="Onion">{lang === 'mr' ? 'कांदा' : lang === 'hi' ? 'प्याज' : 'Onion'}</option>
@@ -420,7 +650,7 @@ export default function BuyerOffersPage() {
                     type="text"
                     value={formData.variety}
                     onChange={(e) => setFormData({ ...formData, variety: e.target.value })}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-stone-50 dark:bg-[#182b1c] border border-stone-300 dark:border-emerald-800 text-stone-900 dark:text-stone-100 focus:outline-emerald-600"
+                    className="w-full px-3 py-2 text-xs rounded-xl bg-stone-50 dark:bg-[#182b1c] border border-stone-300 dark:border-emerald-800 text-stone-900 dark:text-stone-100 focus:outline-[#255919]"
                     placeholder="e.g. Abhinav (Hybrid)"
                     required
                   />
@@ -435,7 +665,7 @@ export default function BuyerOffersPage() {
                   <select
                     value={formData.gradeRequired}
                     onChange={(e) => setFormData({ ...formData, gradeRequired: e.target.value })}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-stone-50 dark:bg-[#182b1c] border border-stone-300 dark:border-emerald-800 text-stone-900 dark:text-stone-100 focus:outline-emerald-600"
+                    className="w-full px-3 py-2 text-xs rounded-xl bg-stone-50 dark:bg-[#182b1c] border border-stone-300 dark:border-emerald-800 text-stone-900 dark:text-stone-100 focus:outline-[#255919]"
                   >
                     <option value="Grade A">Grade A Only</option>
                     <option value="Grade A or B">Grade A or B</option>
@@ -452,7 +682,7 @@ export default function BuyerOffersPage() {
                     min="1"
                     value={formData.quantityQuintal}
                     onChange={(e) => setFormData({ ...formData, quantityQuintal: e.target.value })}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-stone-50 dark:bg-[#182b1c] border border-stone-300 dark:border-emerald-800 text-stone-900 dark:text-stone-100 focus:outline-emerald-600"
+                    className="w-full px-3 py-2 text-xs rounded-xl bg-stone-50 dark:bg-[#182b1c] border border-stone-300 dark:border-emerald-800 text-stone-900 dark:text-stone-100 focus:outline-[#255919]"
                     required
                   />
                 </div>
@@ -467,7 +697,7 @@ export default function BuyerOffersPage() {
                   min="100"
                   value={formData.maxPricePerQtl}
                   onChange={(e) => setFormData({ ...formData, maxPricePerQtl: e.target.value })}
-                  className="w-full px-3 py-2 text-xs rounded-xl bg-stone-50 dark:bg-[#182b1c] border border-stone-300 dark:border-emerald-800 text-stone-900 dark:text-stone-100 focus:outline-emerald-600"
+                  className="w-full px-3 py-2 text-xs rounded-xl bg-stone-50 dark:bg-[#182b1c] border border-stone-300 dark:border-emerald-800 text-stone-900 dark:text-stone-100 focus:outline-[#255919]"
                   required
                 />
               </div>
@@ -480,7 +710,7 @@ export default function BuyerOffersPage() {
                   type="text"
                   value={formData.deliveryHub}
                   onChange={(e) => setFormData({ ...formData, deliveryHub: e.target.value })}
-                  className="w-full px-3 py-2 text-xs rounded-xl bg-stone-50 dark:bg-[#182b1c] border border-stone-300 dark:border-emerald-800 text-stone-900 dark:text-stone-100 focus:outline-emerald-600"
+                  className="w-full px-3 py-2 text-xs rounded-xl bg-stone-50 dark:bg-[#182b1c] border border-stone-300 dark:border-emerald-800 text-stone-900 dark:text-stone-100 focus:outline-[#255919]"
                   placeholder="e.g. FreshMart Hadapsar Central Warehouse, Pune"
                   required
                 />
@@ -497,7 +727,7 @@ export default function BuyerOffersPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-1/2 py-2.5 px-4 rounded-xl bg-[#255919] hover:bg-[#1b4313] text-white font-black text-xs shadow-md transition cursor-pointer flex items-center justify-center gap-1.5"
+                  className="w-1/2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#255919] to-[#2A5124] hover:from-[#1b4313] hover:to-[#255919] text-white font-black text-xs shadow-md transition cursor-pointer flex items-center justify-center gap-1.5"
                 >
                   {submitting ? (lang === 'mr' ? 'पाठवत आहे...' : lang === 'hi' ? 'भेजा जा रहा है...' : 'Broadcasting...') : (lang === 'mr' ? 'एफपीओंना पाठवा' : lang === 'hi' ? 'एफपीओ को भेजें' : 'Broadcast to FPOs')}
                 </button>

@@ -4,6 +4,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import { useOffline } from '../../context/OfflineContext';
 import { createListing } from '../../api/listings';
+import { mockService } from '../../api/mockService';
 
 // Regional commodities with varieties and typical price baselines
 const COMMODITY_CATALOG = [
@@ -254,6 +255,45 @@ export default function AuctionListingPage() {
       }
 
       await createListing(formData);
+
+      const createdListing = {
+        _id: generatedLotId,
+        id: generatedLotId,
+        farmer_id: user?.id || 'usr_farmer_1',
+        farmer_name: farmerName,
+        farmer_phone: farmerPhone,
+        crop: selectedCrop,
+        variety,
+        quantityKg: calculatedMetrics.qtyKg,
+        quantity_kg: calculatedMetrics.qtyKg,
+        ask_price_per_kg: calculatedMetrics.ratePerKg,
+        askingPricePerQtl: calculatedMetrics.ratePerKg * 100,
+        min_acceptable_price_per_kg: calculatedMetrics.ratePerKg * 0.95,
+        quality_grade: selfDeclaredGrade,
+        grade: selfDeclaredGrade,
+        confidence_score: 0.95,
+        village: taluk,
+        district,
+        state,
+        locationName: `${taluk}, ${district}`,
+        storage_type: storageType,
+        packaging: packagingDetails,
+        status: 'open',
+        productStatus: 'PUBLISHED',
+        marketplaceVisibility: 'PUBLIC',
+        enwr_number: enwrNumber,
+        cert_number: certNumber,
+        delivery_mode: deliveryMode,
+        created_at: new Date().toISOString(),
+      };
+
+      try {
+        const currentState = mockService.loadState();
+        currentState.listings = [createdListing, ...(currentState.listings || [])];
+        mockService.saveState(currentState);
+      } catch {}
+
+      window.dispatchEvent(new CustomEvent('krishisetu_listing_created', { detail: createdListing }));
 
       setSubmittedLot({
         id: generatedLotId,

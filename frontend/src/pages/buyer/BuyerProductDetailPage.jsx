@@ -1,5 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import gsap from 'gsap';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { DEFAULT_DIRECT_LOTS, CROP_IMAGES, saveReservedPool } from '../../api/buyerData';
@@ -13,6 +14,18 @@ export default function BuyerProductDetailPage() {
   const [selectedPhotoIdx, setSelectedPhotoIdx] = useState(0);
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [orderProcessing, setOrderProcessing] = useState(false);
+
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      gsap.fromTo(
+        containerRef.current,
+        { opacity: 0, y: 15 },
+        { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' }
+      );
+    }
+  }, []);
 
   // Find product by id from default lots or generate dynamic
   const product = useMemo(() => {
@@ -87,16 +100,16 @@ export default function BuyerProductDetailPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 pb-20">
-      {/* Breadcrumb */}
-      <div className="flex items-center justify-between text-xs text-stone-500 dark:text-stone-400">
-        <Link
-          to="/buyer/marketplace"
-          className="hover:text-stone-900 dark:hover:text-stone-100 flex items-center gap-1 font-bold"
-        >
-          <span>←</span> Back to Buyer Marketplace
+    <div ref={containerRef} className="max-w-6xl mx-auto space-y-6 pb-20 font-sans">
+      {/* Breadcrumb matching Farmer side */}
+      <div className="flex items-center gap-2 text-xs text-stone-500 dark:text-stone-400">
+        <Link to="/buyer/marketplace" className="hover:text-[#255919] dark:hover:text-[#D1BF4B] transition-colors">
+          {t('buyer_nav_marketplace', 'Marketplace')}
         </Link>
-        <span className="font-mono text-stone-400 font-semibold">{product.id}</span>
+        <span>/</span>
+        <span className="font-semibold text-stone-800 dark:text-stone-200">
+          {product.crop} ({product.id})
+        </span>
       </div>
 
       {/* Main Grid: Multi-Angle Gallery + Specs & Procurement */}
@@ -153,7 +166,7 @@ export default function BuyerProductDetailPage() {
 
         {/* Right: Specifications & Procurement (5 cols) */}
         <div className="lg:col-span-5 space-y-5">
-          <div className="bg-white dark:bg-[#132215] border border-stone-200 dark:border-emerald-900/40 rounded-3xl p-6 space-y-5 shadow-xs">
+          <div className="bg-white dark:bg-[#132215] border border-stone-200/90 dark:border-emerald-900/40 border-t-2 border-t-[#255919] dark:border-t-[#D1BF4B] rounded-3xl p-6 space-y-5 shadow-xs">
             <div>
               <div className="flex items-center justify-between mb-2">
                 <span className="font-mono text-xs text-stone-500 dark:text-stone-400 font-bold bg-stone-100 dark:bg-[#182b1c] px-2.5 py-1 rounded-md border border-stone-200 dark:border-emerald-800/40">

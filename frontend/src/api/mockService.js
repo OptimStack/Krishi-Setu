@@ -778,6 +778,11 @@ const loadState = () => {
 const saveState = (state) => {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('krishisetu_mock_state_updated', { detail: state }));
+      window.dispatchEvent(new CustomEvent('krishisetu_product_updated'));
+      window.dispatchEvent(new CustomEvent('krishisetu_listing_created'));
+    }
   } catch (e) {
     console.warn('[MockService] Failed to save localStorage state:', e);
   }

@@ -6,6 +6,7 @@ import { useOffline } from '../../context/OfflineContext';
 import { useAuth } from '../../context/AuthContext';
 import { getRequirements, fulfillRequirement } from '../../api/requirements';
 import { getListings } from '../../api/listings';
+import { recordRfqFulfillment } from '../../api/buyerData';
 import { formatCurrency, formatQuantity } from '../../utils/format';
 import LocationChangeModal from '../../components/widgets/LocationChangeModal';
 
@@ -273,6 +274,22 @@ export default function BuyerProcurementPage() {
           utrRef: `AXIS-ESCROW-${Math.floor(100000 + Math.random() * 900000)}`,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         };
+
+        const fulfillmentRecord = {
+          farmer_name: user?.name || 'Ramesh Patil',
+          farmer_phone: user?.phone || '+91 98765 43210',
+          village: lastSavedLocation || 'Baramati Cluster, Pune',
+          quantity_kg: qty,
+          mandi_price: selectedReq.mandi_modal_price_per_kg || 21.5,
+          total_payout: totalPayout,
+          fulfilled_at: new Date().toISOString().split('T')[0],
+        };
+        recordRfqFulfillment(selectedReq._id || selectedReq.id || selectedReq.crop, fulfillmentRecord);
+        window.dispatchEvent(
+          new CustomEvent('krishisetu_requirement_fulfilled', {
+            detail: { reqId: selectedReq._id || selectedReq.id, fulfillment: fulfillmentRecord },
+          })
+        );
 
         setConfirmedVoucher(voucher);
         fetchAllData();
